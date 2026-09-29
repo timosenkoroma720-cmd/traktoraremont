@@ -1,0 +1,313 @@
+    <div id="startScreen" class="start-screen">
+        <h2>Добро пожаловать!</h2>
+        <p>Тест содержит <strong>20 вопросов</strong> по теме разъёмных и неразъёмных соединений</p>
+        <p>Время выполнения: <strong>10 минут</strong></p>
+        <p>Вопросы будут представлены в случайном порядке</p>
+        
+        <div class="info-box">
+            <h3>Инструкция:</h3>
+            <p>• Выберите один правильный ответ для каждого вопроса</p>
+            <p>• По истечении времени тест завершится автоматически</p>
+            <p>• После завершения вы увидите результаты и пояснения к неправильным ответам</p>
+        </div>
+
+        <button class="btn" onclick="startTest()">Начать тест</button>
+    </div>
+
+    <div id="testScreen" style="display: none;">
+        <div class="timer" id="timer">Осталось времени: 10:00</div>
+        <form id="testForm"></form>
+        <button class="btn" onclick="submitTest()">Завершить тест</button>
+    </div>
+
+    <div id="resultsScreen" class="results">
+        <div class="score">
+            <h2>Результаты теста</h2>
+            <div class="percentage" id="percentage"></div>
+            <div>Правильных ответов: <span id="correctCount"></span> из 20</div>
+            <div class="grade" id="grade"></div>
+        </div>
+
+        <div class="criteria">
+            <h3>Критерии оценки:</h3>
+            <ul>
+                <li><strong>90-100% (18-20 правильных)</strong> — Отлично (5)</li>
+                <li><strong>75-89% (15-17 правильных)</strong> — Хорошо (4)</li>
+                <li><strong>60-74% (12-14 правильных)</strong> — Удовлетворительно (3)</li>
+                <li><strong>Менее 60% (менее 12 правильных)</strong> — Неудовлетворительно (2)</li>
+            </ul>
+        </div>
+
+        <div class="answer-review" id="answerReview"></div>
+
+        <button class="btn" onclick="location.reload()">Пройти тест заново</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Какое соединение относится к разъёмным?",
+            options: ["Сварное", "Болтовое", "Паяное", "Клеевое"],
+            correct: 1,
+            explanation: "Болтовое соединение является разъёмным, так как позволяет многократно собирать и разбирать соединение без повреждения деталей."
+        },
+        {
+            question: "Какое соединение относится к неразъёмным?",
+            options: ["Шпоночное", "Штифтовое", "Сварное", "Резьбовое"],
+            correct: 2,
+            explanation: "Сварное соединение является неразъёмным, так как детали соединяются путём местного сплавления и разделение возможно только с разрушением соединения."
+        },
+        {
+            question: "Основное преимущество разъёмных соединений:",
+            options: ["Высокая прочность", "Возможность многократной сборки и разборки", "Низкая стоимость", "Простота изготовления"],
+            correct: 1,
+            explanation: "Главное преимущество разъёмных соединений — возможность многократной сборки и разборки для обслуживания, ремонта или замены деталей."
+        },
+        {
+            question: "Какое соединение используется для передачи вращающего момента между валом и деталью?",
+            options: ["Болтовое", "Шпоночное", "Заклёпочное", "Клеевое"],
+            correct: 1,
+            explanation: "Шпоночное соединение служит для передачи вращающего момента между валом и посаженной на него деталью (шкивом, зубчатым колесом и др.)."
+        },
+        {
+            question: "Заклёпочное соединение относится к:",
+            options: ["Разъёмным соединениям", "Неразъёмным соединениям", "Подвижным соединениям", "Шарнирным соединениям"],
+            correct: 1,
+            explanation: "Заклёпочное соединение является неразъёмным, так как для его разборки необходимо разрушить заклёпку."
+        },
+        {
+            question: "Какое соединение обеспечивает герметичность?",
+            options: ["Болтовое с прокладкой", "Шпоночное", "Штифтовое", "Шлицевое"],
+            correct: 0,
+            explanation: "Болтовое соединение с прокладкой обеспечивает герметичность, так как прокладка заполняет неровности между соединяемыми поверхностями."
+        },
+        {
+            question: "Шлицевое соединение отличается от шпоночного:",
+            options: ["Меньшим количеством шлицев", "Большим числом выступов и впадин на валу и втулке", "Отсутствием выступов", "Использованием только на валах малого диаметра"],
+            correct: 1,
+            explanation: "Шлицевое соединение имеет большее число выступов (шлицев) и впадин на валу и в отверстии втулки, что обеспечивает лучшую центровку и передачу большего крутящего момента."
+        },
+        {
+            question: "Какое соединение применяется в конструкциях летательных аппаратов?",
+            options: ["Сварное", "Заклёпочное", "Клеевое", "Паяное"],
+            correct: 1,
+            explanation: "Заклёпочные соединения широко применяются в авиастроении благодаря надёжности, возможности соединения разнородных материалов и контролю качества."
+        },
+        {
+            question: "Недостаток сварных соединений:",
+            options: ["Высокая стоимость", "Возможность коробления деталей и возникновения остаточных напряжений", "Невозможность соединения разнородных материалов", "Низкая прочность"],
+            correct: 1,
+            explanation: "При сварке происходит местный нагрев, что вызывает коробление деталей и возникновение остаточных напряжений, которые могут снизить прочность конструкции."
+        },
+        {
+            question: "Какое соединение является подвижным разъёмным?",
+            options: ["Болтовое", "Шпоночное", "Шлицевое", "Резьбовое"],
+            correct: 2,
+            explanation: "Шлицевое соединение может быть подвижным, позволяя детали перемещаться вдоль вала (например, шестерни в коробке передач)."
+        },
+        {
+            question: "Паяное соединение отличается от сварного:",
+            options: ["Более высокой прочностью", "Более низкой температурой соединения", "Отсутствием присадочного материала", "Возможностью разборки"],
+            correct: 1,
+            explanation: "При пайке соединение происходит при температуре ниже температуры плавления основного металла, в отличие от сварки, где основной металл плавится."
+        },
+        {
+            question: "Какое соединение используется для фиксации взаимного расположения деталей?",
+            options: ["Болтовое", "Штифтовое", "Заклёпочное", "Сварное"],
+            correct: 1,
+            explanation: "Штифтовое соединение применяется для точной фиксации взаимного расположения деталей и предотвращения их смещения."
+        },
+        {
+            question: "Преимущество клеевых соединений:",
+            options: ["Высокая прочность на отрыв", "Возможность соединения разнородных материалов без изменения их структуры", "Возможность многократной разборки", "Высокая термостойкость"],
+            correct: 1,
+            explanation: "Клеевые соединения позволяют соединять разнородные материалы (металл с пластиком, стекло с металлом) без изменения их структуры и свойств."
+        },
+        {
+            question: "Какое соединение обеспечивает точную центровку деталей?",
+            options: ["Болтовое", "Шпоночное", "Штифтовое", "Заклёпочное"],
+            correct: 2,
+            explanation: "Штифтовое соединение обеспечивает точную центровку деталей благодаря точной обработке отверстий и самих штифтов."
+        },
+        {
+            question: "Недостаток болтовых соединений:",
+            options: ["Невозможность разборки", "Необходимость доступа с двух сторон для установки", "Низкая прочность", "Невозможность соединения толстых деталей"],
+            correct: 1,
+            explanation: "Для установки болта необходим доступ с двух сторон соединяемых деталей: с одной стороны для удержания головки болта, с другой — для завинчивания гайки."
+        },
+        {
+            question: "Какое соединение применяется для соединения тонкостенных деталей?",
+            options: ["Сварное", "Заклёпочное", "Болтовое с крупной резьбой", "Шпоночное"],
+            correct: 1,
+            explanation: "Заклёпочные соединения хорошо подходят для тонкостенных деталей, так как не требуют обработки резьбы и не создают концентраторов напряжений как отверстия под болты."
+        },
+        {
+            question: "Что такое шпонка?",
+            options: ["Цилиндрический стержень", "Призма или сегмент, устанавливаемый в пазы вала и втулки", "Тонкий лист металла", "Винт с потайной головкой"],
+            correct: 1,
+            explanation: "Шпонка — это деталь призматической, сегментной или другой формы, которая устанавливается в пазы вала и втулки для передачи крутящего момента."
+        },
+        {
+            question: "Какое соединение является наиболее прочным на разрыв?",
+            options: ["Клеевое", "Паяное", "Сварное", "Заклёпочное"],
+            correct: 2,
+            explanation: "Сварные соединения обеспечивают наибольшую прочность на разрыв, так как образуют монолитное соединение, по прочности близкое к основному металлу."
+        },
+        {
+            question: "Для чего применяется контргайка в болтовом соединении?",
+            options: ["Для увеличения прочности", "Для предотвращения самоотвинчивания", "Для герметизации", "Для центровки"],
+            correct: 1,
+            explanation: "Контргайка применяется для предотвращения самоотвинчивания гайки под действием вибрации и динамических нагрузок."
+        },
+        {
+            question: "Какое соединение позволяет регулировать расстояние между деталями?",
+            options: ["Сварное", "Болтовое с регулировочными прокладками", "Заклёпочное", "Клеевое"],
+            correct: 1,
+            explanation: "Болтовое соединение с регулировочными прокладками позволяет точно настраивать расстояние между деталями путём подбора прокладок различной толщины."
+        }
+    ];
+
+    let shuffledQuestions = [];
+    let userAnswers = [];
+    let timerInterval;
+    let timeLeft = 600; // 10 минут в секундах
+
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    function startTest() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('testScreen').style.display = 'block';
+        
+        shuffledQuestions = shuffleArray(questions);
+        renderQuestions();
+        startTimer();
+    }
+
+    function renderQuestions() {
+        const form = document.getElementById('testForm');
+        form.innerHTML = '';
+
+        shuffledQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            
+            const shuffledOptions = q.options.map((opt, optIndex) => ({text: opt, originalIndex: optIndex}));
+            const shuffledOptionsArray = shuffleArray(shuffledOptions);
+
+            questionDiv.innerHTML = `
+                <div class="question-number">Вопрос ${index + 1}</div>
+                <div class="question-text">${q.question}</div>
+                <div class="options">
+                    ${shuffledOptionsArray.map((opt, optIndex) => `
+                        <div class="option">
+                            <input type="radio" name="q${index}" value="${opt.originalIndex}" id="q${index}_${optIndex}">
+                            <label for="q${index}_${optIndex}">${opt.text}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            form.appendChild(questionDiv);
+        });
+    }
+
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.getElementById('timer');
+        timerElement.textContent = `Осталось времени: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        if (timeLeft <= 60) {
+            timerElement.classList.add('warning');
+        }
+    }
+
+    function submitTest() {
+        clearInterval(timerInterval);
+        
+        const form = document.getElementById('testForm');
+        const formData = new FormData(form);
+        userAnswers = [];
+
+        for (let i = 0; i < shuffledQuestions.length; i++) {
+            const answer = formData.get(`q${i}`);
+            userAnswers.push(answer !== null ? parseInt(answer) : -1);
+        }
+
+        showResults();
+    }
+
+    function showResults() {
+        document.getElementById('testScreen').style.display = 'none';
+        document.getElementById('resultsScreen').style.display = 'block';
+
+        let correctCount = 0;
+        shuffledQuestions.forEach((q, index) => {
+            if (userAnswers[index] === q.correct) {
+                correctCount++;
+            }
+        });
+
+        const percentage = Math.round((correctCount / 20) * 100);
+        document.getElementById('percentage').textContent = `${percentage}%`;
+        document.getElementById('correctCount').textContent = correctCount;
+
+        let grade = '';
+        if (percentage >= 90) {
+            grade = 'Оценка: Отлично (5)';
+        } else if (percentage >= 75) {
+            grade = 'Оценка: Хорошо (4)';
+        } else if (percentage >= 60) {
+            grade = 'Оценка: Удовлетворительно (3)';
+        } else {
+            grade = 'Оценка: Неудовлетворительно (2)';
+        }
+        document.getElementById('grade').textContent = grade;
+
+        renderAnswerReview();
+    }
+
+    function renderAnswerReview() {
+        const reviewDiv = document.getElementById('answerReview');
+        reviewDiv.innerHTML = '<h3>Разбор ответов:</h3>';
+
+        shuffledQuestions.forEach((q, index) => {
+            const isCorrect = userAnswers[index] === q.correct;
+            const userAnswer = userAnswers[index] >= 0 ? q.options[userAnswers[index]] : 'Нет ответа';
+            const correctAnswer = q.options[q.correct];
+
+            const reviewItem = document.createElement('div');
+            reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            reviewItem.innerHTML = `
+                <div class="review-question">${index + 1}. ${q.question}</div>
+                <div class="review-answer"><strong>Ваш ответ:</strong> ${userAnswer} ${isCorrect ? '✓' : '✗'}</div>
+                ${!isCorrect ? `<div class="review-answer"><strong>Правильный ответ:</strong> ${correctAnswer}</div>` : ''}
+                ${!isCorrect ? `<div class="explanation"><strong>Пояснение:</strong> ${q.explanation}</div>` : ''}
+            `;
+
+            reviewDiv.appendChild(reviewItem);
+        });
+    }
+</script>
