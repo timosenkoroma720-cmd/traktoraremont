@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 3: Специализированные модификации и маркировка</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .quiz-card { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-sticky { position: sticky; top: 10px; background: #e74c3c; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .question-block { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #27ae60; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #f1f5f9; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
+        .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="header">
+        <h2>Классификация тракторов — Тест 3</h2>
+        <p>Специализированные модификации, рабочее оборудование и маркировка (20 вопросов)</p>
+    </div>
+
+    <div class="timer-sticky">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const quizData = [
+    { q: "1. Для работы на крутых склонах (до 20°) применяются тракторы:", options: ["Промышленные", "Горные (крутосклонные)", "Свекловодческие", "Базовые МТЗ-80"], correct: 1, exp: "Горные тракторы оснащаются системами выравнивания остова и расширенной колеей." },
+    { q: "2. Чем хлопководческая модификация трактора (например, МТЗ-80Х) отличается от базовой?", options: ["Наличием гусениц", "Трехколесной ходовой системой (одно переднее колесо)", "Отсутствием кабины", "Увеличенной мощностью"], correct: 1, exp: "Трехколесная схема необходима для движения в узких междурядьях хлопчатника." },
+    { q: "3. Что означает буква «Т» в аббревиатуре трактора Т-150К?", options: ["Тяга", "Трактор", "Транспортный", "Турбинный"], correct: 1, exp: "Буква «Т» традиционно расшифровывается как «Трактор»." },
+    { q: "4. Трактор с колесной формулой 4х4а имеет:", options: ["Направляющие колеса меньшего диаметра", "Все колеса одинакового диаметра", "Поворот задними колесами", "Сочлененную раму"], correct: 1, exp: "Индекс «а» означает равные по диаметру передние и задние колеса." },
+    { q: "5. Какое сцепное устройство применяется для агрегатирования с двухосными прицепами?", options: ["Гидрокрюк", "Тягово-сцепное устройство ТСУ-1 (вилка/петля)", "Трехточечная навеска", "Задний ВОМ"], correct: 1, exp: "Для транспортных прицепов используется тягово-сцепное устройство типа «вилка-петля»." },
+    { q: "6. К какому классу относятся малогабаритные тракторы «Беларус-320»?", options: ["0.6", "1.4", "2.0", "3.0"], correct: 0, exp: "Малогабаритные тракторы МТЗ-320 относятся к тяговому классу 0.6." },
+    { q: "7. Для чего применяется гидроувеличитель сцепного веса (ГСВ)?", options: ["Для подъема навески", "Для переноса части веса орудия на задние колеса трактора", "Для блокировки тормозов", "Для отключения переднего моста"], correct: 1, exp: "ГСВ использует давление в гидросистеме для догрузки ведущего моста." },
+    { q: "8. Как называется расстояние от поверхности земли до наинизших точек мостов?", options: ["Дорожный просвет", "Агротехнический просвет", "Конструктивная высота", "База"], correct: 0, exp: "Дорожный просвет меряется под наиболее низкими элементами мостов." },
+    { q: "9. Какой параметр определяет продольную устойчивость трактора на подъемах?", options: ["Ширина колеи", "Координаты центра тяжести и база трактора", "Диаметр задних колес", "Мощность генератора"], correct: 1, exp: "Положение центра тяжести относительно базы определяет риск опрокидывания назад." },
+    { q: "10. Для чего служат свекловодческие модификации тракторов?", options: ["Внесения жидких удобрений", "Посева и обработки свеклы с шириной междурядий 45 см", "Вспашки на большую глубину", "Перевозки тяжелогрузов"], correct: 1, exp: "Свекловодческие тракторы имеют узкие шины и колею, кратную 45 см." },
+    { q: "11. Из каких основных частей состоит колесный трактор?", options: ["Двигатель, трансмиссия, ходовая часть, управление, рабочее и электрооборудование", "Рама, колеса, кузов, ДВС", "Мотор, КПП, навеска", "Кабина, мосты, гидроцилиндры"], correct: 0, exp: "Это классический полный перечень основных систем и агрегатов трактора." },
+    { q: "12. Как влияет снижение давления воздуха в шинах колесного трактора на почву?", options: ["Увеличивает уплотнение", "Уменьшает удельное давление на почву", "Не оказывает влияния", "Разрушает шину моментально"], correct: 1, exp: "Снижение давления увеличивает пятно контакта шины с грунтом, уменьшая разрушение структуры." },
+    { q: "13. Для чего служит механическая блокировка дифференциала заднего моста?", options: ["Для снижения радиуса поворота", "Для устранения буксования одного из колес", "Для экстренного торможения", "Для переключения передач"], correct: 1, exp: "Блокировка жестко соединяет полуоси, вращая оба колеса с одинаковой скоростью." },
+    { q: "14. Какая система трактора служит для изменения направления движения?", options: ["Трансмиссия", "Рулевое управление", "Ходовая система", "Тормозная система"], correct: 1, exp: "Рулевое управление изменяет угол поворота направляющих колес или полурам." },
+    { q: "15. Что означает буквенно-цифровой индекс «ЛТЗ-55»?", options: ["Липецкий тракторный завод, модель 55", "Ленинградский тяжелый завод", "Луцкий тракторный завод", "Лесной тракторный завод"], correct: 0, exp: "Аббревиатура указывает на завод-производитель (Липецк)." },
+    { q: "16. Какая нагрузка называется номинальным тяговым усилием?", options: ["Максимальное усилие на разрыв сцепки", "Усилие в рабочей зоне при допустимом буксовании", "Вес самого трактора", "Мощность двигателя"], correct: 1, exp: "Это устойчивое усилие на крюке в регламентированных почвенных условиях." },
+    { q: "17. Допустимый процент буксования для колесных тракторов 4х2 на стерне составляет:", options: ["До 5%", "15–18%", "30%", "50%"], correct: 1, exp: "Нормированный предел буксования для 4х2 составляет до 15–18%." },
+    { q: "18. Каким образом меняется ширина колеи передних колес на МТЗ-80?", options: ["Перестановкой кабины", "Выдвижением кулаков из трубы моста и перестановкой дисков", "Заменой переднего моста", "Колея не регулируется"], correct: 1, exp: "Пошаговое выдвижение корпусов подшипников с фиксацией позволяет менять колею." },
+    { q: "19. Какой тип шин обеспечивает наилучшие тяговые свойства на рыхлом грунте?", options: ["Дорожные гладкие", "С рисунком протектора повышенной проходимости («елочка»)", "Авиационные", "Карьерные"], correct: 1, exp: "Протектор «повышенной проходимости» (наклонные грунтозацепы) самоочищается и врезается в грунт." },
+    { q: "20. Для чего на тракторах применяется ГУР или ГОРУ?", options: ["Для торможения", "Для снижения усилия на рулевом колесе", "Для привода навески", "Для повышения скорости"], correct: 1, exp: "Гидроусилитель уменьшает физическую нагрузку на водителя при разворотах." }
+];
+
+let timeLeft = 600;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-block">
+            <div class="question-title">${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    quizData.forEach((_, index) => {
+        document.getElementById(`exp_${index}`).style.display = 'block';
+    });
+
+    if (isTimeout) {
+        resultBox.className = 'result-box failed';
+        resultBox.innerHTML = `
+            <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
+            <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
+            <p>Изучите пояснения ниже для исправления ошибок.</p>
+        `;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score++;
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты тестирования</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr>
+        <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
