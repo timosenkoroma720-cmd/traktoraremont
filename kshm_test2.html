@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КШМ — Тест 2 (Средняя сложность)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .quiz-card { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-sticky { position: sticky; top: 10px; background: #e74c3c; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .question-block { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #f39c12; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #f1f5f9; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
+        .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="header">
+        <h2>Кривошипно-шатунный механизм — Тест 2</h2>
+        <p>Уровень: Средний (Конструктивные особенности, гильзы, вкладыши, сопряжения)</p>
+    </div>
+
+    <div class="timer-sticky">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const quizData = [
+    { q: "1. Чем отличается «мокрая» гильза цилиндра от «сухой»?", options: ["Мокрая гильза омывается снаружи охлаждающей жидкостью", "Мокрая гильза всегда смазывается моторным маслом", "Сухая гильза изготавливается из пластика", "Сухая гильза не снимается при ремонте"], correct: 0, exp: "«Мокрая» гильза омывается непосредственно жидкостью системы охлаждения двигателя." },
+    { q: "2. За счет чего предотвращается утечка охлаждающей жидкости в нижнем сопряжении «мокрой» гильзы с блоком?", options: ["С помощью герметика", "С помощью резиновых уплотнительных колец", "За счет запрессовки с натягом", "С помощью стальной прокладки"], correct: 1, exp: "Нижняя часть «мокрой» гильзы уплотняется резиновыми кольцами в проточках блока." },
+    { q: "3. Почему юбка поршня в холодном состоянии имеет овальную форму?", options: ["Это брак при изготовлении", "Чтобы компенсировать неравномерный температурный нагрев и расширение поршня вдоль оси пальца", "Для ускорения движения поршня", "Для снижения расхода топлива"], correct: 1, exp: "В зоне бобышек металла больше, поэтому при нагреве овал становится правильным цилиндром." },
+    { q: "4. Какую форму имеет поршень по высоте (в продольном сечении) в холодном состоянии?", options: ["Строго цилиндрическую", "Конусную (с меньшим диаметром в головке)", "Конусную (с большим диаметром в головке)", "Шарообразную"], correct: 1, exp: "Головка поршня нагревается сильнее юбки, поэтому в холодном состоянии её диаметр меньше." },
+    { q: "5. Как называется поршневой палец, который может свободно вращаться и в бобышках поршня, и в втулке шатуна?", options: ["Защемленный", "Плавающий", "Фиксированный", "Прессованный"], correct: 1, exp: "Плавающий палец свободно поворачивается как в бобышках поршня, так и в бронзовой втулке шатуна." },
+    { q: "6. Как фиксируется «плавающий» поршневой палец от осевого смещения и повреждения стенок гильзы?", options: ["Болтами", "Пружинными стопорными кольцами в канавках бобышек", "Шпонами", "Сваркой"], correct: 1, exp: "В канавки бобышек поршня устанавливаются пружинные стопорные кольца." },
+    { q: "7. Из какого материала изготавливаются тонкостенные вкладыши подшипников коленчатого вала?", options: ["Из цельной бронзы", "Из стальной ленты, залитой антифрикционным сплавом (баббит, алюмокремнистый сплав)", "Из чугуна", "Из алюминия без покрытий"], correct: 1, exp: "Вкладыши состоят из стальной основы и слоя антифрикционного материала." },
+    { q: "8. Что предотвращает провертывание вкладышей в постелях блока и крышках шатунов?", options: ["Клей", "Выштампованные усики (фиксирующие выступы)", "Стопорные винты", "Шпонки"], correct: 1, exp: "Усики на вкладышах входят в специальные пазы в постелях подшипников." },
+    { q: "9. Зачем в замке компрессионного кольца делают тепловой зазор (зазор в замке)?", options: ["Для протекания масла", "Чтобы при нагреве кольцо не уперлось концами и не заклинило в цилиндре", "Для снижения массы кольца", "Для удобства снятия"], correct: 1, exp: "При нагреве кольцо расширяется, и отсутствие зазора приведет к поломке или задиру гильзы." },
+    { q: "10. Какая сила действует на поршень при сгорании топлива во время рабочего хода?", options: ["Сила трения", "Сила давления газов", "Центробежная сила", "Сила натяжения"], correct: 1, exp: "Давление расширяющихся газов передает энергию на днище поршня." },
+    { q: "11. Какое направление имеет боковая сила, действующая на поршень?", options: ["Вдоль оси цилиндра", "Перпендикулярно стенке цилиндра (прижимает поршень к гильзе)", "Вдоль коленчатого вала", "Вверх к ГБЦ"], correct: 1, exp: "При отклонении шатуна от вертикали возникает боковая сила, прижимающая поршень к стенке гильзы." },
+    { q: "12. Как называют расстояние между осью шатунной шейки и осью коренных шеек коленвала?", options: ["Радиус кривошипа", "Длина вала", "Ширина щеки", "Вылет маховика"], correct: 0, exp: "Радиус кривошипа (R) равен половине хода поршня (S/2)." },
+    { q: "13. Почему шатунные болты изготавливают из высококачественной легированной стали?", options: ["Они испытывают высокие переменные и ударные нагрузки при растяжении", "Чтобы они не ржавели", "Для уменьшения веса", "Чтобы закручивать их без ключа"], correct: 0, exp: "Шатунные болты удерживают крышку шатуна при воздействии сил инерции." },
+    { q: "14. Каково назначение грязеуловительных полостей в шатунных шейках коленчатого вала?", options: ["Для уменьшения веса вала", "Для центробежной очистки масла от тяжелых механических примесей", "Для хранения запаса масла", "Для охлаждения шейки"], correct: 1, exp: "При вращении коленвала грязь центробежной силой отбрасывается к стенкам внутренней полости." },
+    { q: "15. Для чего на торцах коренного подшипника (или блока) устанавливают упорные полукольца?", options: ["Для регулировки зазора в клапанах", "Для фиксации коленчатого вала от осевого (продольного) перемещения", "Для защиты от пыли", "Для крепления маховика"], correct: 1, exp: "Упорные полукольца удерживают коленвал от перемещения вдоль его оси." },
+    { q: "16. Что такое «замок кольца»?", options: ["Место соединения кольца с шатуном", "Разрез в поршневом кольце для его монтажа и теплового расширения", "Фиксатор в бобышке", "Крепление юбки"], correct: 1, exp: "Разрез на поршневом кольце называется замком (стыком)." },
+    { q: "17. Какой зазор проверяют ощупыванием или щупом между поршневым кольцом и канавкой поршня по высоте?", options: ["Торцовый (вертикальный) зазор", "Осевой ход вала", "Зазор в замке", "Зазор в клапанах"], correct: 0, exp: "Зазор по высоте канавки обеспечит свободное перемещение кольца без заклинивания." },
+    { q: "18. В каком порядке рекомендуется устанавливать замки поршневых колец относительно друг друга при сборке?", options: ["Все замки в одну сторону", "Смещая замки на 120° (или 180°) относительно друг друга", "Замками строго против бобышек", "Порядок не имеет значения"], correct: 1, exp: "Разведение замков предотвращает прорыв газов сквозь совпадающие щели." },
+    { q: "19. Из какого материала чаще всего отливают блок цилиндров большинства тракторных дизелей (например, Д-240)?", options: ["Из серого чугуна", "Из чистой меди", "Из бронзы", "Из титана"], correct: 0, exp: "Серый чугун обладает хорошей жесткостью, износостойкостью и гасит вибрации." },
+    { q: "20. Каково назначение камеры сгорания, выполненной непосредственно в днище поршня дизеля?", options: ["Для снижения веса поршня", "Для обеспечения хорошего смесеобразования и сгорания дизельного топлива", "Для красоты", "Для удержания масла"], correct: 1, exp: "Форма камеры сгорания в днище поршня создает вихревое движение воздуха для лучшего перемешивания с соляркой." }
+];
+
+let timeLeft = 600;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-block">
+            <div class="question-title">${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    quizData.forEach((_, index) => {
+        document.getElementById(`exp_${index}`).style.display = 'block';
+    });
+
+    if (isTimeout) {
+        resultBox.className = 'result-box failed';
+        resultBox.innerHTML = `
+            <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
+            <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
+            <p>Ознакомьтесь с правильными ответами ниже.</p>
+        `;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score++;
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты тестирования</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr>
+        <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
