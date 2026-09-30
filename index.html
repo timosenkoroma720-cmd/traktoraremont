@@ -2,14 +2,373 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Список тестов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портал онлайн-тестов: Тракторы и Материаловедение</title>
+    <!-- Tailwind CSS CDN для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Шрифт Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Иконки Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        amber: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #334155 100%);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -10px rgba(15, 23, 42, 0.15);
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
-    <h1>Выберите тест для прохождения:</h1>
-    <ul>
-        <li><a href="test1.html">Тест 1: Ремонт тема 1</a></li>
-        <li><a href="test2.html">Тест 2: Ремонт тема 2</a></li>
-        <li><a href="rus.html">Тест 3: Русский язык</a></li>
-    </ul>
+<body class="min-h-screen flex flex-col font-sans text-slate-800">
+
+    <header class="gradient-header text-white shadow-xl relative overflow-hidden">
+        <!-- Декоративные акцентные элементы -->
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl"></div>
+
+        <div class="max-w-6xl mx-auto px-4 py-12 md:py-16 text-center relative z-10">
+            <span class="inline-block bg-amber-500/20 backdrop-blur-md text-amber-300 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 border border-amber-500/30">
+                ⚙️ Профессиональная подготовка
+            </span>
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-3 text-white">
+                Тестирование по спецдисциплинам
+            </h1>
+            <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto font-normal">
+                Проверьте знания по устройству, обслуживанию колесных тракторов и материаловедению
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200/80 mb-8 -mt-10 relative z-20">
+            <div class="flex flex-col lg:flex-row gap-4 justify-between items-center">
+                
+                <!-- Поисковая строка -->
+                <div class="relative w-full lg:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="filterTests()" 
+                        placeholder="Поиск по названию или теме..." 
+                        class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition text-sm">
+                </div>
+
+                <!-- Кнопки переключения разделов -->
+                <div class="flex flex-wrap gap-2 w-full lg:w-auto justify-start lg:justify-end" id="categoryFilters">
+                    <button onclick="setCategory('all')" data-cat="all" class="filter-btn active-filter px-4 py-2.5 rounded-xl text-sm font-semibold transition bg-slate-900 text-white shadow-sm">
+                        Все разделы
+                    </button>
+                    <button onclick="setCategory('device')" data-cat="device" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        🚜 1. Устройство тракторов
+                    </button>
+                    <button onclick="setCategory('maintenance')" data-cat="maintenance" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        🔧 2. ТО и ремонт
+                    </button>
+                    <button onclick="setCategory('materials')" data-cat="materials" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        🔬 3. Материаловедение
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="testsGrid">
+            
+            <!-- ================================================================= -->
+            <!-- РАЗДЕЛ 1: УСТРОЙСТВО КОЛЕСНЫХ ТРАКТОРОВ (data-category="device")  -->
+            <!-- ================================================================= -->
+            
+            <!-- Карточка 1.1 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="device" 
+                 data-title="двигатель внутреннего сгорания кривошипно шатунный механизм кмш устройство трактора">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-amber-50 p-3 rounded-2xl border border-amber-100">🚜</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 1
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-amber-600 transition">
+                        Двигатели колесных тракторов
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Тест по устройству ДВС, кривошипно-шатунному и газораспределительному механизмам.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 15 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 10 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="device/test1.html" class="w-full inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 1.2 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="device" 
+                 data-title="трансмиссия сцепление коробка передач кпп ведущий мост устройство трактора">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-amber-50 p-3 rounded-2xl border border-amber-100">⚙️</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 1
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-amber-600 transition">
+                        Трансмиссия и ходовая часть
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Проверка знаний по муфтам сцепления, КПП, ведущим мостам и рулевому управлению.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 20 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 12 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="device/test2.html" class="w-full inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ======================================================================= -->
+            <!-- РАЗДЕЛ 2: ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ (data-category="maintenance")        -->
+            <!-- ======================================================================= -->
+
+            <!-- Карточка 2.1 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="maintenance" 
+                 data-title="виды то техническое обслуживание регламент смазка трактора ремонт">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-blue-50 p-3 rounded-2xl border border-blue-100">🔧</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 2
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-blue-600 transition">
+                        Виды и периодичность ТО
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Ежесменное ТО, ТО-1, ТО-2, ТО-3 и сезонное обслуживание колесных тракторов.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 15 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 10 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="maintenance/test1.html" class="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 2.2 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="maintenance" 
+                 data-title="диагностика неисправности ремонт гидросистемы тормозов замена масел">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-blue-50 p-3 rounded-2xl border border-blue-100">🛠️</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 2
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-blue-600 transition">
+                        Диагностика и ремонт узлов
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Устранение неисправностей гидросистемы, тормозной системы и топливной аппаратуры.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 20 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 15 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="maintenance/test2.html" class="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ======================================================================= -->
+            <!-- РАЗДЕЛ 3: МАТЕРИАЛОВЕДЕНИЕ (data-category="materials")                   -->
+            <!-- ======================================================================= -->
+
+            <!-- Карточка 3.1 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="materials" 
+                 data-title="черные и цветные металлы чугун сталь сплавы материаловедение">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-emerald-50 p-3 rounded-2xl border border-emerald-100">🔬</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 3
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-emerald-600 transition">
+                        Конструкционные металлы и сплавы
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Классификация сталей, чугунов, цветных металлов и их применение в машиностроении.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 15 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 10 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="materials/test1.html" class="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 3.2 -->
+            <div class="test-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm card-hover flex flex-col justify-between"
+                 data-category="materials" 
+                 data-title="горюче смазочные материалы гсм топлива масла технические жидкости материаловедение">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-3xl bg-emerald-50 p-3 rounded-2xl border border-emerald-100">🛢️</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
+                            Раздел 3
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 hover:text-emerald-600 transition">
+                        Топливо и смазочные материалы (ГСМ)
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+                        Маркировка дизельного топлива, моторных и трансмиссионных масел, пластичных смазок.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-400 mb-5 border-t border-slate-100 pt-4">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> 15 мин</div>
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> 10 вопросов</div>
+                    </div>
+                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href на путь к вашему файлу -->
+                    <a href="materials/test2.html" class="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl transition text-sm shadow-sm">
+                        <span>Пройти тест</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Сообщение, если тест не найден -->
+        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm mt-4">
+            <div class="text-5xl mb-4">🔍</div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Тесты не найдены</h3>
+            <p class="text-slate-500 text-sm mb-6">Попробуйте изменить поисковый запрос или выбрать другой раздел</p>
+            <button onclick="resetFilters()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-5 py-2.5 rounded-xl text-sm transition">
+                Сбросить фильтры
+            </button>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-slate-500 text-sm">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 font-medium text-slate-700">
+                <span>🚜 Учебный портал тестирования</span>
+            </div>
+            <div class="text-center md:text-right text-xs text-slate-400">
+                Спецдисциплины: Тракторы и Материаловедение
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentCategory = 'all';
+
+        function setCategory(category) {
+            currentCategory = category;
+            
+            // Обновляем внешний вид кнопок
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-cat') === category) {
+                    btn.className = "filter-btn active-filter px-4 py-2.5 rounded-xl text-sm font-semibold transition bg-slate-900 text-white shadow-sm";
+                } else {
+                    btn.className = "filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition bg-slate-100 text-slate-700 hover:bg-slate-200";
+                }
+            });
+
+            filterTests();
+        }
+
+        function filterTests() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.test-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const title = card.getAttribute('data-title').toLowerCase();
+
+                const matchesCategory = (currentCategory === 'all' || category === currentCategory);
+                const matchesSearch = title.includes(searchInput);
+
+                if (matchesCategory && matchesSearch) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            setCategory('all');
+        }
+    </script>
 </body>
 </html>
