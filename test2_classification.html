@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 2: Эксплуатационные показатели и компоновка</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .quiz-card { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-sticky { position: sticky; top: 10px; background: #e74c3c; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .question-block { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #2980b9; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #f1f5f9; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
+        .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="header">
+        <h2>Классификация тракторов — Тест 2</h2>
+        <p>Параметры компоновки и эксплуатационные показатели (20 вопросов)</p>
+    </div>
+
+    <div class="timer-sticky">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const quizData = [
+    { q: "1. Что называется «базой трактора»?", options: ["Ширина заднего моста", "Расстояние между осями передних и задних колес", "Полная масса трактора", "Диаметр колеса"], correct: 1, exp: "База — продольное расстояние между центрами передних и задних осей." },
+    { q: "2. Какой тип остова обеспечивает наилучшую доступность к узлам при ремонте?", options: ["Безрамный", "Рамный", "Полурамный", "Составной"], correct: 1, exp: "Рамный остов воспринимает все нагрузки, упрощая монтаж/демонтаж отдельных агрегатов." },
+    { q: "3. В чем главное преимущество безрамного остова?", options: ["Удобный ремонт КПП", "Наименьшая масса и компактность", "Высокая гибкость на излом", "Удобство установки бульдозера"], correct: 1, exp: "В безрамных остовах роль рамы выполняют скрепленные между собой картеры агрегатов." },
+    { q: "4. Что означает цифра '4' после знака 'х' в колесной формуле 4х4?", options: ["Все колеса одинакового диаметра", "Наличие блокировки дифференциала", "Число ведущих колес", "Число управляемых колес"], correct: 2, exp: "Вторая цифра всегда указывает число ведущих колес." },
+    { q: "5. Какое из свойств наиболее важно для пропашного колесного трактора?", options: ["Максимальная масса", "Изменяемая ширина колеи", "Наличие жесткой подвески", "Ограниченный обзор"], correct: 1, exp: "Возможность изменения колеи необходима для работы в межрядьях с разной шириной (45, 60, 70 см)." },
+    { q: "6. К какому классу по тяговому усилию относится большинство коммунальных машин на базе МТЗ-82?", options: ["0.6", "0.9", "1.4", "3.0"], correct: 2, exp: "Коммунальная и погрузочная техника чаще всего строится на базе тракторов класса 1.4." },
+    { q: "7. Какой привод имеет передний мост трактора МТЗ-82?", options: ["Механический постоянный", "Механический с автоматическим и принудительным включением", "Гидравлический", "Пневматический"], correct: 1, exp: "Раздаточная коробка МТЗ-82 имеет режимы: отключен, автоматический и принудительно включен." },
+    { q: "8. Чему равна частота вращения стандартного вала отбора мощности (ВОМ) I режимом?", options: ["300 об/мин", "540 об/мин", "1000 об/мин", "1500 об/мин"], correct: 1, exp: "Стандартные частоты вращения ВОМ составляют 540 и 1000 об/мин." },
+    { q: "9. Какой тип подвески применяется на переднем мосту тракторов МТЗ-80?", options: ["Независимая рессорная", "Полужесткая (пружинная в выдвижных кулаках)", "Жесткая без амортизации", "Пневматическая"], correct: 1, exp: "Передний мост МТЗ-80 имеет цилиндрические пружины, расположенные в выдвижных кулаках." },
+    { q: "10. Для чего предназначены балластные грузы на колесном тракторе?", options: ["Для снижения расхода топлива", "Для улучшения сцепления колес с грунтом и снижения буксования", "Для увеличения максимальной скорости", "Для защиты дисков колес"], correct: 1, exp: "Увеличение сцепного веса снижает процент буксования и повышает тяговый КПД." },
+    { q: "11. Что происходит с буксованием при увеличении крюковой нагрузки выше допустимой?", options: ["Снижается", "Остается без изменений", "Резко возрастает", "Колеса заклинивают"], correct: 2, exp: "При превышении допустимого тягового усилия сцепление шины с грунтом теряется, буксование резко растет." },
+    { q: "12. Как классифицируются тракторы по типу применяемого двигателя?", options: ["Дизельные, карбюраторные, электрические", "Только дизельные", "Водяного и масляного типа", "Высокого и низкого давления"], correct: 0, exp: "По типу силовой установки тракторы классифицируют на дизельные (основные), карбюраторные и электрические." },
+    { q: "13. Какая компоновка характерна для самоходного шасси Т-16?", options: ["Двигатель сзади, кузов спереди", "Двигатель спереди, кабина сзади", "Центральное расположение двигателя", "Двигатель над кабиной"], correct: 0, exp: "Т-16 — самоходное шасси с передней грузовой платформой и задним расположением дизеля." },
+    { q: "14. К какому типу относятся тракторы с гидрообъемной трансмиссией?", options: ["Механические", "Гидромеханические / Гидростатические", "Электрические", "Комбинированные"], correct: 1, exp: "Гидрообъемная трансмиссия передает энергию с помощью потока рабочей жидкости под давлением." },
+    { q: "15. Что указывает индекс «К» в названии трактора К-700?", options: ["Класс", "Колесный", "«Кировец»", "Комбайновый"], correct: 2, exp: "Буква К обозначает завод-изготовитель/бренд («Кировец», Петербургский тракторный завод)." },
+    { q: "16. Где у колесного трактора располагается ведущий мост в классической 2WD схеме (4х2)?", options: ["Спереди", "Сзади", "На прицепе", "На всех 4 колесах"], correct: 1, exp: "В схеме 4х2 ведущими являются задние колеса увеличенного диаметра." },
+    { q: "17. Почему передние колеса универсально-пропашных тракторов обычно имеют меньший диаметр?", options: ["Для снижения стоимости", "Для улучшения маневренности и обзора рабочей зоны", "Чтобы трактор ехал под уклоном", "Для снижения нагрузки на заднюю ось"], correct: 1, exp: "Меньшие передние колеса облегчают поворот руля и улучшают видимость защитной зоны и рядка." },
+    { q: "18. Какова цель сдваивания колес на тяжелых тракторах (например, К-744)?", options: ["Увеличение скорости движения", "Снижение удельного давления на почву и повышение тяги", "Экономия шин", "Упрощение торможения"], correct: 1, exp: "Сдвоенные колеса увеличивают пятно контакта, сохраняя структуру почвы от уплотнения." },
+    { q: "19. Какой документ определяет категорию прав для управления колесным трактором мощностью от 25.7 до 110.3 кВт?", options: ["Категория А", "Категория B", "Удостоверение тракториста-машиниста категории C", "Категория D"], correct: 2, exp: "Категория С удостоверения тракториста распространяется на колесные машины с ДВС от 25.7 до 110.3 кВт." },
+    { q: "20. Какая мощностная группа дизелей устанавливается на базовые тракторы класса 1.4 (МТЗ-82)?", options: ["25 л.с.", "80–82 л.с. (59–60 кВт)", "150 л.с.", "300 л.с."], correct: 1, exp: "Двигатели Д-243 на МТЗ-82 имеют номинальную мощность около 81 л.с." }
+];
+
+let timeLeft = 600;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-block">
+            <div class="question-title">${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    quizData.forEach((_, index) => {
+        document.getElementById(`exp_${index}`).style.display = 'block';
+    });
+
+    if (isTimeout) {
+        resultBox.className = 'result-box failed';
+        resultBox.innerHTML = `
+            <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
+            <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
+            <p>Изучите пояснения ниже для исправления ошибок.</p>
+        `;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score++;
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты тестирования</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr>
+        <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
