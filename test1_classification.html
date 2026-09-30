@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 1: Общие принципы классификации и тяговые классы</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .quiz-card { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-sticky { position: sticky; top: 10px; background: #e74c3c; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .question-block { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #3498db; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #f1f5f9; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
+        .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="header">
+        <h2>Классификация тракторов — Тест 1</h2>
+        <p>Назначение, тяговые классы и типы остовов (20 вопросов)</p>
+    </div>
+
+    <div class="timer-sticky">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const quizData = [
+    { q: "1. Что является основным классификационным признаком тракторов по назначению?", options: ["Тип двигателя", "Характер выполняемых работ", "Тип трансмиссии", "Число колес"], correct: 1, exp: "По назначению тракторы делят на сельскохозяйственные (общего назначения, универсально-пропашные, специализированные) и промышленные." },
+    { q: "2. К какому тяговому классу относится трактор Т-25А?", options: ["0.2", "0.6", "0.9", "1.4"], correct: 1, exp: "Трактор Т-25А относится к классу 0,6 тс (6 кН)." },
+    { q: "3. Какое значение номинального тягового усилия соответствует тяговому классу 1,4?", options: ["1.4 кН", "14 кН", "140 кН", "0.14 кН"], correct: 1, exp: "Тяговый класс определяется номинальным тяговым усилием в кН (1,4 тс = 14 кН)." },
+    { q: "4. К какому типу остова относится конструкция трактора МТЗ-82?", options: ["Рамный", "Полурамный", "Безрамный", "Составной"], correct: 1, exp: "Остов МТЗ-82 полурамный (состоит из продольных брусьев и корпусов агрегатов трансмиссии)." },
+    { q: "5. Какая колесная формула характерна для трактора с четырьмя колесами, где все колеса ведущие?", options: ["4х2", "4х4", "6х4", "2х4"], correct: 1, exp: "Первая цифра — общее число колес, вторая — число ведущих колес." },
+    { q: "6. К какому классу относится тяжелый трактор К-700А?", options: ["3", "4", "5", "8"], correct: 2, exp: "Тяжелые колесные тракторы «Кировец» относятся к 5-му тяговому классу (50 кН)." },
+    { q: "7. Для чего предназначены универсально-пропашные тракторы?", options: ["Для выполнения только тяжелых пахотных работ", "Для междурядной обработки и уборки пропашных культур", "Для трелевки леса", "Для плантажных работ"], correct: 1, exp: "Универсально-пропашные тракторы имеют регулируемую колею и агротехнический просвет для работы в междурядьях." },
+    { q: "8. Какая максимальная скорость движения характерна для сельскохозяйственных колесных тракторов?", options: ["До 15 км/ч", "До 30–40 км/ч", "До 90 км/ч", "До 120 км/ч"], correct: 1, exp: "Большинство сельскохозяйственных колесных тракторов рассчитаны на транспортные скорости до 30–40 км/ч." },
+    { q: "9. Какой параметр определяет принадлежность трактора к определенному тяговому классу?", options: ["Мощность двигателя", "Масса трактора", "Номинальное тяговое усилие на стерне нормальной влажности", "Рабочий объем цилиндров"], correct: 2, exp: "Класс определяется по наименьшему тяговому усилию, развиваемому на горизонтальной стерне при нормальном буксовании." },
+    { q: "10. К какому типу относятся тракторы с шарнирно-сочлененной рамой?", options: ["Т-16", "МТЗ-80", "К-700", "ЛТЗ-55"], correct: 2, exp: "Поворот К-700 осуществляется за счет излома рамы из двух полурам." },
+    { q: "11. К какому тяговому классу относится трактор Т-40М?", options: ["0.6", "0.9", "1.4", "2.0"], correct: 1, exp: "Тракторы типа Т-40 относятся к тяговому классу 0,9 тс." },
+    { q: "12. Какое рабочее оборудование делает трактор универсальным агрегатом?", options: ["Кабина", "Задняя навесная система и ВОМ", "Рулевое управление", "Сцепление"], correct: 1, exp: "Гидронавесная система и вал отбора мощности (ВОМ) позволяют работать с навесными и прицепными машинами." },
+    { q: "13. Тракторы какого тягового класса часто выполняются в виде самоходного шасси (например, Т-16)?", options: ["0.2", "1.4", "3.0", "5.0"], correct: 0, exp: "Самоходные шасси малой мощности относятся к классу 0,2 тс." },
+    { q: "14. Как называется расстояние между центральными линиями левого и правого колеса одного моста?", options: ["Клиренс", "База трактора", "Колея", "Габаритная ширина"], correct: 2, exp: "Расстояние между центрами отпечатков колес одной оси называется колеей." },
+    { q: "15. Что такое «агротехнический просвет» (клиренс)?", options: ["Расстояние между передними и задними колесами", "Расстояние по высоте от наинизшей точки трактора до почвы", "Ширина шины", "Высота кабины"], correct: 1, exp: "Просвет обеспечивает прохождение трактора над рядками растений без их повреждения." },
+    { q: "16. Что показывает первая цифра в обозначении колесной формулы 4х2?", options: ["Число ведущих колес", "Общее количество колес", "Число осей", "Количество передних колес"], correct: 1, exp: "Первая цифра означает общее количество колес трактора." },
+    { q: "17. К какому типу по конструкции остова относится остов, состоящий из одной цельной рамы?", options: ["Безрамный", "Рамный", "Полурамный", "Сборный"], correct: 1, exp: "Рамный остов представляет собой жесткую цельную конструкцию (продольные лонжероны и поперечины)." },
+    { q: "18. Какая группа тракторов используется преимущественно для заготовки леса?", options: ["Пропашные", "Промышленные (трелевочные)", "Садово-огородные", "Транспортные"], correct: 1, exp: "Трелевочные тракторы — это специализированные промышленные машины." },
+    { q: "19. Трактор ХТЗ-17221 относится к тяговому классу:", options: ["1.4", "2.0", "3.0", "5.0"], correct: 2, exp: "Колесные тракторы ХТЗ-150/17221 относятся к 3-му тяговому классу (30 кН)." },
+    { q: "20. К специализированным тракторам относятся машины, предназначенные для:", options: ["Работ только на ровных полях", "Работ в специфических условиях (хлопководческие, горные)", "Перевозки пассажиров", "Выполнения исключительно погрузочных работ"], correct: 1, exp: "Специализированные модификации адаптированы под конкретные культуры или рельеф (крутосклонные)." }
+];
+
+let timeLeft = 600; // 10 минут
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true); // Автоматическое завершение из-за времени
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-block">
+            <div class="question-title">${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    
+    // Блокировка всех вариантов ответов
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    // Показываем все пояснения
+    quizData.forEach((_, index) => {
+        document.getElementById(`exp_${index}`).style.display = 'block';
+    });
+
+    if (isTimeout) {
+        resultBox.className = 'result-box failed';
+        resultBox.innerHTML = `
+            <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
+            <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
+            <p>Ниже вы можете ознакомиться с пояснениями к вопросам для работы над ошибками.</p>
+        `;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score++;
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты тестирования</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr>
+        <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
