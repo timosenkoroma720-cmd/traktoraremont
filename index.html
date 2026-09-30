@@ -1,368 +1,703 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учебные тесты: Тракторы и Материаловедение</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Учебный портал: Тестирование и Дисциплины</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Шрифт Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Иконки Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fff3c2',
+                            400: '#ffca28',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        industrial: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
-        .course-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
         }
-        .course-card:hover {
-            transform: translateY(-8px);
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
         }
-        /* Анимация всплывающего окна */
-        .modal-backdrop {
-            transition: opacity 0.25s ease-in-out;
-        }
-        .modal-content {
-            transition: transform 0.25s ease-in-out;
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+<body class="bg-industrial-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-brand-500 selection:text-industrial-950">
 
-    <header class="py-10 px-4 text-center relative overflow-hidden">
-        <div class="max-w-4xl mx-auto relative z-10">
-            <span class="inline-block bg-slate-800 text-amber-400 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4 shadow-inner">
-                ⚙️ База онлайн-тестирования
-            </span>
-            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
-                Выберите учебный предмет
-            </h1>
-            <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                Нажмите на предмет, чтобы открыть список доступных тестов по темам
-            </p>
+    <!-- Навигационная панель -->
+    <header class="border-b border-slate-800 bg-industrial-900/80 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-brand-600 to-brand-400 p-2 rounded-lg text-industrial-950 shadow-lg shadow-brand-500/20">
+                    <i data-lucide="tractor" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">АгроТехнический Портал</span>
+                    <span class="block text-xs text-brand-500 font-mono font-medium">СИСТЕМА ТЕСТИРОВАНИЯ</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 16/16 Тем онлайн
+                </span>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full flex items-center">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 w-full">
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- Заголовок страницы -->
+        <div class="mb-10 text-center sm:text-left">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Учебные дисциплины</h1>
+            <p class="mt-2 text-slate-400 text-sm sm:text-base max-w-2xl">Выберите необходимую дисциплину для перехода к списку тем и прохождению контроля знаний.</p>
+        </div>
 
-            <!-- ======================================================= -->
-            <!-- ПРЕДМЕТ 1: УСТРОЙСТВО КОЛЕСНЫХ ТРАКТОРОВ                 -->
-            <!-- ======================================================= -->
-            <div onclick="openModal('device-modal')" 
-                 class="course-card cursor-pointer bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-amber-500/50 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between group shadow-xl hover:shadow-amber-500/10">
-                <div class="absolute -right-6 -bottom-6 text-slate-700/20 group-hover:text-amber-500/10 transition-colors text-9xl select-none pointer-events-none">
-                    <i class="fa-solid fa-tractor"></i>
-                </div>
+        <!-- Сетка карточек предметов -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- КАРТОЧКА 1: Устройство колесных тракторов -->
+            <div onclick="openModal('device-modal')" class="group relative bg-industrial-900 border border-slate-800 rounded-2xl p-6 hover:border-brand-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/10 cursor-pointer flex flex-col justify-between overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-500/10 rounded-full blur-xl group-hover:bg-brand-500/20 transition-all"></div>
                 <div>
-                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        🚜
+                    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-brand-400 mb-5 group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-industrial-950 transition-all duration-300">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-1 block">Предмет 1</span>
-                    <h2 class="text-2xl font-extrabold text-white mb-3 group-hover:text-amber-400 transition-colors">
-                        Устройство колесных тракторов
-                    </h2>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                        Двигатели, трансмиссия, ходовая часть, механизмы управления и рабочее оборудование.
-                    </p>
+                    <span class="text-xs font-mono font-semibold text-brand-400 uppercase tracking-wider">Дисциплина 01</span>
+                    <h2 class="text-xl font-bold text-white mt-1 group-hover:text-brand-400 transition-colors">Устройство колесных тракторов</h2>
+                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">Конструкция механизмов, систем и агрегатов современных колесных тракторов.</p>
                 </div>
-                <div class="pt-4 border-t border-slate-700/60 flex items-center justify-between text-sm font-semibold text-amber-400">
-                    <span>3 темы с тестами</span>
-                    <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-medium">
+                    <span class="text-slate-400 flex items-center gap-1"><i data-lucide="layers" class="w-4 h-4 text-brand-400"></i> 16 тем (48 тестов)</span>
+                    <span class="text-brand-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Открыть <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </div>
             </div>
 
-            <!-- ======================================================= -->
-            <!-- ПРЕДМЕТ 2: ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ И РЕМОНТ             -->
-            <!-- ======================================================= -->
-            <div onclick="openModal('maintenance-modal')" 
-                 class="course-card cursor-pointer bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-blue-500/50 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between group shadow-xl hover:shadow-blue-500/10">
-                <div class="absolute -right-6 -bottom-6 text-slate-700/20 group-hover:text-blue-500/10 transition-colors text-9xl select-none pointer-events-none">
-                    <i class="fa-solid fa-wrench"></i>
-                </div>
+            <!-- КАРТОЧКА 2: ТО и ремонт -->
+            <div onclick="openModal('maintenance-modal')" class="group relative bg-industrial-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 cursor-pointer flex flex-col justify-between overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all"></div>
                 <div>
-                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        🔧
+                    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-industrial-950 transition-all duration-300">
+                        <i data-lucide="wrench" class="w-6 h-6"></i>
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-1 block">Предмет 2</span>
-                    <h2 class="text-2xl font-extrabold text-white mb-3 group-hover:text-blue-400 transition-colors">
-                        Техническое обслуживание и ремонт
-                    </h2>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                        Регламенты ТО, диагностика неисправностей, ремонт узлов и правильная эксплуатация.
-                    </p>
+                    <span class="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider">Дисциплина 02</span>
+                    <h2 class="text-xl font-bold text-white mt-1 group-hover:text-cyan-400 transition-colors">ТО и ремонт колесных тракторов</h2>
+                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">Технология обслуживания, диагностика неисправностей и ремонтные работы.</p>
                 </div>
-                <div class="pt-4 border-t border-slate-700/60 flex items-center justify-between text-sm font-semibold text-blue-400">
-                    <span>3 темы с тестами</span>
-                    <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-medium">
+                    <span class="text-slate-400 flex items-center gap-1"><i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i> 4 темы</span>
+                    <span class="text-cyan-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Открыть <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </div>
             </div>
 
-            <!-- ======================================================= -->
-            <!-- ПРЕДМЕТ 3: МАТЕРИАЛОВЕДЕНИЕ                             -->
-            <!-- ======================================================= -->
-            <div onclick="openModal('materials-modal')" 
-                 class="course-card cursor-pointer bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/50 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between group shadow-xl hover:shadow-emerald-500/10">
-                <div class="absolute -right-6 -bottom-6 text-slate-700/20 group-hover:text-emerald-500/10 transition-colors text-9xl select-none pointer-events-none">
-                    <i class="fa-solid fa-atom"></i>
-                </div>
+            <!-- КАРТОЧКА 3: Материаловедение -->
+            <div onclick="openModal('materials-modal')" class="group relative bg-industrial-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 cursor-pointer flex flex-col justify-between overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all"></div>
                 <div>
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        🔬
+                    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 mb-5 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-industrial-950 transition-all duration-300">
+                        <i data-lucide="atom" class="w-6 h-6"></i>
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1 block">Предмет 3</span>
-                    <h2 class="text-2xl font-extrabold text-white mb-3 group-hover:text-emerald-400 transition-colors">
-                        Материаловедение
-                    </h2>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
-                        Конструкционные сплавы, свойства металлов, горюче-смазочные материалы и технические жидкости.
-                    </p>
+                    <span class="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">Дисциплина 03</span>
+                    <h2 class="text-xl font-bold text-white mt-1 group-hover:text-emerald-400 transition-colors">Материаловедение</h2>
+                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">Свойства металлов, сплавов, полимеров и смазочных материалов.</p>
                 </div>
-                <div class="pt-4 border-t border-slate-700/60 flex items-center justify-between text-sm font-semibold text-emerald-400">
-                    <span>3 темы с тестами</span>
-                    <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-medium">
+                    <span class="text-slate-400 flex items-center gap-1"><i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> 4 темы</span>
+                    <span class="text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Открыть <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </div>
             </div>
 
         </div>
     </main>
 
-
-    <!-- ================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 1: ТЕСТЫ ПО УСТРОЙСТВУ ТРАКТОРОВ                  -->
-    <!-- ================================================================= -->
-    <div id="device-modal" class="modal-backdrop fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 opacity-0 pointer-events-none flex items-center justify-center p-4">
-        <div class="modal-content bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl scale-95 transition-all">
+    <!-- МОДАЛЬНОЕ ОКНО 1: Устройство колесных тракторов (16 ТЕМ, В КАЖДОЙ ТЕСТ 1, ТЕСТ 2, ТЕСТ 3) -->
+    <div id="device-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-industrial-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
             
-            <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl">🚜</span>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Устройство колесных тракторов</h3>
-                        <p class="text-xs text-amber-400 font-medium">Выберите тему для тестирования</p>
-                    </div>
+            <!-- Шапка модального окна -->
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 rounded-t-2xl">
+                <div>
+                    <span class="text-xs font-mono font-medium text-brand-400">16 РАЗДЕЛОВ ДИСЦИПЛИНЫ</span>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="settings" class="w-5 h-5 text-brand-400"></i> Устройство колесных тракторов
+                    </h3>
                 </div>
-                <button onclick="closeModal('device-modal')" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeModal('device-modal')" class="absolute top-4 right-4 sm:static p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <div class="space-y-4">
+            <!-- Поиск по темам -->
+            <div class="px-5 sm:px-6 pt-4 pb-2 border-b border-slate-800/50 bg-industrial-900">
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="device-search" oninput="filterTopics('device-topics-list', this.value)" placeholder="Поиск по темам модуля..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors">
+                </div>
+            </div>
+
+            <!-- Список 16 тем (Аккордеон) -->
+            <div id="device-topics-list" class="p-5 sm:p-6 overflow-y-auto space-y-3 custom-scrollbar flex-1">
                 
-                <!-- ТЕМА 1 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">1. Двигатели внутреннего сгорания</h4>
-                        <p class="text-xs text-slate-400">Устройство ДВС, кривошипно-шатунный и газораспределительный механизмы</p>
+                <!--
+                    ИНСТРУКЦИЯ ПО НАСТРОЙКЕ ССЫЛОК НА ТЕСТЫ:
+                    Ниже представлены 16 тем. В каждой теме есть ровно 3 теста (Тест 1, Тест 2, Тест 3).
+                    Изменяйте параметр href="..." для привязки к нужным HTML страницам тестов.
+                    Пример: href="tests/device/topic1_test1.html"
+                -->
+
+                <!-- Тема 1 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-1')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">01</span>
+                            <span class="topic-title">Классификация тракторов</span>
+                        </span>
+                        <i id="dev-topic-1-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-1" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <!-- Ссылки на тесты темы 1 -->
+                            <a href="device/topic1-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic1-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic1-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
                     </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="test1.html" class="shrink-0 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
                 </div>
 
-                <!-- ТЕМА 2 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">2. Трансмиссия трактора</h4>
-                        <p class="text-xs text-slate-400">Сцепление, коробка передач (КПП), ведущий мост и дифференциал</p>
+                <!-- Тема 2 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-2')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">02</span>
+                            <span class="topic-title">Кривошипно-шатунный механизм</span>
+                        </span>
+                        <i id="dev-topic-2-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-2" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic2-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic2-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic2-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
                     </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="device-transmission.html" class="shrink-0 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
                 </div>
 
-                <!-- ТЕМА 3 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">3. Ходовая часть и рулевое управление</h4>
-                        <p class="text-xs text-slate-400">Устройство колесного хода, рулевая система и тормоза</p>
+                <!-- Тема 3 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-3')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">03</span>
+                            <span class="topic-title">Механизм газораспределения</span>
+                        </span>
+                        <i id="dev-topic-3-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-3" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic3-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic3-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic3-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
                     </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="device-chassis.html" class="shrink-0 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
+                </div>
+
+                <!-- Тема 4 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-4')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">04</span>
+                            <span class="topic-title">Система питания двигателя</span>
+                        </span>
+                        <i id="dev-topic-4-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-4" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic4-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic4-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic4-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 5 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-5')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">05</span>
+                            <span class="topic-title">Система смазки</span>
+                        </span>
+                        <i id="dev-topic-5-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-5" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic5-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic5-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic5-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 6 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-6')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">06</span>
+                            <span class="topic-title">Система охлаждения</span>
+                        </span>
+                        <i id="dev-topic-6-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-6" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic6-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic6-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic6-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 7 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-7')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">07</span>
+                            <span class="topic-title">Источники электрической энергии</span>
+                        </span>
+                        <i id="dev-topic-7-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-7" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic7-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic7-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic7-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 8 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-8')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">08</span>
+                            <span class="topic-title">Система пуска двигателя</span>
+                        </span>
+                        <i id="dev-topic-8-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-8" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic8-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic8-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic8-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 9 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-9')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">09</span>
+                            <span class="topic-title">Система освещения и сигнализации</span>
+                        </span>
+                        <i id="dev-topic-9-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-9" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic9-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic9-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic9-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 10 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-10')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">10</span>
+                            <span class="topic-title">Трансмиссия</span>
+                        </span>
+                        <i id="dev-topic-10-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-10" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic10-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic10-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic10-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 11 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-11')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">11</span>
+                            <span class="topic-title">Остов и ходовая часть</span>
+                        </span>
+                        <i id="dev-topic-11-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-11" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic11-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic11-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic11-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 12 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-12')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">12</span>
+                            <span class="topic-title">Механизмы управления</span>
+                        </span>
+                        <i id="dev-topic-12-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-12" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic12-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic12-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic12-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 13 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-13')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">13</span>
+                            <span class="topic-title">Тормозная система</span>
+                        </span>
+                        <i id="dev-topic-13-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-13" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic13-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic13-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic13-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 14 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-14')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">14</span>
+                            <span class="topic-title">Рабочее оборудование колесных тракторов</span>
+                        </span>
+                        <i id="dev-topic-14-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-14" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic14-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic14-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic14-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 15 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-15')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">15</span>
+                            <span class="topic-title">Гидравлическая система управления навесным механизмом</span>
+                        </span>
+                        <i id="dev-topic-15-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-15" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic15-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic15-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic15-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 16 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-16')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">16</span>
+                            <span class="topic-title">Вспомогательное оборудование</span>
+                        </span>
+                        <i id="dev-topic-16-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-16" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic16-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
+                            </a>
+                            <a href="device/topic16-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
+                            </a>
+                            <a href="device/topic16-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                                <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- ================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 2: ТЕСТЫ ПО ТЕХНИЧЕСКОМУ ОБСЛУЖИВАНИЮ              -->
-    <!-- ================================================================= -->
-    <div id="maintenance-modal" class="modal-backdrop fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 opacity-0 pointer-events-none flex items-center justify-center p-4">
-        <div class="modal-content bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl scale-95 transition-all">
-            
-            <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl">🔧</span>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Техническое обслуживание и ремонт</h3>
-                        <p class="text-xs text-blue-400 font-medium">Выберите тему для тестирования</p>
-                    </div>
+    <!-- МОДАЛЬНОЕ ОКНО 2: ТО и Ремонт -->
+    <div id="maintenance-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-industrial-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 rounded-t-2xl">
+                <div>
+                    <span class="text-xs font-mono font-medium text-cyan-400">ДИСЦИПЛИНА 02</span>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="wrench" class="w-5 h-5 text-cyan-400"></i> ТО и ремонт колесных тракторов
+                    </h3>
                 </div>
-                <button onclick="closeModal('maintenance-modal')" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeModal('maintenance-modal')" class="absolute top-4 right-4 sm:static p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-
-            <div class="space-y-4">
-                
-                <!-- ТЕМА 1 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">1. Периодичность и регламент ТО</h4>
-                        <p class="text-xs text-slate-400">Ежесменное обслуживание (ЕО), ТО-1, ТО-2, ТО-3 и сезонное ТО</p>
+            
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-3 custom-scrollbar flex-1">
+                <!-- Тема 1 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('maint-topic-1')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">01</span>
+                            Виды и периодичность ТО
+                        </span>
+                        <i id="maint-topic-1-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400"></i>
+                    </button>
+                    <div id="maint-topic-1" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="maintenance/topic1-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 1</a>
+                            <a href="maintenance/topic1-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 2</a>
+                            <a href="maintenance/topic1-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 3</a>
+                        </div>
                     </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="to-regulations.html" class="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
                 </div>
-
-                <!-- ТЕМА 2 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">2. Диагностика неисправностей ДВС</h4>
-                        <p class="text-xs text-slate-400">Причины неполадок, стуков, падения мощности и способы их устранения</p>
-                    </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="to-diagnostics.html" class="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
-                </div>
-
-                <!-- ТЕМА 3 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">3. Обслуживание гидросистемы</h4>
-                        <p class="text-xs text-slate-400">Проверка гидроувеличителя, насосов, распределителей и гидроцилиндров</p>
-                    </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="to-hydraulics.html" class="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
-                </div>
-
             </div>
         </div>
     </div>
 
-    <!-- ================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 3: ТЕСТЫ ПО МАТЕРИАЛОВЕДЕНИЮ                       -->
-    <!-- ================================================================= -->
-    <div id="materials-modal" class="modal-backdrop fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 opacity-0 pointer-events-none flex items-center justify-center p-4">
-        <div class="modal-content bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl scale-95 transition-all">
-            
-            <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">🔬</span>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Материаловедение</h3>
-                        <p class="text-xs text-emerald-400 font-medium">Выберите тему для тестирования</p>
-                    </div>
+    <!-- МОДАЛЬНОЕ ОКНО 3: Материаловедение -->
+    <div id="materials-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-industrial-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 rounded-t-2xl">
+                <div>
+                    <span class="text-xs font-mono font-medium text-emerald-400">ДИСЦИПЛИНА 03</span>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="atom" class="w-5 h-5 text-emerald-400"></i> Материаловедение
+                    </h3>
                 </div>
-                <button onclick="closeModal('materials-modal')" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeModal('materials-modal')" class="absolute top-4 right-4 sm:static p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-
-            <div class="space-y-4">
-                
-                <!-- ТЕМА 1 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">1. Черные металлы и сплавы</h4>
-                        <p class="text-xs text-slate-400">Чугуны, углеродистые и легированные стали, маркировка</p>
+            
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-3 custom-scrollbar flex-1">
+                <!-- Тема 1 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('mat-topic-1')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-emerald-400 font-bold">01</span>
+                            Черные и цветные металлы
+                        </span>
+                        <i id="mat-topic-1-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400"></i>
+                    </button>
+                    <div id="mat-topic-1" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="materials/topic1-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-emerald-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 1</a>
+                            <a href="materials/topic1-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-emerald-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 2</a>
+                            <a href="materials/topic1-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-emerald-500 hover:text-industrial-950 text-sm font-medium transition-all">Тест 3</a>
+                        </div>
                     </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="materials-metals.html" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
                 </div>
-
-                <!-- ТЕМА 2 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">2. Горюче-смазочные материалы (ГСМ)</h4>
-                        <p class="text-xs text-slate-400">Дизельное топливо, моторные и трансмиссионные масла, смазки</p>
-                    </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="materials-gsm.html" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
-                </div>
-
-                <!-- ТЕМА 3 -->
-                <div class="bg-slate-800/50 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-600 transition">
-                    <div>
-                        <h4 class="font-bold text-white mb-1">3. Неметаллические материалы</h4>
-                        <p class="text-xs text-slate-400">Резины, пластмассы, уплотнительные и прокладочные материалы</p>
-                    </div>
-                    <!-- НАСТРОЙКА ССЫЛКИ: Замените href=" ССЫЛКА_НА_ТЕСТ " -->
-                    <a href="materials-nonmetal.html" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition text-center">
-                        Пройти тест
-                    </a>
-                </div>
-
             </div>
         </div>
     </div>
 
-    <footer class="py-6 text-center text-xs text-slate-500 border-t border-slate-800/80">
-        Учебный портал тестирования по спецдисциплинам
-    </footer>
-
+    <!-- Инициализация Lucide и JS скрипты взаимодействия -->
     <script>
+        // Инициализация иконок Lucide
+        lucide.createIcons();
+
+        // Открытие модального окна
         function openModal(id) {
-            const modal = document.getElementById(id);
-            const content = modal.querySelector('.modal-content');
-            
-            modal.classList.remove('pointer-events-none');
-            modal.classList.remove('opacity-0');
-            modal.classList.add('opacity-100');
-
-            content.classList.remove('scale-95');
-            content.classList.add('scale-100');
+            document.getElementById(id).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
+        // Закрытие модального окна
         function closeModal(id) {
-            const modal = document.getElementById(id);
-            const content = modal.querySelector('.modal-content');
-
-            modal.classList.remove('opacity-100');
-            modal.classList.add('opacity-0');
-
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-
-            setTimeout(() => {
-                modal.classList.add('pointer-events-none');
-            }, 250);
+            document.getElementById(id).classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
-        // Закрытие при клике на темную область за пределами окна
-        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-            backdrop.addEventListener('click', (e) => {
-                if (e.target === backdrop) {
-                    closeModal(backdrop.id);
+        // Переключение аккордеона
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                if(icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                el.classList.add('hidden');
+                if(icon) icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Поиск/фильтрация по названиям тем
+        function filterTopics(containerId, query) {
+            const container = document.getElementById(containerId);
+            const items = container.querySelectorAll('.topic-item');
+            const filter = query.toLowerCase().trim();
+
+            items.forEach(item => {
+                const title = item.querySelector('.topic-title').textContent.toLowerCase();
+                if (title.includes(filter)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Закрытие модалок по нажатию Escape или по клику вне окна
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('device-modal');
+                closeModal('maintenance-modal');
+                closeModal('materials-modal');
+            }
+        });
+
+        [ 'device-modal', 'maintenance-modal', 'materials-modal' ].forEach(modalId => {
+            document.getElementById(modalId).addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(modalId);
                 }
             });
         });
