@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГРМ — Тест 2 (Средний уровень)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .quiz-card { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-sticky { position: sticky; top: 10px; background: #e74c3c; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .question-block { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #f39c12; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #f1f5f9; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
+        .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="header">
+        <h2>Газораспределительный механизм — Тест 2</h2>
+        <p>Уровень: Средний (Тепловой зазор, гидротолкатели, регулировка и фазы)</p>
+    </div>
+
+    <div class="timer-sticky">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const rawData = [
+    { q: "1. Зачем необходим тепловой зазор в клапанном механизме?", options: ["Для компенсации удлинения стержня клапана при нагреве и обеспечения герметичного закрытия", "Для ускорения открытия клапана", "Для поступления масла в цилиндр", "Для уменьшения мощности ДВС"], correct: 0, exp: "При нагреве стержень клапана удлиняется; при отсутствии зазора клапан останется приоткрытым и прогорит." },
+    { q: "2. К чему приводит слишком МАЛЫЙ тепловой зазор в клапанах?", options: ["К стуку клапанов", "К неполному закрытию клапана, снижению компрессии и прогару фаски", "К поломке распредвала", "К заклиниванию водяного насоса"], correct: 1, exp: "Неплотно закрытый клапан пропускает раскаленные газы, что вызывает его прогар." },
+    { q: "3. К чему приводит слишком БОЛЬШОЙ тепловой зазор в клапанах?", options: ["К прогару клапана", "К металлическим стукам, неполному открытию клапана и ухудшению наполнения цилиндра", "К перегреву масла", "К повышению давления воздуха"], correct: 1, exp: "Увеличенный зазор уменьшает ход клапана, снижает наполнение и сопровождается характерным стуком." },
+    { q: "4. В каком положении цилиндра производится регулировка теплового зазора в его клапанах?", options: ["В любом удобном", "В положении ВМТ такта сжатия (оба клапана полностью закрыты)", "В положении НМТ такта впуска", "При открытом выпускном клапане"], correct: 1, exp: "В ВМТ такта сжатия кулачки распредвала направлены носками от толкателей, и клапаны полностью закрыты." },
+    { q: "5. Каким инструментом замеряют величину теплового зазора между носком коромысла и стержнем клапана?", options: ["Штангенциркулем", "Плоским плоским пластинчатым щупом", "Микрометром", "Линейкой"], correct: 1, exp: "Набор плоских калиброванных пластин (щупов) позволяет точно определить величину зазора." },
+    { q: "6. С помощью каких деталей производится регулировка зазора на двигателях с коромыслами?", options: ["Регулировочным винтом с контргайкой на коромысле", "Подбором длины клапана", "Заменой пружин", "Шлифовкой кулачка"], correct: 0, exp: "Вращением регулировочного винта меняют положение упора на коромысле с последующей фиксацией контргайкой." },
+    { q: "7. Каково главное назначение гидрокомпенсаторов (гидротолкателей) в ГРМ?", options: ["Автоматическая выборка теплового зазора без ручной регулировки", "Увеличение мощности дизеля", "Подача топлива", "Охлаждение распредвала"], correct: 0, exp: "Гидрокомпенсаторы используют давление масла для непрерывного устранения зазора в процессе работы." },
+    { q: "8. Какое масло требуется для безаварийной работы гидрокомпенсаторов?", options: ["Любое трансмиссионное", "Чистое моторное масло надлежащей вязкости", "Дизельное топливо", "Пластичная смазка (Литол)"], correct: 1, exp: "Грязь и неподходящая вязкость блокируют шариковый клапан гидрокомпенсатора, вызывая его стук." },
+    { q: "9. Почему впускной клапан открывается с опережением (до достижения поршнем ВМТ)?", options: ["Для лучшего очищения цилиндра", "Чтобы к моменту движения поршня вниз клапан уже имел достаточную проходную площадь", "Чтобы уменьшить шум", "Из-за ошибки сборки"], correct: 1, exp: "Опережение открытия позволяет заранее открыть канал и наполнить цилиндр свежим зарядом." },
+    { q: "10. Почему выпускной клапан закрывается с запаздыванием (после прохождения поршнем ВМТ)?", options: ["Из-за инерции потока отработавших газов для более полной очистки цилиндра", "Чтобы заклинить поршень", "Из-за поломки пружины", "Чтобы сэкономить масло"], correct: 0, exp: "Инерция быстро движущегося выхлопного газа позволяет дополнительно отсосать газы из цилиндра." },
+    { q: "11. Для чего предназначены декомпрессионные механизмы (декомпрессоры) на некоторых тракторных дизелях?", options: ["Для остановки двигателя", "Для принудительного приоткрытия клапанов при прокручивании вала вручную или пусковым двигателем", "Для увеличения давления", "Для регулировки подачи солярки"], correct: 1, exp: "Приоткрытие клапанов снимает сопротивление сжатию, облегчая первоначальный разгон коленвала." },
+    { q: "12. Под каким углом обычно выполняют рабочую фаску тарелки клапана?", options: ["15° или 20°", "45° или 30°", "90°", "60° или 75°"], correct: 1, exp: "Фаска под углом 45° (или 30°) обеспечивает максимальную герметичность и хорошую самоочистку от нагара." },
+    { q: "13. Каким способом проверяют герметичность прилегания клапана к седлу при ремонте ГБЦ?", options: ["Заливкой керосина в каналы или по карандашным рискам", "Определением массы клапана", "Нагревом на горелке", "Замером длины стержня"], correct: 0, exp: "Керосин обладает высокой проникающей способностью; отсутствие подтеков свидетельствует о притертости." },
+    { q: "14. Что происходит при обрыве ремня привода ГРМ на «интерференционных» (поршневых) ДВС?", options: ["Двигатель просто заглохнет без повреждений", "Поршни ударяют по открытым клапанам, что приводит к их изгибу и разрушению", "Ничего не произойдет", "Ломается генератор"], correct: 1, exp: "При рассинхронизации валов поршень в ВМТ сталкивается с не успевшим закрыться клапаном." },
+    { q: "15. Для чего на поверхности стержня выпускного клапана иногда делают натриевое наполнение?", options: ["Для смазки", "Для улучшения отвода тепла от тарелки к направляющей втулке", "Для облегчения массы", "Для защиты от ржавчины"], correct: 1, exp: "Жидкий натрий внутри полости клапана эффективно переносит тепло от горячей тарелки к втулке." },
+    { q: "16. Чем характеризуется схема ГРМ типа DOHC?", options: ["Нижним распредвалом", "Двумя распределительными валами в головке блока цилиндров", "Отсутствием клапанов", "Один распредвал на блок"], correct: 1, exp: "DOHC (Double Overhead Camshaft) использует два верхних распредвала (для впускных и выпускных клапанов)." },
+    { q: "17. За счет чего происходит поворот клапана вокруг своей оси во время работы?", options: ["За счет специального механизма поворота (или особого нажима коромысла)", "Клапан никогда не поворачивается", "Под действием ветра", "За счет тока масла"], correct: 0, exp: "Принудительный поворот клапана обеспечивает равномерный износ рабочей фаски и предотвращает нагар." },
+    { q: "18. Какой элемент передает вращение от шестерни коленвала на распредвал дизеля А-41 / Д-240?", options: ["Промежуточная шестерня", "Резиновый ремень", "Карданный вал", "Цепь"], correct: 0, exp: "Промежуточная шестерня связывает шестерню коленвала с шестерней распредвала и ТНВД." },
+    { q: "19. Что измеряют при проверке износа кулачков распределительного вала?", options: ["Длину вала", "Высоту (профиль) кулачка микрометром", "Массу вала", "Число зубьев"], correct: 1, exp: "Износ вершины кулачка снижает высоту подъема клапана и ухудшает работу ДВС." },
+    { q: "20. С какой целью на впускных каналах ГБЦ делают специальный винтообразный профиль?", options: ["Для снижения веса", "Для закручивания поступающего воздуха и лучшего смесеобразования", "Для слива масла", "Для красоты"], correct: 1, exp: "Винтообразный канал создает вихревое движение воздуха при впуске в дизеле." }
+];
+
+function shuffle(array) {
+    let cur = array.length, rIndex;
+    while (cur !== 0) {
+        rIndex = Math.floor(Math.random() * cur);
+        cur--;
+        [array[cur], array[rIndex]] = [array[rIndex], array[cur]];
+    }
+    return array;
+}
+
+const quizData = shuffle([...rawData]);
+
+let timeLeft = 600;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-block">
+            <div class="question-title">${index + 1}. ${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    quizData.forEach((_, index) => {
+        document.getElementById(`exp_${index}`).style.display = 'block';
+    });
+
+    if (isTimeout) {
+        resultBox.className = 'result-box failed';
+        resultBox.innerHTML = `
+            <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
+            <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
+            <p>Ознакомьтесь с правильными ответами и пояснениями ниже.</p>
+        `;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score++;
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты тестирования</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr>
+        <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
