@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система питания дизеля — Онлайн Тест 1 (Базовый уровень)</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .quiz-container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-box { position: sticky; top: 10px; background: #e74c3c; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .question-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #3498db; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-card.wrong { border-left-color: #e74c3c; background-color: #fef2f2; }
+        .question-card.correct { border-left-color: #2ecc71; background-color: #f0fdf4; }
+        .question-text { font-weight: bold; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 10px 12px; border-radius: 5px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
+        .option:hover { background: #e2e8f0; }
+        .option.correct-option { background-color: #d1fae5 !important; border-color: #10b981 !important; font-weight: bold; }
+        .option.wrong-option { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+        .option input { margin-right: 10px; }
+        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #219150; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .explanation { margin-top: 12px; padding: 10px; background: #e2e8f0; border-radius: 5px; font-size: 14px; color: #1e293b; display: none; }
+        .status-failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+        .status-passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div class="header">
+        <h2>Тест №1: Устройство, функции и типы смесеобразования дизеля</h2>
+        <p>20 вопросов с перемешиванием | Ограничение: 10 минут</p>
+    </div>
+
+    <div class="timer-box">
+        <span>⏱️ Оставшееся время:</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" onclick="finishQuiz(false)">Завершить тест</button>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Как воспламеняется топливо в цилиндре дизельного двигателя?", options: ["От электрической искры свечи зажигания", "От высокой температуры сжатого воздуха", "От раскаленного поршня", "От открытого пламени"], correct: 1, exp: "Воздух в цилиндре сжимается до высокого давления, нагреваясь до 600–700°C, что вызывает самовоспламенение впрыснутого дизельного топлива." },
+    { q: "Что засасывается в цилиндр дизельного двигателя на такте впуска?", options: ["Готовая горючая смесь бензина и воздуха", "Только чистый воздух", "Смесь дизельного топлива и масла", "Выхлопные газы"], correct: 1, exp: "В отличие от классических бензиновых моторов, дизель на такте впуска засасывает только чистый воздух." },
+    { q: "Какая деталь непосредственно распыляет топливо в камеру сгорания под высоким давлением?", options: ["Топливный фильтр", "Форсунка", "Подкачивающий насос", "Топливный бак"], correct: 1, exp: "Форсунка подает топливо в мелкодисперсном виде в камеру сгорания." },
+    { q: "Для чего предназначен подкачивающий насос (насос низкого давления)?", options: ["Для впрыска топлива в цилиндры", "Для подачи топлива из бака через фильтры к ТНВД", "Для очистки газов", "Для смазки распредвала"], correct: 1, exp: "Топливоподкачивающий насос прокачивает топливо по магистрали низкого давления." },
+    { q: "Каково назначение свечей накаливания в дизельном двигателе?", options: ["Поджигать топливо во время работы двигателя", "Облегчать пуск холодного двигателя, подогревая воздух в камере сгорания", "Очищать выхлопные газы", "Измерять температуру масла"], correct: 1, exp: "Свечи накала работают перед пуском и во время прогрева для облегчения воспламенения." },
+    { q: "Какое основное требование предъявляется к дизельному топливу по чистоте?", options: ["Отсутствие механических примесей и воды", "Высокая испаряемость", "Высокая октановая стойкость", "Наличие спиртовых добавок"], correct: 0, exp: "Прецизионные детали ТНВД и форсунок с зазорами в единицы микрон быстро разрушаются от воды и грязи." },
+    { q: "Какой параметр дизельного топлива характеризует его воспламеняемость?", options: ["Октановое число", "Цетановое число", "Вязкость по SAE", "Температура кипения"], correct: 1, exp: "Цетановое число определяет период задержки самовоспламенения топлива." },
+    { q: "Чем отличается раздельная камера сгорания (вихрекамерная) от неделимой (прямой впрыск)?", options: ["Впрыск происходит в отдельную предкамеру/вихрекамеру, а не прямо над поршнем", "Отсутствуют форсунки", "Нет впускных клапанов", "Впрыск происходит во впускной коллектор"], correct: 0, exp: "При раздельной камере смесеобразование начинается в предкамере или вихрекамере." },
+    { q: "Зачем в системе питания дизеля используется магистраль слива («обратка»)?", options: ["Для сброса излишков топлива и охлаждения форсунок/ТНВД", "Для подачи топлива в цилиндры", "Для подкачки воздуха в бак", "Для вывода отработавших газов"], correct: 0, exp: "Лишнее топливо смазывает и охлаждает узлы, после чего возвращается в бак." },
+    { q: "Что происходит в фильтре-отстойнике (сепараторе)?", options: ["Отделение воды и крупных механических частиц от топлива", "Нагрев топлива до 100°C", "Обогащение топлива кислородом", "Снижение цетанового числа"], correct: 0, exp: "Сепаратор отделяет воду от топлива за счет разницы в плотности." },
+    { q: "Какое давление создается в магистрали НИЗКОГО давления дизеля?", options: ["Обычно от 0.1 до 0.5 МПа (1–5 бар)", "Более 150 МПа (1500 бар)", "0 МПа (вакуум)", "1000 бар"], correct: 0, exp: "Низкое давление нужно только для доставки топлива из бака к ТНВД высокого давления." },
+    { q: "Какую роль выполняет фильтр тонкой очистки топлива?", options: ["Задерживает мелкие абразивные частицы (до нескольких микрон)", "Охлаждает топливо", "Увеличивает цетановое число", "Смешивает топливо с воздухом"], correct: 0, exp: "Фильтр тонкой очистки защищает плунжерные пары и иглы форсунок от износа." },
+    { q: "Почему завоздушивание дизельной системы питания приводит к остановке мотора?", options: ["Воздух сжимаем, поэтому насос не может создать требуемое давление впрыска", "Воздух взрывается в баке", "Свечи накала перегорают", "Топливный бак деформируется"], correct: 0, exp: "При наличии воздуха плунжер сжимает воздушную пробку, и клапан форсунки не открывается." },
+    { q: "В чем главное преимущество непосредственного впрыска (Direct Injection)?", options: ["Высокая экономичность и легкий пуск", "Полное отсутствие шума", "Возможность работать на бензине", "Низкое давление впрыска"], correct: 0, exp: "Прямой впрыск в цилиндр минимизирует тепловые потери и снижает расход топлива." },
+    { q: "Что такое угол опережения впрыска топлива?", options: ["Угол поворота коленвала до ВМТ, при котором форсунка начинает впрыскивать топливо", "Угол открытия впускного клапана", "Угол наклона форсунки в ГБЦ", "Время работы свечи накала"], correct: 0, exp: "Опережение требуется, чтобы топливо успело испариться и воспламениться к моменту ВМТ." },
+    { q: "Какая деталь механической форсунки закрывает ее распылительные отверстия?", options: ["Подпружиненная игла распылителя", "Плунжер", "Залотник", "Дроссельная заслонка"], correct: 0, exp: "Игла распылителя прижимается пружиной и поднимается только под давлением топлива." },
+    { q: "Что произойдет, если в дизельный бак ошибочно залить бензин?", options: ["ТНВД и форсунки быстро выйдут из строя из-за потери смазывающих свойств дизтоплива", "Двигатель станет работать тише", "Увеличится ресурс ТНВД", "Ничего не изменится"], correct: 0, exp: "Дизтопливо служит смазкой для ТНВД; бензин смывает масляную пленку и вызывает задиры." },
+    { q: "Какова основная функция регулятора частоты вращения на механическом ТНВД?", options: ["Автоматическое изменение подачи топлива для поддержания заданных оборотов", "Переключение передач", "Охлаждение топлива", "Включение турбины"], correct: 0, exp: "Регулятор предотвращает «разнос» двигателя и поддерживает обороты холостого хода." },
+    { q: "Зачем на топливопроводах высокого давления применяют стальные трубки одинаковой длины?", options: ["Чтобы обеспечить одинаковое время и динамику впрыска по всем цилиндрам", "Для красоты", "Чтобы экономить металл", "Для лучшего охлаждения"], correct: 0, exp: "Разная длина трубок вызовет разную задержку волны давления и неравномерную работу." },
+    { q: "Для чего используется ручной подкачивающий насос (праймер)?", options: ["Для удаления воздуха из системы (прокачки) после ремонта или замены фильтра", "Для пуска мотора зимой", "Для увеличения мощности", "Для слива масла"], correct: 0, exp: "Ручная подкачка позволяет заполнить систему топливом и выгнать воздушные пробки." }
+];
+
+function shuffle(array) {
+    let cur = array.length, rIdx;
+    while (cur !== 0) {
+        rIdx = Math.floor(Math.random() * cur);
+        cur--;
+        [array[cur], array[rIdx]] = [array[rIdx], array[cur]];
+    }
+    return array;
+}
+
+const quizData = shuffle([...rawQuestions]);
+let timeLeft = 600;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    quizData.forEach((item, index) => {
+        let html = `<div class="question-card" id="card_${index}">
+            <div class="question-text">${index + 1}. ${item.q}</div>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option" id="opt_${index}_${optIdx}">
+                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
+
+function finishQuiz(isTimeout) {
+    clearInterval(timerInterval);
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+
+    if (isTimeout) {
+        resultBox.className = 'result-box status-failed';
+        resultBox.innerHTML = `<h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2><p><strong>Время (10 минут) истекло!</strong> Оценка: <strong>2 (Неудовлетворительно)</strong>.</p>`;
+        return;
+    }
+
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        const card = document.getElementById(`card_${index}`);
+        const exp = document.getElementById(`exp_${index}`);
+        exp.style.display = 'block';
+
+        const correctOptEl = document.getElementById(`opt_${index}_${item.correct}`);
+        if (correctOptEl) correctOptEl.classList.add('correct-option');
+
+        if (selected) {
+            const userAns = parseInt(selected.value);
+            if (userAns === item.correct) {
+                score++;
+                card.classList.add('correct');
+            } else {
+                card.classList.add('wrong');
+                const wrongOptEl = document.getElementById(`opt_${index}_${userAns}`);
+                if (wrongOptEl) wrongOptEl.classList.add('wrong-option');
+            }
+        } else {
+            card.classList.add('wrong');
+        }
+    });
+
+    let mark = "";
+    let statusClass = "";
+    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "status-passed"; }
+    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "status-passed"; }
+    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "status-passed"; }
+    else { mark = "2 (Неудовлетворительно)"; statusClass = "status-failed"; }
+
+    resultBox.className = `result-box ${statusClass}`;
+    resultBox.innerHTML = `
+        <h2>Результаты проверки</h2>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
+        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <hr><p>Правильные ответы подсвечены зеленым цветом, ошибочные — красным.</p>
+    `;
+}
+
+window.onload = function() {
+    renderQuiz();
+    startTimer();
+};
+</script>
+</body>
+</html>
