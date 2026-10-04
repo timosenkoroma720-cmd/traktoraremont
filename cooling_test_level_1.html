@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 1: Базовый уровень — Система охлаждения двигателя</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .timer { font-size: 20px; font-weight: bold; color: #e74c3c; background: #ffe6e6; padding: 5px 15px; border-radius: 5px; }
+        .q-card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { display: block; margin: 5px 0; cursor: pointer; }
+        button { background-color: #2ecc71; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #27ae60; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold; }
+        .pass { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .timeout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.9); justify-content: center; align-items: center; color: white; font-size: 36px; font-weight: bold; text-align: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .explanation { margin-top: 8px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        .exp-correct { background-color: #d4edda; color: #155724; }
+        .exp-incorrect { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div id="timeoutAlert" class="timeout-overlay">
+    ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ
+</div>
+
+<div class="container">
+    <div class="header">
+        <h2>Тест 1: Базовый уровень (Устройство системы охлаждения)</h2>
+        <div class="timer" id="timer">10:00</div>
+    </div>
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Основное назначение системы охлаждения двигателя — это:", options: ["Поддержание оптимального температурного режима двигателя", "Подача топлива в цилиндры", "Смазка трущихся деталей", "Удаление отработавших газов"], correct: 0, exp: "Система охлаждения отводит излишки тепла от деталей ДВС для поддержания рабочей температуры." },
+    { q: "Какой прибор циркулирует жидкость в жидкостной системе охлаждения?", options: ["Водяной насос (помпа)", "Термостат", "Радиатор", "Расширительный бачок"], correct: 0, exp: "Водяной насос центробежного типа создает принудительную циркуляцию охлаждающей жидкости." },
+    { q: "Для чего предназначен термостат?", options: ["Перенаправления потока жидкости по малому или большому кругу", "Охлаждения воздуха в салоне", "Измерения давления масла", "Фильтрации охлаждающей жидкости"], correct: 0, exp: "Термостат переключает циркуляцию на радиатор при достижении рабочей температуры." },
+    { q: "Где происходит основное охлаждение жидкости встречным потоком воздуха?", options: ["В радиаторе", "В водяной рубашке блока", "В расширительном бачке", "В отопителе салона"], correct: 0, exp: "Радиатор отдает тепло от нагретой жидкости в окружающую среду." },
+    { q: "Для чего нужен расширительный бачок?", options: ["Компенсации изменения объема жидкости при нагреве", "Заправки двигателя маслом", "Хранения запаса топлива", "Сбора нагара из системы"], correct: 0, exp: "При нагреве жидкость расширяется, и её избыток поступает в расширительный бачок." },
+    { q: "Какое устройство усиливает обдув радиатора воздухом на малых скоростях?", options: ["Вентилятор охлаждения", "Жалюзи радиатора", "Центробежный насос", "Термостат"], correct: 0, exp: "Вентилятор создаёт принудительный поток воздуха через соты радиатора." },
+    { q: "Что заполняет водяную рубашку блока и головки цилиндров?", options: ["Охлаждающая жидкость (антифриз/тосол)", "Моторное масло", "Дистиллированная вода с бензином", "Сжатый воздух"], correct: 0, exp: "Охлаждающая жидкость циркулирует по каналам рубашки охлаждения, забирая тепло от цилиндров." },
+    { q: "Что происходит с жидкостью при движении по «малому кругу»?", options: ["Она циркулирует, минуя радиатор, для быстрого прогрева", "Она проходит через масляный радиатор", "Она сливается в поддон", "Она полностью охлаждается в вентиляторе"], correct: 0, exp: "Малый круг исключает радиатор, позволяя холодному двигателю быстрее достичь рабочей температуры." },
+    { q: "Какая деталь закрывает заливную горловину радиатора или расширительного бачка?", options: ["Пробка с паровоздушным клапаном", "Глухая резиновая заглушка", "Масляный фильтр", "Сливной кран"], correct: 0, exp: "Клапаны в пробке поддерживают избыточное давление в системе, повышая температуру кипения." },
+    { q: "Почему в современной системе охлаждения вместо воды используют антифриз?", options: ["Антифриз имеет низкую температуру замерзания и антикоррозийные присадки", "Антифриз легче воды", "Антифриз сгорает без остатка", "Антифриз увеличивает мощность на 20%"], correct: 0, exp: "Антифриз предотвращает размораживание блока зимой и защищает металл от коррозии." },
+    { q: "Какой привод чаще всего имеет водяной насос?", options: ["Ременный (от коленчатого вала)", "Цепной от коробки передач", "Пневматический", "Гидравлический от тормозов"], correct: 0, exp: "Помпа приводится во вращение ремнем (ГРМ или вспомогательных агрегатов) от шкива коленвала." },
+    { q: "Что показывает датчик температуры охлаждающей жидкости на панеле приборов?", options: ["Температуру жидкости в системе охлаждения", "Уровень масла в картере", "Температуру выхлопных газов", "Давление в шинах"], correct: 0, exp: "Датчик информирует водителя о текущем нагреве двигателя." },
+    { q: "Из каких основных частей состоит радиатор?", options: ["Верхний и нижний бачки, сердцевина из трубок и охлаждающих пластин", "Поршень, цилиндр, шатун", "Корпус, шестерни, редукционный клапан", "Фильтрующий элемент и сетка"], correct: 0, exp: "Сердцевина радиатора обеспечивает большую площадь теплообмена." },
+    { q: "Что связывает радиатор с двигателем для передачи жидкости?", options: ["Резиновые патрубки (шланги)", "Медные жесткие спирали", "Топливные трубки высокого давления", "Тросы управления"], correct: 0, exp: "Гибкие патрубки компенсируют вибрации двигателя относительно кузова." },
+    { q: "Как называется процесс закипания охлаждающей жидкости в рубашке охлаждения?", options: ["Перегрев двигателя", "Переохлаждение", "Детонация", "Кавитация"], correct: 0, exp: "Закипание приводит к образованию паровых пробок и критическому перегреву ДВС." },
+    { q: "Для чего к системе охлаждения подключается радиатор отопителя салона?", options: ["Для обогрева салона за счет тепла нагретой жидкости", "Для дополнительного охлаждения масла", "Для прогрева тормозных дисков", "Для фильтрации воздуха"], correct: 0, exp: "Отопитель использует полезное утилизируемое тепло от системы охлаждения двигателя." },
+    { q: "Какой элемент включает электровентилятор радиатора при нагреве?", options: ["Термовыключатель (датчик включения вентилятора)", "Редукционный клапан", "Масляный щуп", "Замок зажигания напрямую"], correct: 0, exp: "Датчик замыкает цепь питания вентилятора при достижении пороговой температуры (около 90–95°C)." },
+    { q: "Что находится внутри твердотельного элемента классического термостата?", options: ["Термочувствительный wax (воск)", "Машинное масло", "Сжатый воздух", "Спирт"], correct: 0, exp: "Церезин (воск) расширяется при плавлении и открывает клапан термостата." },
+    { q: "Как визуально проверить уровень охлаждающей жидкости?", options: ["По меткам MIN и MAX на стенке расширительного бачка", "По масляному щупу", "По давлению в шинах", "По цвету дыма из выхлопной трубы"], correct: 0, exp: "Прозрачный корпус бачка имеет метки минимального и максимального уровня на холодном моторе." },
+    { q: "К чему может привести эксплуатация двигателя без термостата летом?", options: ["К долгий прогреву и работе на нерасчетном холодном режиме", "К мгновенному взрыву радиатора", "К заклиниванию коленвала через 5 минут", "К вытеканию всего масла"], correct: 0, exp: "Без термостата жидкость сразу идет через радиатор, мотор долго выходит на рабочую температуру." }
+];
+
+let shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+let questions = shuffle([...rawQuestions]).map(q => {
+    let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+    opts = shuffle(opts);
+    return { ...q, options: opts };
+});
+
+function renderQuiz() {
+    const container = document.getElementById("questionsContainer");
+    questions.forEach((q, idx) => {
+        let qDiv = document.createElement("div");
+        qDiv.className = "q-card";
+        let html = `<div class="q-title">Вопрос ${idx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<label class="option"><input type="radio" name="q${idx}" value="${oIdx}"> ${opt.text}</label>`;
+        });
+        html += `<div id="exp${idx}" class="explanation" style="display:none;"></div>`;
+        qDiv.innerHTML = html;
+        container.appendChild(qDiv);
+    });
+}
+
+let timeLeft = 600;
+let timerElem = document.getElementById("timer");
+let timerId = setInterval(() => {
+    timeLeft--;
+    let m = Math.floor(timeLeft / 60);
+    let s = timeLeft % 60;
+    timerElem.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    if (timeLeft <= 0) {
+        clearInterval(timerId);
+        document.getElementById("timeoutAlert").style.display = "flex";
+    }
+}, 1000);
+
+function submitQuiz() {
+    clearInterval(timerId);
+    let score = 0;
+    questions.forEach((q, idx) => {
+        let selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        let expDiv = document.getElementById(`exp${idx}`);
+        expDiv.style.display = "block";
+        
+        let correctOpt = q.options.findIndex(o => o.isCorrect);
+        if (selected && q.options[parseInt(selected.value)].isCorrect) {
+            score++;
+            expDiv.className = "explanation exp-correct";
+            expDiv.innerHTML = `<b>Верно!</b> ${q.exp}`;
+        } else {
+            expDiv.className = "explanation exp-incorrect";
+            expDiv.innerHTML = `<b>Неверно.</b> Правильный ответ: ${q.options[correctOpt].text}.<br>${q.exp}`;
+        }
+    });
+
+    let percent = (score / 20) * 100;
+    let mark = 1;
+    if (percent >= 96) mark = 10;
+    else if (percent >= 90) mark = 9;
+    else if (percent >= 80) mark = 8;
+    else if (percent >= 70) mark = 7;
+    else if (percent >= 60) mark = 6;
+    else if (percent >= 50) mark = 5;
+    else if (percent >= 40) mark = 4;
+    else if (percent >= 30) mark = 3;
+    else if (percent >= 15) mark = 2;
+    else mark = 1;
+
+    let resBox = document.getElementById("result");
+    resBox.style.display = "block";
+    if (mark >= 3) {
+        resBox.className = "result-box pass";
+        resBox.innerHTML = `Тест пройден! Верных ответов: ${score} из 20 (${percent}%).<br>Ваша оценка: ${mark} баллов.`;
+    } else {
+        resBox.className = "result-box fail";
+        resBox.innerHTML = `Тест не пройден (порог 3 балла не достигнут). Верных ответов: ${score} из 20.<br>Ваша оценка: ${mark} баллов.`;
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

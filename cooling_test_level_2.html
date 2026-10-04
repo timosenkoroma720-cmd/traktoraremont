@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 2: Средний уровень — Система охлаждения двигателя</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e67e22; padding-bottom: 10px; }
+        .timer { font-size: 20px; font-weight: bold; color: #e74c3c; background: #ffe6e6; padding: 5px 15px; border-radius: 5px; }
+        .q-card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { display: block; margin: 5px 0; cursor: pointer; }
+        button { background-color: #e67e22; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #d35400; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold; }
+        .pass { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .timeout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.9); justify-content: center; align-items: center; color: white; font-size: 36px; font-weight: bold; text-align: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .explanation { margin-top: 8px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        .exp-correct { background-color: #d4edda; color: #155724; }
+        .exp-incorrect { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div id="timeoutAlert" class="timeout-overlay">
+    ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ
+</div>
+
+<div class="container">
+    <div class="header">
+        <h2>Тест 2: Средний уровень (Процессы и эксплуатация)</h2>
+        <div class="timer" id="timer">10:00</div>
+    </div>
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "За счет чего повышается температура кипения жидкости в закрытой системе охлаждения?", options: ["За счет избыточного давления, поддерживаемого клапаном пробки", "За счет добавления моторного масла", "За счет работы водяного насоса на высоких оборотах", "За счет снижения объема радиатора"], correct: 0, exp: "Избыточное давление 0.5–1.1 бар поднимает температуру кипения антифриза до 110–125°C." },
+    { q: "Что происходит при заклинивании клапана термостата в ЗАКРЫТОМ положении?", options: ["Двигатель быстро перегревается, так как жидкость не попадает в радиатор", "Двигатель долго не может прогреться", "Жидкость вытекает через сапун", "Вентилятор охлаждения не включается никогда"], correct: 0, exp: "Жидкость циркулирует только по малому кругу, вызывая закипание в блоке цилиндров." },
+    { q: "Что происходит при заклинивании клапана термостата в ОТКРЫТОМ положении?", options: ["Двигатель медленно прогревается и охлаждается при езде по трассе зимой", "Двигатель мгновенно закипает", "Помпа прекращает вращение", "Рвется ремень привода"], correct: 0, exp: "Постоянный проток через радиатор препятствует выходу ДВС на оптимальный температурный режим." },
+    { q: "Какую роль выполняет впускной (вакуумный) клапан пробки расширительного бачка?", options: ["Предотвращает образование вакуума при остывании двигателя", "Сбрасывает избыток пара при кипении", "Очищает жидкость от ржавчины", "Подает воздух в цилиндры"], correct: 0, exp: "При остывании объем жидкости уменьшается, и впускной клапан впускает воздух, предотвращая сплющивание шлангов." },
+    { q: "Каковы симптомы пробоя прокладки ГБЦ в каналы системы охлаждения?", options: ["Запах выхлопных газов и бурление в расширительном бачке, белый дым из трубы", "Падение давления масла до нуля", "Почернение антифриза без изменения уровня", "Стук в коленчатом валу"], correct: 0, exp: "Газы из цилиндра прорываются в рубашку охлаждения, создавая воздушные пробки и бурление." },
+    { q: "Почему опасен разрыв ремня привода водяного насоса во время движения?", options: ["Прекращается циркуляция ОЖ, что приводит к быстрому перегреву и заклиниванию ДВС", "Отключается подача топлива", "Перестают работать тормоза", "Спускают передние колеса"], correct: 0, exp: "Без помпы жидкость останавливается в рубашке, моментально закипая от раскаленных стенок цилиндров." },
+    { q: "Какая стандартная температура открытия классического автомобильного термостата?", options: ["80 – 90 °C", "40 – 50 °C", "110 – 130 °C", "0 – 10 °C"], correct: 0, exp: "Большинство термостатов начинают открываться в интервале 82–87°C." },
+    { q: "Какова функция вязкостной муфты (вискомуфты) вентилятора охлаждения?", options: ["Изменение скорости вращения крыльчатки в зависимости от температуры воздуха за радиатором", "Отключение помпы на высоких оборотах", "Блокировка колес при перегреве", "Фильтрация воздуха в радиаторе"], correct: 0, exp: "Специальная силиконовая жидкость внутри муфты меняет вязкость, подключая вентилятор при нагреве." },
+    { q: "К чему приводит образование накипи на внутренних стенках рубашки охлаждения?", options: ["Ухудшению теплоотвода от стенок цилиндров и местному перегреву", "Повышению прочности блока цилиндров", "Увеличению скорости циркуляции ОЖ", "Снижению расхода топлива"], correct: 0, exp: "Накипь обладает низкой теплопроводностью, изолируя нагретый металл от охлаждающей жидкости." },
+    { q: "Чем опасна работа двигателя при слишком низкой температуре ОЖ (60°C и ниже)?", options: ["Повышенным износом деталей, ростом расхода топлива и смолообразованием", "Прогаром поршней", "Разрывом радиатора", "Закипанием антифриза"], correct: 0, exp: "При недогреве увеличиваются зазоры, смесь конденсируется на стенках и смывает масло." },
+    { q: "Какова причина возможного завоздушивания системы охлаждения?", options: ["Негерметичность соединений, пробой прокладки ГБЦ или неверный залив ОЖ", "Слишком высокая скорость помпы", "Использование чистого антифриза", "Включение печки на максимум"], correct: 0, exp: "Воздушная пробка блокирует циркуляцию жидкости через термостат или радиатор." },
+    { q: "Для чего используется электровентилятор с плавным регулированием оборотов (PWM/ШИМ)?", options: ["Для точного поддержания температуры и снижения шума/энергопотребления", "Для ускорения прогрева зимой", "Для подавления детонации", "Для продувки выхлопной системы"], correct: 0, exp: "ШИМ-управление вращает вентилятор ровно с той скоростью, которая необходима в данный момент." },
+    { q: "Какая основная составная часть этиленгликолевых антифризов отвечает за защиту от замерзания?", options: ["Двухатомный спирт (этиленгликоль/пропиленгликоль)", "Минеральное масло", "Керосин", "Ортофосфорная кислота"], correct: 0, exp: "Смесь этиленгликоля с водой в пропорции 1:1 замерзает при температуре около -40°C." },
+    { q: "Что происходит при выходе из строя датчика температуры ОЖ (ДТОЖ), передающего данные в ЭБУ?", options: ["ЭБУ переходит в аварийный режим и может постоянно включать вентилятор", "Двигатель сразу глохнет и не заводится", "Отключается гидравлика steering", "Сливается вся жидкость"], correct: 0, exp: "ЭБУ задействует защитные алгоритмы, чтобы избежать перегрева при отсутствии точных данных." },
+    { q: "Каким образом проверяют герметичность системы охлаждения на СТО?", options: ["Опрессовкой (созданием избыточного давления ручным насосом)", "Заливом воды под высокое давление", "Нагревом радиатора горелкой", "Измерением напряжения на аккумуляторе"], correct: 0, exp: "Опрессовка позволяет увидеть подтеки на патрубках и падение давления без запуска мотора." },
+    { q: "Что такое электромчатый насос (электропомпа) в современных системах охлаждения?", options: ["Помпа с независимым электроприводом, работающая даже после остановки ДВС", "Помпа, работающая от выхлопных газов", "Насос для качки масла в радиатор", "Ручной насос прокачки"], correct: 0, exp: "Электропомпа позволяет циркулировать ОЖ для охлаждения турбины после выключения зажигания." },
+    { q: "Что означает цвет антифриза (зеленый, красный, синий)?", options: ["Цвет определяется красителем и часто указывает на класс присадок (G11, G12 и т.д.)", "Цвет показывает плотность масла", "Цвет зависит от объема двигателя", "Цвет показывает температуру кипения"], correct: 0, exp: "Краситель вводится для облегчения поиска протечек и идентификации типа присадок." },
+    { q: "Какое воздействие оказывает кавитация на лопасти водяного насоса?", options: ["Эрозионное разрушение и точечное выкрашивание металла лопастей", "Смазывание и полировку поверхностей", "Увеличение толщины лопастей", "Защиту от коррозии"], correct: 0, exp: "Схлопывание пузырьков пара при высоких оборотах разрушает крыльчатку помпы." },
+    { q: "Зачем при замене антифриза рекомендуется промывать систему охлаждения?", options: ["Для удаления продуктов коррозии, отложений и остатков старого антифриза", "Чтобы уменьшить вместимость бачка", "Для смазки патрубков", "Для повышения давления в шинах"], correct: 0, exp: "Промывка восстанавливает теплообмен и предотвращает выпадение осадка при смешивании присадок." },
+    { q: "Для чего в конструкции радиатора применяются турбулизаторы в трубках?", options: ["Для закручивания потока жидкости и интенсификации теплообмена", "Для задержки грязи", "Для снижения давления", "Для уменьшения шума"], correct: 0, exp: "Турбулизация разрушает пристенный ламинарный слой, улучшая передачу тепла стенке трубки." }
+];
+
+let shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+let questions = shuffle([...rawQuestions]).map(q => {
+    let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+    opts = shuffle(opts);
+    return { ...q, options: opts };
+});
+
+function renderQuiz() {
+    const container = document.getElementById("questionsContainer");
+    questions.forEach((q, idx) => {
+        let qDiv = document.createElement("div");
+        qDiv.className = "q-card";
+        let html = `<div class="q-title">Вопрос ${idx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<label class="option"><input type="radio" name="q${idx}" value="${oIdx}"> ${opt.text}</label>`;
+        });
+        html += `<div id="exp${idx}" class="explanation" style="display:none;"></div>`;
+        qDiv.innerHTML = html;
+        container.appendChild(qDiv);
+    });
+}
+
+let timeLeft = 600;
+let timerElem = document.getElementById("timer");
+let timerId = setInterval(() => {
+    timeLeft--;
+    let m = Math.floor(timeLeft / 60);
+    let s = timeLeft % 60;
+    timerElem.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    if (timeLeft <= 0) {
+        clearInterval(timerId);
+        document.getElementById("timeoutAlert").style.display = "flex";
+    }
+}, 1000);
+
+function submitQuiz() {
+    clearInterval(timerId);
+    let score = 0;
+    questions.forEach((q, idx) => {
+        let selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        let expDiv = document.getElementById(`exp${idx}`);
+        expDiv.style.display = "block";
+        
+        let correctOpt = q.options.findIndex(o => o.isCorrect);
+        if (selected && q.options[parseInt(selected.value)].isCorrect) {
+            score++;
+            expDiv.className = "explanation exp-correct";
+            expDiv.innerHTML = `<b>Верно!</b> ${q.exp}`;
+        } else {
+            expDiv.className = "explanation exp-incorrect";
+            expDiv.innerHTML = `<b>Неверно.</b> Правильный ответ: ${q.options[correctOpt].text}.<br>${q.exp}`;
+        }
+    });
+
+    let percent = (score / 20) * 100;
+    let mark = 1;
+    if (percent >= 96) mark = 10;
+    else if (percent >= 90) mark = 9;
+    else if (percent >= 80) mark = 8;
+    else if (percent >= 70) mark = 7;
+    else if (percent >= 60) mark = 6;
+    else if (percent >= 50) mark = 5;
+    else if (percent >= 40) mark = 4;
+    else if (percent >= 30) mark = 3;
+    else if (percent >= 15) mark = 2;
+    else mark = 1;
+
+    let resBox = document.getElementById("result");
+    resBox.style.display = "block";
+    if (mark >= 3) {
+        resBox.className = "result-box pass";
+        resBox.innerHTML = `Тест пройден! Верных ответов: ${score} из 20 (${percent}%).<br>Ваша оценка: ${mark} баллов.`;
+    } else {
+        resBox.className = "result-box fail";
+        resBox.innerHTML = `Тест не пройден (порог 3 балла не достигнут). Верных ответов: ${score} из 20.<br>Ваша оценка: ${mark} баллов.`;
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
