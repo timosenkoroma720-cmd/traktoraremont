@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 2: Средний уровень — Система смазки двигателя</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e67e22; padding-bottom: 10px; }
+        .timer { font-size: 20px; font-weight: bold; color: #e74c3c; background: #ffe6e6; padding: 5px 15px; border-radius: 5px; }
+        .q-card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { display: block; margin: 5px 0; cursor: pointer; }
+        button { background-color: #e67e22; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #d35400; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold; }
+        .pass { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .timeout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.9); justify-content: center; align-items: center; color: white; font-size: 36px; font-weight: bold; text-align: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .explanation { margin-top: 8px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        .exp-correct { background-color: #d4edda; color: #155724; }
+        .exp-incorrect { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div id="timeoutAlert" class="timeout-overlay">
+    ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ
+</div>
+
+<div class="container">
+    <div class="header">
+        <h2>Тест 2: Средний уровень (Принцип работы)</h2>
+        <div class="timer" id="timer">10:00</div>
+    </div>
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Чем отличатся полнопоточный масляный фильтр от частичнопоточного?", options: ["Через полнопоточный проходит 100% масла, подаваемого к деталям", "Полнопоточный фильтр очищает только воздух", "Частичнопоточный фильтр устанавливается до насоса", "Полнопоточный фильтр не имеет перепускного клапана"], correct: 0, exp: "Полнопоточный фильтр включает в главную магистраль весь объем прокачиваемого масла." },
+    { q: "Какой тип масляного насоса наиболее распространен в современных ДВС?", options: ["Шестеренчатый или роторный", "Центробежный мембранный", "Поршневой аксиальный", "Пневматический"], correct: 0, exp: "Шестеренчатые и роторные насосы обеспечивают стабильную и надежную подачу в широком диапазоне оборотов." },
+    { q: "Что показывает индекс 5W-30 по классификации SAE?", options: ["Низкотемпературную и высокотемпературную вязкость масла", "Объем масляного поддона и давление", "Срок службы масла в тыс. км", "Тип используемого топлива"], correct: 0, exp: "Цифра перед W указывает на пусковые свойства зимой, вторая цифра — на вязкость при рабочей температуре 100°C." },
+    { q: "Как влияет чрезмерно высокий уровень масла в картере на работу двигателя?", options: ["Приводит к вспениванию масла коленвалом и выгоранию", "Увеличивает мощность двигателя", "Снижает температуру в цилиндрах", "Уменьшает расход топлива"], correct: 0, exp: "При высоком уровне противовесы коленвала вспенят масло, нарушая смазку и вызывая угар." },
+    { q: "Какое из приведенных масел является полностью синтетическим?", options: ["Fully Synthetic", "Mineral Oil", "Semi-Synthetic", "Hydrocracked Blend"], correct: 0, exp: "Маркировка Fully Synthetic указывает на полностью синтетическую базовую основу." },
+    { q: "Что происходит при срабатывании редукционного клапана масляного насоса?", options: ["Масло переливается из нагнетательной полости во всасывающую или в поддон", "Двигатель заглушается автоматикой", "Перекрывается подача масла в фильтр", "Включается масляный радиатор"], correct: 0, exp: "Клапан открывается пружиной при превышении расчетного давления и сливает частичный объем масла." },
+    { q: "Какая температура масла считается оптимальной рабочей температурой?", options: ["80 – 105 °C", "30 – 50 °C", "150 – 180 °C", "200 – 220 °C"], correct: 0, exp: "В этом диапазоне масло сохраняет оптимальную вязкость и смазывающие свойства." },
+    { q: "Что служит поводом для срабатывания редукционного (термостатического) клапана масляного радиатора?", options: ["Повышение температуры масла выше нормы", "Падение уровня масла", "Увеличение оборотов выше 5000 об/мин", "Засорение масляного фильтра"], correct: 0, exp: "Термостат открывает путь маслу в радиатор только после его прогрева." },
+    { q: "Как подается масло к гидрокомпенсаторам зазоров клапанов?", options: ["Под давлением из общей магистрали", "Разбрызгиванием из поддона", "Заливается один раз на заводе", "Капельным путем из клапанной крышки"], correct: 0, exp: "Гидрокомпенсаторы выбирают зазор за счет давления масла, подаваемого из масляных каналов ГБЦ." },
+    { q: "Какая функция выполнятся противодренажным клапаном в масляном фильтре?", options: ["Удерживает масло в фильтре при остановке двигателя", "Очищает масло от воды", "Сбрасывает избыточное давление", "Предотвращает перегрев масла"], correct: 0, exp: "Противодренажный клапан не дает маслу стечь в поддон, обеспечивая быструю смазку при пуске." },
+    { q: "Что может стать причиной естественного расхода масла на угар?", options: ["Проникновение масла через маслосъемные колпачки и кольца в камеру сгорания", "Вытекание через щуп", "Испарение масла из поддона", "Всасывание масла масляным насосом"], correct: 0, exp: "Пленка масла на стенках цилиндров частично сгорает вместе с топливом." },
+    { q: "Что указывает на падение давления масла на прогретом двигателе на холостом ходу?", options: ["Износ вкладышей коленвала или масляного насоса", "Засорение воздушного фильтра", "Слишком высокая вязкость масла", "Перелив масла выше нормы"], correct: 0, exp: "Увеличение зазоров в подшипниках скольжения ведет к свободной утечке масла и падению давления." },
+    { q: "Какая опасность возникает при пуске двигателя на сильном морозе с густым маслом?", options: ["Масляное голодание и выдавливание масляного фильтра/сальников", "Закипание масла", "Поломка свечей зажигания", "Перегрев масляного радиатора"], correct: 0, exp: "Загустевшее масло плохо прокачивается и создает сверхвысокое давление до насоса." },
+    { q: "Что такое эмульсия на масляном щупе (белая пена)?", options: ["Следствие попадания охлаждающей жидкости в масло", "Признак высокого качества масла", "Результат работы моющих присадок", "Нормальное состояние при зимней эксплуатации"], correct: 0, exp: "Попадание антифриза в масляную систему образует эмульсию и уничтожает смазочные свойства." },
+    { q: "Для чего в состав моторных масел вводят моюще-диспергирующие присадки?", options: ["Для предотвращения образования отложений и удержания частичек сажи во взвешенном состоянии", "Для повышения температуры замерзания", "Для изменения цвета масла", "Для защиты от коррозии топливного бака"], correct: 0, exp: "Эти присадки смывают нагар и не дают шламу выпадать в осадок на деталях." },
+    { q: "Каким образом смазываются втулки турбокомпрессора?", options: ["Под большим давлением из главной масляной магистрали", "Автономной консистентной смазкой", "Разбрызгиванием из поддона", "Топливной смесью"], correct: 0, exp: "Подшипники турбины вращаются на масляной клине под давлением от главной магистрали." },
+    { q: "Что произойдет, если установить масляный фильтр без перепускного клапана на двигатель, где он предусмотрен?", options: ["При засорении фильтра возникнет масляное голодание", "Двигатель заклинит сразу после запуска", "Масло перестанет нагреваться", "Увеличится мощность"], correct: 0, exp: "Без перепускного клапана плотно забитый фильтр полностью перекроет подачу масла." },
+    { q: "Почему замена масла производится вместе с заменой масляного фильтра?", options: ["Грязный фильтр быстро загрязняет свежее масло и теряет пропускную способность", "Это требование экологов", "Фильтр одноразовый и разрушается от нового масла", "Для уменьшения объема заправляемого масла"], correct: 0, exp: "Старый фильтр содержит накопившуюся грязь и может сбросить ее через перепускной клапан в новое масло." },
+    { q: "Что вызывает «сухой пуск» двигателя?", options: ["Задержка поступления масла к трущимся деталям в первые секунды запуска", "Пуск двигателя без бензина", "Пуск с выключенным зажиганием", "Использование синтетического масла"], correct: 0, exp: "Пока насос не прокачает масло по магистралям, детали работают в режиме сухого трения." },
+    { q: "Как влияет пониженная вязкость масла (например, 0W-16) на топливную экономичность?", options: ["Снижает гидродинамические потери и экономит топливо", "Увеличивает расход топлива", "Не оказывает никакого влияния", "Приводит к резкому перегреву на любых оборотах"], correct: 0, exp: "Маловязкие масла уменьшают сопротивление трению, повышая КПД двигателя." }
+];
+
+let shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+let questions = shuffle([...rawQuestions]).map(q => {
+    let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+    opts = shuffle(opts);
+    return { ...q, options: opts };
+});
+
+function renderQuiz() {
+    const container = document.getElementById("questionsContainer");
+    questions.forEach((q, idx) => {
+        let qDiv = document.createElement("div");
+        qDiv.className = "q-card";
+        let html = `<div class="q-title">Вопрос ${idx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<label class="option"><input type="radio" name="q${idx}" value="${oIdx}"> ${opt.text}</label>`;
+        });
+        html += `<div id="exp${idx}" class="explanation" style="display:none;"></div>`;
+        qDiv.innerHTML = html;
+        container.appendChild(qDiv);
+    });
+}
+
+let timeLeft = 600;
+let timerElem = document.getElementById("timer");
+let timerId = setInterval(() => {
+    timeLeft--;
+    let m = Math.floor(timeLeft / 60);
+    let s = timeLeft % 60;
+    timerElem.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    if (timeLeft <= 0) {
+        clearInterval(timerId);
+        document.getElementById("timeoutAlert").style.display = "flex";
+    }
+}, 1000);
+
+function submitQuiz() {
+    clearInterval(timerId);
+    let score = 0;
+    questions.forEach((q, idx) => {
+        let selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        let expDiv = document.getElementById(`exp${idx}`);
+        expDiv.style.display = "block";
+        
+        let correctOpt = q.options.findIndex(o => o.isCorrect);
+        if (selected && q.options[parseInt(selected.value)].isCorrect) {
+            score++;
+            expDiv.className = "explanation exp-correct";
+            expDiv.innerHTML = `<b>Верно!</b> ${q.exp}`;
+        } else {
+            expDiv.className = "explanation exp-incorrect";
+            expDiv.innerHTML = `<b>Неверно.</b> Правильный ответ: ${q.options[correctOpt].text}.<br>${q.exp}`;
+        }
+    });
+
+    let percent = (score / 20) * 100;
+    let mark = 1;
+    if (percent >= 96) mark = 10;
+    else if (percent >= 90) mark = 9;
+    else if (percent >= 80) mark = 8;
+    else if (percent >= 70) mark = 7;
+    else if (percent >= 60) mark = 6;
+    else if (percent >= 50) mark = 5;
+    else if (percent >= 40) mark = 4;
+    else if (percent >= 30) mark = 3;
+    else if (percent >= 15) mark = 2;
+    else mark = 1;
+
+    let resBox = document.getElementById("result");
+    resBox.style.display = "block";
+    if (mark >= 3) {
+        resBox.className = "result-box pass";
+        resBox.innerHTML = `Тест пройден! Верных ответов: ${score} из 20 (${percent}%).<br>Ваша оценка: ${mark} баллов.`;
+    } else {
+        resBox.className = "result-box fail";
+        resBox.innerHTML = `Тест не пройден (порог 3 балла не достигнут). Верных ответов: ${score} из 20.<br>Ваша оценка: ${mark} баллов.`;
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

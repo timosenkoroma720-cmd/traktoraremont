@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 1: Базовый уровень — Система смазки двигателя</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .timer { font-size: 20px; font-weight: bold; color: #e74c3c; background: #ffe6e6; padding: 5px 15px; border-radius: 5px; }
+        .q-card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { display: block; margin: 5px 0; cursor: pointer; }
+        button { background-color: #2ecc71; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #27ae60; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold; }
+        .pass { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .timeout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.9); justify-content: center; align-items: center; color: white; font-size: 36px; font-weight: bold; text-align: center; z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .explanation { margin-top: 8px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        .exp-correct { background-color: #d4edda; color: #155724; }
+        .exp-incorrect { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div id="timeoutAlert" class="timeout-overlay">
+    ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ
+</div>
+
+<div class="container">
+    <div class="header">
+        <h2>Тест 1: Базовый уровень (Устройство)</h2>
+        <div class="timer" id="timer">10:00</div>
+    </div>
+    <form id="quizForm" style="margin-top: 20px;">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Основное назначение системы смазки двигателя — это:", options: ["Снижение трения и износа деталей", "Охлаждение рабочей смеси", "Подача топлива в цилиндры", "Удаление отработавших газов"], correct: 0, exp: "Система смазки подает масло к трущимся поверхностям для уменьшения трения, износа и отвода тепла." },
+    { q: "Где находится основной запас моторного масла в двигателе с мокрым картером?", options: ["В масляном поддоне", "В масляном фильтре", "В головке блока цилиндров", "В расширительном бачке"], correct: 0, exp: "При системе смазки с мокрым картером масло стекает и хранится в поддоне картера." },
+    { q: "Какое устройство создает давление в системе смазки?", options: ["Масляный насос", "Масляный фильтр", "Редукционный клапан", "Маслоприемник"], correct: 0, exp: "Масляный насос забирает масло из поддона и подает его под давлением к трущимся деталям." },
+    { q: "Для чего предназначен масляный фильтр?", options: ["Для очистки масла от механических примесей", "Для охлаждения масла", "Для измерения давления масла", "Для регулировки уровня масла"], correct: 0, exp: "Масляный фильтр задерживает продукты износа и нагар, предотвращая повреждение деталей." },
+    { q: "Какая деталь измеряет уровень масла в поддоне картера?", options: ["Масляный щуп", "Датчик давления", "Редукционный клапан", "Сапун"], correct: 0, exp: "Масляный щуп служит для ручного контроля уровня и состояния масла в поддоне." },
+    { q: "Каким образом масло подается к шатунным вкладышам коленчатого вала?", options: ["Под давлением по каналам", "Разбрызгиванием", "Самотеком", "Капельным путем"], correct: 0, exp: "К наиболее нагруженным узлам (подшипникам коленвала) масло подается под давлением." },
+    { q: "Для чего используется перепускной клапан в масляном фильтре?", options: ["Пропускает масло мимо фильтра при его засорении", "Сливает излишки масла в поддон", "Регулирует уровень масла", "Отключает масляный насос"], correct: 0, exp: "Перепускной клапан предотвращает масляное голодание двигателя, если фильтрующий элемент засорен." },
+    { q: "Какую роль выполняет редукционный клапан в масляном насосе?", options: ["Предотвращает чрезмерное повышение давления", "Очищает масло от нагара", "Направляет масло в радиатор", "Увеличивает скорость подачи масла"], correct: 0, exp: "Редукционный клапан сбрасывает избыток масла обратно в поддон при превышении допустимого давления." },
+    { q: "Что предотвращает вытекание масла через край коленчатого вала?", options: ["Сальники (уплотнения)", "Поршневые кольца", "Прокладка поддона", "Вкладыши"], correct: 0, exp: "Сальники коленчатого вала обеспечивают герметичность выходов вала из блока цилиндров." },
+    { q: "Какое маслосъемное кольцо устанавливается на поршень?", options: ["Нижнее кольцо", "Верхнее компрессионное", "Второе компрессионное", "Стопорное кольцо"], correct: 0, exp: "Маслосъемное кольцо располагается снизу компрессионных колец и снимает излишки масла со стенок цилиндра." },
+    { q: "Для чего нужен масляный радиатор?", options: ["Для охлаждения моторного масла", "Для подогрева масла зимой", "Для фильтрации грубых частиц", "Для сбора конденсата"], correct: 0, exp: "Масляный радиатор снижает температуру масла при высоких нагрузках на двигатель." },
+    { q: "Что происходит с вязкостью масла при нагреве двигателя?", options: ["Вязкость снижается (масло разжижается)", "Вязкость увеличивается", "Вязкость не меняется", "Масло кристаллизуется"], correct: 0, exp: "При повышении температуры физическая вязкость моторного масла уменьшается." },
+    { q: "Каким образом смазываются стенки цилиндров в большинстве двигателей?", options: ["Разбрызгиванием и масляным туманом", "Под прямым высоким давлением насоса", "Путем погружения в масло", "Вручную при ТО"], correct: 0, exp: "Стенки цилиндров смазываются каплями и туманом масла, разбрызгиваемого вращающимся коленвалом." },
+    { q: "Что показывает контрольная лампа с масленкой на приборной панели?", options: ["Аварийно низкое давление масла", "Низкую температуру масла", "Засорение масляного фильтра", "Превышение уровня масла"], correct: 0, exp: "Красная масленка сигнализирует о критическом падении давления в масляной магистрали." },
+    { q: "Где расположен маслоприемник?", options: ["В нижней части поддона картера", "Внутри масляного фильтра", "На крышке ГБЦ", "Внутри масляного насоса"], correct: 0, exp: "Mаслоприемник с сеткой погружен в масло на дне поддона для первичной грубой очистки." },
+    { q: "Что означает комбинированная система смазки?", options: ["Часть деталей смазывается под давлением, часть — разбрызгиванием", "Используется смесь бензина и масла", "Смазка осуществляется воздухом и маслом", "Масло подается от двух насосов"], correct: 0, exp: "Комбинированная система сочетает подачу масла под давлением к нагруженным узлам и разбрызгивание к остальным." },
+    { q: "Для чего служит вентиляция картера (сапун)?", options: ["Для отвода картерных газов и снижения давления в картере", "Для подачи воздуха в масляный насос", "Для охлаждения масла потоком воздуха", "Для очистки масла от пыли"], correct: 0, exp: "Вентиляция картера выводит прорвавшиеся газы, предотвращая выдавливание сальников и разрушение масла." },
+    { q: "Как часто необходимо проверять уровень масла масляным щупом?", options: ["Регулярно перед выездом или на холодном двигателе", "Только при замене масла", "Каждые 50 000 км", "Раз в три года"], correct: 0, exp: "Регулярный контроль уровня масла позволяет своевременно обнаружить утечки или расход масла." },
+    { q: "Что такое «масляный голод» двигателя?", options: ["Работа двигателя при недостатке или отсутствии смазки", "Использование слишком густого масла", "Перелив масла выше нормы", "Засорение воздушного фильтра"], correct: 0, exp: "Масляное голодание ведет к сухому трению, сильному перегреву и заклиниванию деталей." },
+    { q: "Какая деталь удерживает прокладку поддона картера от протечек?", options: ["Болты крепления поддона", "Поршневые пальцы", "Направляющие клапанов", "Втулки шатунов"], correct: 0, exp: "Поддон крепится к блоку цилиндров болтами через уплотнительную прокладку." }
+];
+
+let shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+let questions = shuffle([...rawQuestions]).map(q => {
+    let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+    opts = shuffle(opts);
+    return { ...q, options: opts };
+});
+
+function renderQuiz() {
+    const container = document.getElementById("questionsContainer");
+    questions.forEach((q, idx) => {
+        let qDiv = document.createElement("div");
+        qDiv.className = "q-card";
+        let html = `<div class="q-title">Вопрос ${idx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<label class="option"><input type="radio" name="q${idx}" value="${oIdx}"> ${opt.text}</label>`;
+        });
+        html += `<div id="exp${idx}" class="explanation" style="display:none;"></div>`;
+        qDiv.innerHTML = html;
+        container.appendChild(qDiv);
+    });
+}
+
+let timeLeft = 600;
+let timerElem = document.getElementById("timer");
+let timerId = setInterval(() => {
+    timeLeft--;
+    let m = Math.floor(timeLeft / 60);
+    let s = timeLeft % 60;
+    timerElem.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    if (timeLeft <= 0) {
+        clearInterval(timerId);
+        document.getElementById("timeoutAlert").style.display = "flex";
+    }
+}, 1000);
+
+function submitQuiz() {
+    clearInterval(timerId);
+    let score = 0;
+    questions.forEach((q, idx) => {
+        let selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        let expDiv = document.getElementById(`exp${idx}`);
+        expDiv.style.display = "block";
+        
+        let correctOpt = q.options.findIndex(o => o.isCorrect);
+        if (selected && q.options[parseInt(selected.value)].isCorrect) {
+            score++;
+            expDiv.className = "explanation exp-correct";
+            expDiv.innerHTML = `<b>Верно!</b> ${q.exp}`;
+        } else {
+            expDiv.className = "explanation exp-incorrect";
+            expDiv.innerHTML = `<b>Неверно.</b> Правильный ответ: ${q.options[correctOpt].text}.<br>${q.exp}`;
+        }
+    });
+
+    let percent = (score / 20) * 100;
+    let mark = 1;
+    if (percent >= 96) mark = 10;
+    else if (percent >= 90) mark = 9;
+    else if (percent >= 80) mark = 8;
+    else if (percent >= 70) mark = 7;
+    else if (percent >= 60) mark = 6;
+    else if (percent >= 50) mark = 5;
+    else if (percent >= 40) mark = 4;
+    else if (percent >= 30) mark = 3;
+    else if (percent >= 15) mark = 2;
+    else mark = 1;
+
+    let resBox = document.getElementById("result");
+    resBox.style.display = "block";
+    if (mark >= 3) {
+        resBox.className = "result-box pass";
+        resBox.innerHTML = `Тест пройден! Верных ответов: ${score} из 20 (${percent}%).<br>Ваша оценка: ${mark} баллов.`;
+    } else {
+        resBox.className = "result-box fail";
+        resBox.innerHTML = `Тест не пройден (порог 3 балла не достигнут). Верных ответов: ${score} из 20.<br>Ваша оценка: ${mark} баллов.`;
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
