@@ -3,39 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система питания дизеля — Онлайн Тест 3 (Сложный уровень)</title>
+    <title>Тест 3: Система питания дизеля (Повышенный уровень)</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
-        .quiz-container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 20px; }
+        .quiz-container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
-        .timer-box { position: sticky; top: 10px; background: #e74c3c; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .question-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #c0392b; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
-        .question-card.wrong { border-left-color: #e74c3c; background-color: #fef2f2; }
-        .question-card.correct { border-left-color: #2ecc71; background-color: #f0fdf4; }
-        .question-text { font-weight: bold; font-size: 16px; margin-bottom: 12px; }
-        .option { display: block; margin: 8px 0; padding: 10px 12px; border-radius: 5px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
-        .option:hover { background: #e2e8f0; }
-        .option.correct-option { background-color: #d1fae5 !important; border-color: #10b981 !important; font-weight: bold; }
-        .option.wrong-option { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+        .timer-box { position: sticky; top: 15px; background: #e53e3e; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .question-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #e53e3e; padding: 18px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-card.wrong { border-left-color: #e53e3e; background-color: #fff5f5; }
+        .question-card.correct { border-left-color: #38a169; background-color: #f0fff4; }
+        .question-text { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: all 0.2s; }
+        .option:hover { background: #edf2f7; }
+        .option.correct-option { background-color: #c6f6d5 !important; border-color: #38a169 !important; font-weight: bold; }
+        .option.wrong-option { background-color: #fed7d7 !important; border-color: #e53e3e !important; }
         .option input { margin-right: 10px; }
-        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-submit:hover { background: #219150; }
+        .btn-submit { display: block; width: 100%; padding: 16px; background: #38a169; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #2f855a; }
         .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
-        .explanation { margin-top: 12px; padding: 10px; background: #e2e8f0; border-radius: 5px; font-size: 14px; color: #1e293b; display: none; }
-        .status-failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
-        .status-passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+        .explanation { margin-top: 12px; padding: 12px; background: #e2e8f0; border-radius: 6px; font-size: 14px; color: #1a202c; display: none; }
+        .status-failed { background: #fed7d7; border: 1px solid #feb2b2; color: #9b2c2c; }
+        .status-passed { background: #c6f6d5; border: 1px solid #9ae6b4; color: #22543d; }
+        
+        .overlay-timeout { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .timeout-msg { background: #e53e3e; color: #ffffff; padding: 40px; border-radius: 12px; text-align: center; border: 5px solid #ffffff; box-shadow: 0 0 30px rgba(229,62,62,0.8); max-width: 90%; }
+        .timeout-msg h1 { font-size: 32px; margin: 0 0 15px 0; text-transform: uppercase; }
+        .timeout-msg p { font-size: 20px; margin: 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
+<div id="timeoutOverlay" class="overlay-timeout">
+    <div class="timeout-msg">
+        <h1>ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</h1>
+        <p>Время отведенное на прохождение теста (10 минут) истекло!</p>
+    </div>
+</div>
+
 <div class="quiz-container">
     <div class="header">
-        <h2>Тест №3: Диагностика, неисправности и экологические системы дизеля</h2>
-        <p>20 вопросов с перемешиванием | Ограничение: 10 минут</p>
+        <h2>Тест №3: Диагностика, ремонт и экология системы питания (Повышенный уровень)</h2>
+        <p>20 вопросов | Ограничение времени: 10 минут | Шкала оценки: 10 баллов (Мин. порог: 3)</p>
     </div>
 
     <div class="timer-box">
-        <span>⏱️ Оставшееся время:</span>
+        <span>⏱️️ Оставшееся время:</span>
         <span id="timer">10:00</span>
     </div>
 
@@ -49,41 +61,78 @@
 
 <script>
 const rawQuestions = [
-    { q: "О чем свидетельствуетГустой ЧЕРНЫЙ дым из выхлопной трубы дизеля?", options: ["Неполное сгорание топлива из-за нехватки воздуха или переливающих форсунок", "Попадание антифриза в цилиндры", "Попадание масла в калиброванные каналы", "Использование качественного топлива"], correct: 0, exp: "Черный дым — это сажа (несгоревший углерод), возникающий при обогащенной смеси или плохом распыле." },
-    { q: "Какова наиболее вероятная причина появления БЕЛОГО густого дыма на прогретом дизеле?", options: ["Попадание охлаждающей жидкости (антифриза) в камеру сгорания", "Засорение масляного фильтра", "Избыток воздуха во впуске", "Высокое цетановое число"], correct: 0, exp: "Белый густой дым — это испарившийся пар от антифриза, проникающего через пробитую прокладку ГБЦ." },
-    { q: "Что означает СИНИЙ (голубоватый) дым из выхлопной трубы?", options: ["Попадание моторного масла в камеру сгорания", "Прогар глушителя", "Подсос воздуха в бак", "Слишком высокое давление в рампе"], correct: 0, exp: "Горящее масло дает характерный сизый/синий дым и специфический запах." },
-    { q: "Какую роль выполняет система рециркуляции отработавших газов (EGR)?", options: ["Возвращает часть выхлопных газов во впуск для снижения температуры сгорания и выбросов оксидов азота (NOx)", "Увеличивает мощность мотора на 20%", "Очищает топливо от воды", "Повышает давление турбины"], correct: 0, exp: "Инертные газы снижают пиковую температуру в цилиндре, предотвращая образование вредных NOx." },
-    { q: "Для чего предназначен сажевый фильтр (DPF / FAP)?", options: ["Для улавливания и последующего выжигания мелких частиц сажи из выхлопных газов", "Для очистки моторного масла", "Для фильтрации солярки", "Для глушения шума выхлопа"], correct: 0, exp: "Сажевый фильтр задерживает твердые частицы углерода и периодически проводит самоочистку (регенерацию)." },
-    { q: "Что такое жидкая реагентная система SCR (AdBlue / мочевина)?", options: ["Нейтрализация оксидов азота в выхлопе путем впрыска раствора мочевины перед селективным катализатором", "Присадка в топливный бак для смазки ТНВД", "Жидкость для промывки форсунок", "Антифриз для охлаждения рампы"], correct: 0, exp: "AdBlue разлагает вредные оксиды азота NOx на безвредный азот и воду." },
-    { q: "Что происходит, если форсунка Common Rail «сливает в обратку» сверх нормы?", options: ["Давление в рампе при прокрутке стартером не поднимается до пускового, двигатель не заводится", "Двигатель начинает работать быстрее", "Растет давление в баке", "Перегорают свечи накала"], correct: 0, exp: "Изношенный мультипликатор стравливает объем топлива в слив, и ТНВД не успевает создать пусковые 200–250 бар." },
-    { q: "К какому опасному явлению может привести неисправность форсунки («подвисание» в открытом состоянии)?", options: ["Прогар поршня и гидроудар из-за непрерывного капельного впрыска топлива", "Засорение воздушного фильтра", "Разрядка аккумулятора", "Поломка генератора"], correct: 0, exp: "Льющая форсунка создает точечный перегрев до расплавления днища поршня." },
-    { q: "Что такое «парафинизация» дизельного топлива?", options: ["Выпадение кристаллов парафина на холоде, забивающее поры топливного фильтра", "Сгущение масла в картере", "Попадание бензина в солярку", "Испарение цетанового компонента"], correct: 0, exp: "При отрицательных температурах летняя солярка мутнеет и блокирует фильтры." },
-    { q: "Как называется прибор для быстрой проверки формы факела распыла и давления открытия механических форсунок?", options: ["Дизельный стенд-опрессовщик (максиметр / штатив с манометром)", "Компрессометр бензиновый", "Осциллограф", "Ареометр"], correct: 0, exp: "Ручной стенд (например, НЦ-50) позволяет прокачать форсунку и оценить качество распыления." },
-    { q: "Что происходит при закоксовывании клапана EGR в открытом положении?", options: ["Двигатель теряет мощность, сильно дымит черным, плавают обороты на холостом ходу", "Двигатель начинает работать быстрее", "Расход топлива падает до нуля", "Отключается турбина"], correct: 0, exp: "Постоянный прорыв выхлопных газов во впуск лишает цилиндры необходимого объема свежего кислорода." },
-    { q: "Какова функция подогревателя топливного фильтра?", options: ["Растворение кристаллов парафина в дизтопливе при холодном пуске зимой", "Охлаждение топлива летом", "Повышение октанового числа", "Очистка от сажи"], correct: 0, exp: "Электрический подогрев элемента предотвращает забивание пор фильтра парафинами в мороз." },
-    { q: "Какое явление называют «разносом» дизельного двигателя?", options: ["Неуправляемый разгон мотора на масле из турбины/картера при отключенной подаче топлива", "Быстрый разгон машины на трассе", "Вибрация на холостом ходу", "Взрыв топлива в баке"], correct: 0, exp: "Дизель начинает использовать собственное моторное масло как топливо и крутится до саморазрушения." },
-    { q: "Как заглушить дизельный двигатель, ушедший в «разнос»?", options: ["Перекрыть доступ воздуха во впускной коллектор или зажать выхлоп", "Повернуть ключ зажигания", "Нажать на педаль газа", "Включить кондиционер"], correct: 0, exp: "Поскольку отключение подачи топлива с форсунок не помогает, мотор глушат полным перекрытием воздуха." },
-    { q: "Что показывает коррекция форсунок (Fuel Trim / Cylinder Balancing), считываемая сканером?", options: ["Величина отклонения подачи топлива по конкретному цилиндру для выравнивания плавности хода", "Уровень масла", "Давление наддува", "Температуру выхлопа"], correct: 0, exp: "ЭБУ прибавляет или уменьшает дозу для цилиндра, компенсируя падение компрессии или износ форсунки." },
-    { q: "Зачем в турбодизелях используется интеркулер (охладитель наддувочного воздуха)?", options: ["Охлаждение сжатого турбиной воздуха повышает его плотность и содержание кислорода", "Для охлаждения дизтоплива", "Для обогрева салона", "Для снижения давления масла"], correct: 0, exp: "Плотный холодный воздух позволяет сжечь больше топлива за один цикл." },
-    { q: "К чему приводит потеря герметичности впускного тракта ПОСЛЕ турбины и датчика DMM (негерметичность патрубков)?", options: ["Нехваток воздуха, падение мощности, черный выхлоп и передув/недодув", "Рост компрессии", "Экономия топлива", "Тихая работа"], correct: 0, exp: "Утечка сжатого воздуха нарушает пропорцию смеси, вызывая неполное сгорание." },
-    { q: "Какую проверку проводят для определения состояния поршневой группы дизеля при затрудненном пуске?", options: ["Замер компрессии компрессометром для дизелей (до 30–40 бар)", "Проверку искры", "Измерение напряжения на АКБ", "Проверку уровня антифриза"], correct: 0, exp: "Для самовоспламенения дизтоплива компрессия должна быть не ниже 20–25 бар (в зависимости от ДВС)." },
-    { q: "Что происходит при отказе датчика давления наддува (MAP/Boost Pressure Sensor)?", options: ["ЭБУ переходит в аварийный режим с ограничением мощности и подачи топлива", "Мотор взрывается", "Турбина начинает вращаться в другую сторону", "Расход топлива падает"], correct: 0, exp: "Без данных о давлении воздуха ЭБУ ограничивает впрыск во избежание образования дыма." },
-    { q: "С какой целью применяется кодирование IMA / QR-кодов при замене форсунок Common Rail?", options: ["Ввод индивидуальных калибровочных характеристик форсунки в ЭБУ для точной дозировки", "Для защиты форсунки от кражи", "Чтобы включить гарантию", "Для автоматической прокачки"], correct: 0, exp: "Код содержит данные микронеточностей изготовления распылителя, позволяя ЭБУ точнейшим образом корректировать импульсы." }
+    { q: "О какой неисправности системы питания чаще всего свидетельствует ЧЕРНЫЙ густой дым из выхлопной трубы?", options: ["Переобогащение смеси: недостаток воздуха или льющие (негерметичные) форсунки", "Попадание охлаждающей жидкости в цилиндры", "Завоздушивание системы питания", "Попадание масла в катализатор"], correct: 0, exp: "Черный дым — это нерастворившийся углерод (сажа), возникающий из-за недостатка воздуха или чрезмерной подачи топлива." },
+    { q: "Какая неисправность вызывает появление БЕЛОГО дыма с запахом несгоревшего дизельного топлива на холодном ДВС?", options: ["Поздний впрыск топлива или пропуск воспламенения из-за низкой компрессии/свечи накала", "Ранний впрыск топлива", "Забитый сажевый фильтр", "Избыточное давление турбины"], correct: 0, exp: "Белый дым — это мелкодисперсные капли испарившегося, но не воспламенившегося дизельного топлива." },
+    { q: "Для чего при диагностике форсунок Common Rail выполняют тест на «слив в обратку»?", options: ["Для проверки износа управляющего клапана мультипликатора форсунки", "Для измерения давления подкачивающего насоса", "Для проверки цетанового числа", "Для определения объема бака"], correct: 0, exp: "Если клапан изношен, большая часть топлива под давлением стравливается в обратку, из-за чего давление в рампе не поднимается до пускового." },
+    { q: "Что такое «разнос» дизельного двигателя и какова причина его возникновения со стороны системы питания?", options: ["Нконтролируемый разгон ДВС из-за поступления в цилиндры топлива/масла вопреки регулятору", "Падение оборотов до нуля", "Разрыв топливного бака", "Заклинивание генератора"], correct: 0, exp: "Дизель начинает работать на собственном моторном масле (из турбины или вентиляции) или из-за заклинивания рейки ТНВД." },
+    { q: "Как называется показатель самовоспламеняемости дизельного топлива?", options: ["Цетановое число", "Октановое число", "Вязкость по SAE", "Йодное число"], correct: 0, exp: "Цетановое число характеризует задержку самовоспламенения топлива (оптимально 45-55)." },
+    { q: "Какова главная задача системы рециркуляции отработавших газов (EGR/ОГ) на дизеле?", options: ["Снижение образования оксидов азота (NOx) за счет понижения температуры сгорания", "Увеличение мощности на 20%", "Очистка топлива от парафинов", "Подогрев катализатора"], correct: 0, exp: "Перенаправление части инертных газов во впуск снижает пиковую температуру сгорания и количество NOx." },
+    { q: "Как работает сажевый фильтр (DPF / FAP) и для чего нужна его «регенерация»?", options: ["Улавливает частицы сажи и периодически выжигает их при нагреве до 600-650°C", "Промывается водой из бачка", "Фильтрует воду из солярки", "Задерживает пары масла"], correct: 0, exp: "Регенерация — процесс выжигания накопившейся сажи путем позднего впрыска дополнительного топлива." },
+    { q: "Для чего используется реагент AdBlue (мочевина) в системах селективной каталической нейтрализации (SCR)?", options: ["Для химического восстановления токсичных оксидов азота NOx до безвредного N2 и воды", "Для очистки форсунок от нагара", "Для разжижения зимнего топлива", "Для смазки ТНВД"], correct: 0, exp: "Впрыск раствора AdBlue в горячие выхлопные газы разлагает оксиды азота на азот и пар." },
+    { q: "Что происходит с коррекцией форсунок (IMA / QR кодированием) при установке новых форсунок Common Rail?", options: ["Код заносится в ЭБУ для точной электронной компенсации заводских допусков распыла", "Код стирается с корпуса", "Форсунка настраивается механическим винтом", "Кодирование не требуется"], correct: 0, exp: "Индивидуальный код содержит данные о микроскопических отклонениях подачи, что позволяет ЭБУ выровнять работу всех цилиндров." },
+    { q: "К какому эффекту приводит СЛИШКОМ РАННИЙ угол опережения впрыска топлива?", options: ["Жёсткая («металлический стук») работа двигателя, резкое возрастание ударных нагрузок", "Мягкая и бесшумная работа", "Черный дым и падение давления масла", "Перегрев выхлопного коллектора"], correct: 0, exp: "Топливо подается слишком рано, давление газов нарастает до того, как поршень дойдет до ВМТ, вызывая жесткий удар." },
+    { q: "К какому эффекту приводит СЛИШКОМ ПОЗДНИЙ угол опережения впрыска топлива?", options: ["Догорание топлива на линии расширения, падение мощности, перегрев и дымление", "Повышение КПД", "Стуки в шатунах", "Заклинивание плунжера"], correct: 0, exp: "Топливо догорает в процессе хода расширения и в выхлопном коллекторе, снижая мощность и перегревая детали." },
+    { q: "Каким образом кавитация повреждает детали топливной аппаратуры высокой магистрали?", options: ["Схлопывание микропузырьков пара выбивает частицы металла с поверхностей", "Замораживает топливо", "Вызывает химическое окрашивание", "Растягивает пружины"], correct: 0, exp: "Кавитационный износ возникают из-за локальных скачков давления и разрушает микроучастки металла." },
+    { q: "Что показывает диагностический параметр 'Smoothness / Cylinder Balancing' (балансировка цилиндров)?", options: ["Степень корректировки подачи топлива по цилиндрам для равномерности вращения коленвала", "Уровень масла в поддоне", "Скорость движения автомобиля", "Давление наддува"], correct: 0, exp: "ЭБУ добавляет или убавляет топливо на каждую форсунку, чтобы компенсировать разницу в компрессии и износе." },
+    { q: "Почему критично соблюдать чистоту (класс стерильности) при ремонте систем Common Rail?", options: ["Зазоры в прецизионных клапанах составляют 1-2 микрона, микрочастица грязи заклинит их", "Чтобы не испачкать руки", "Для красоты детали", "Чтобы топливо не изменило цвет"], correct: 0, exp: "Соринки размером в доли микрона вызывают мгновенное зависание иглы или клапана-мультипликатора." },
+    { q: "Какова функция клапана дозирования топлива (VCV / MPROP) на входе в ТНВД Common Rail?", options: ["Регулирует объем топлива, подаваемого в секции сжатия ТНВД, экономя энергию", "Сливает все топливо в бак", "Отключает свечи накала", "Перекрывает глушитель"], correct: 0, exp: "Дозирующий клапан подает в ТНВД только необходимый объем солярки, предотвращая лишний нагрев сжатием." },
+    { q: "Какой симптом указывает на заклинивание иглы распылителя в ОТКРЫТОМ положении?", options: ["Стуки в цилиндре, сильный сизый/черный дым, оплавление и прогар поршня", "Двигатель идеально работает", "Мгновенное глушение турбины", "Прекращение подачи масла"], correct: 0, exp: "Открытая форсунка непрерывно «лит» топливо, выжигая отверстие в днище поршня локальным перегревом." },
+    { q: "Какое явление называют 'парафинизацией' дизельного топлива?", options: ["Кристаллизация тяжелых углеводородов при охлаждении ниже температуры помутнения", "Выпадение в осадок спирта", "Превращение солярки в газ", "Смешивание с водой"], correct: 0, exp: "Низкие температуры вызывают выпадение парафиновых кристаллов, блокирующих топливные фильтры." },
+    { q: "Что измеряется с помощью стенда для испытания дизельных форсунок (опрессовщика)?", options: ["Давление открытия, качество и форма факела распыла, герметичность узла", "Размер резьбы", "Цетановое число", "Электрическое сопротивление катушки"], correct: 0, exp: "Ручной опрессовщик позволяет визуально оценить отсечку, четкость впрыска и герметичность конуса." },
+    { q: "Как вихревые заслонки (Swirl Flaps) во впускном коллекторе влияют на смесеобразование?", options: ["Изменяют скорость и завихрение воздуха на низких оборотах для полного сгорания", "Блокируют подачу дизеля", "Сливают масло в поддон", "Увеличивают громкость выхлопа"], correct: 0, exp: "Заслонки перекрывают часть каналов, перенаправляя поток воздуха и улучшая смешивание с соляркой." },
+    { q: "Из-за чего в топливной рампе Common Rail может неожиданно падать давление при ускорении?", options: ["Забитый фильтр, износ ТНВД или чрезмерный слив одной из форсунок в обратку", "Слишком высокая температура воздуха", "Перегорание лампочки стоп-сигнала", "Повышение уровня масла"], correct: 0, exp: "При резком нажатии на газ потребление растет, и изношенный насос/льющая форсунка не удерживают давление." }
 ];
 
-function shuffle(array) {
-    let cur = array.length, rIdx;
-    while (cur !== 0) {
-        rIdx = Math.floor(Math.random() * cur);
-        cur--;
-        [array[cur], array[rIdx]] = [array[rIdx], array[cur]];
+function shuffleArray(arr) {
+    let array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 }
 
-const quizData = shuffle([...rawQuestions]);
+let activeQuestions = [];
 let timeLeft = 600;
 let timerInterval;
+
+function initQuiz() {
+    let shuffledQ = shuffleArray(rawQuestions);
+    activeQuestions = shuffledQ.map(qObj => {
+        let optionsWithFlag = qObj.options.map((optText, index) => ({
+            text: optText,
+            isCorrect: index === qObj.correct
+        }));
+        let shuffledOpts = shuffleArray(optionsWithFlag);
+        return {
+            q: qObj.q,
+            options: shuffledOpts,
+            exp: qObj.exp
+        };
+    });
+
+    renderQuiz();
+    startTimer();
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    
+    activeQuestions.forEach((item, qIdx) => {
+        let html = `<div class="question-card" id="card_${qIdx}">
+            <div class="question-text">Вопрос ${qIdx + 1}. ${item.q}</div>`;
+        
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option" id="opt_${qIdx}_${optIdx}">
+                <input type="radio" name="q${qIdx}" value="${optIdx}"> ${opt.text}
+            </label>`;
+        });
+        
+        html += `<div class="explanation" id="exp_${qIdx}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
 
 function startTimer() {
     timerInterval = setInterval(() => {
@@ -91,60 +140,59 @@ function startTimer() {
         let min = Math.floor(timeLeft / 60);
         let sec = timeLeft % 60;
         document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            finishQuiz(true);
+            triggerTimeout();
         }
     }, 1000);
 }
 
-function renderQuiz() {
-    const container = document.getElementById('questionsContainer');
-    quizData.forEach((item, index) => {
-        let html = `<div class="question-card" id="card_${index}">
-            <div class="question-text">${index + 1}. ${item.q}</div>`;
-        item.options.forEach((opt, optIdx) => {
-            html += `<label class="option" id="opt_${index}_${optIdx}">
-                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
-            </label>`;
-        });
-        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
-        container.innerHTML += html;
-    });
+function triggerTimeout() {
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+    document.getElementById('timeoutOverlay').style.display = 'flex';
+}
+
+function calculateScore(correctCount) {
+    if (correctCount >= 19) return 10;
+    if (correctCount >= 17) return 9;
+    if (correctCount >= 15) return 8;
+    if (correctCount >= 13) return 7;
+    if (correctCount >= 11) return 6;
+    if (correctCount >= 9) return 5;
+    if (correctCount >= 7) return 4;
+    if (correctCount >= 5) return 3;
+    return 2;
 }
 
 function finishQuiz(isTimeout) {
+    if (isTimeout) return;
     clearInterval(timerInterval);
+
     const inputs = document.querySelectorAll('input[type="radio"]');
     inputs.forEach(i => i.disabled = true);
 
-    const resultBox = document.getElementById('resultBox');
-    resultBox.style.display = 'block';
+    let correctCount = 0;
 
-    if (isTimeout) {
-        resultBox.className = 'result-box status-failed';
-        resultBox.innerHTML = `<h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2><p><strong>Время (10 минут) истекло!</strong> Оценка: <strong>2 (Неудовлетворительно)</strong>.</p>`;
-        return;
-    }
-
-    let score = 0;
-    quizData.forEach((item, index) => {
-        const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        const card = document.getElementById(`card_${index}`);
-        const exp = document.getElementById(`exp_${index}`);
+    activeQuestions.forEach((item, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const card = document.getElementById(`card_${qIdx}`);
+        const exp = document.getElementById(`exp_${qIdx}`);
         exp.style.display = 'block';
 
-        const correctOptEl = document.getElementById(`opt_${index}_${item.correct}`);
+        let correctOptIdx = item.options.findIndex(o => o.isCorrect);
+        const correctOptEl = document.getElementById(`opt_${qIdx}_${correctOptIdx}`);
         if (correctOptEl) correctOptEl.classList.add('correct-option');
 
         if (selected) {
-            const userAns = parseInt(selected.value);
-            if (userAns === item.correct) {
-                score++;
+            const userAnsIdx = parseInt(selected.value);
+            if (item.options[userAnsIdx].isCorrect) {
+                correctCount++;
                 card.classList.add('correct');
             } else {
                 card.classList.add('wrong');
-                const wrongOptEl = document.getElementById(`opt_${index}_${userAns}`);
+                const wrongOptEl = document.getElementById(`opt_${qIdx}_${userAnsIdx}`);
                 if (wrongOptEl) wrongOptEl.classList.add('wrong-option');
             }
         } else {
@@ -152,26 +200,26 @@ function finishQuiz(isTimeout) {
         }
     });
 
-    let mark = "";
-    let statusClass = "";
-    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "status-passed"; }
-    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "status-passed"; }
-    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "status-passed"; }
-    else { mark = "2 (Неудовлетворительно)"; statusClass =="status-failed"; }
+    const score = calculateScore(correctCount);
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
 
-    resultBox.className = `result-box ${statusClass}`;
+    const isPassed = score >= 3;
+    resultBox.className = `result-box ${isPassed ? 'status-passed' : 'status-failed'}`;
+
     resultBox.innerHTML = `
-        <h2>Результаты проверки</h2>
-        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
-        <p>Итоговая оценка: <strong>${mark}</strong></p>
-        <hr><p>Правильные ответы подсвечены зеленым цветом, ошибочные — красным.</p>
+        <h2>Результаты прохождения теста</h2>
+        <p>Правильных ответов: <strong>${correctCount} из 20</strong></p>
+        <p>Итоговая оценка: <strong>${score} баллов из 10</strong></p>
+        <p>Статус: <strong>${isPassed ? 'ТЕСТ СДАН' : 'ТЕСТ НЕ ПРОЙДЕН'}</strong> (Минимальный порог: 3 балла)</p>
+        <hr>
+        <p><small>Зеленым цветом выделены верные ответы, красным — ваши ошибочные варианты.</small></p>
     `;
+    
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-window.onload = function() {
-    renderQuiz();
-    startTimer();
-};
+window.onload = initQuiz;
 </script>
 </body>
 </html>

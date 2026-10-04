@@ -3,35 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система питания дизеля — Онлайн Тест 2 (Средний уровень)</title>
+    <title>Тест 2: Система питания дизеля (Средний уровень)</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
-        .quiz-container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 20px; }
+        .quiz-container { max-width: 850px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
-        .timer-box { position: sticky; top: 10px; background: #e74c3c; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .question-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #f39c12; padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; }
-        .question-card.wrong { border-left-color: #e74c3c; background-color: #fef2f2; }
-        .question-card.correct { border-left-color: #2ecc71; background-color: #f0fdf4; }
-        .question-text { font-weight: bold; font-size: 16px; margin-bottom: 12px; }
-        .option { display: block; margin: 8px 0; padding: 10px 12px; border-radius: 5px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: background 0.2s; }
-        .option:hover { background: #e2e8f0; }
-        .option.correct-option { background-color: #d1fae5 !important; border-color: #10b981 !important; font-weight: bold; }
-        .option.wrong-option { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+        .timer-box { position: sticky; top: 15px; background: #dd6b20; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .question-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #dd6b20; padding: 18px 20px; margin-bottom: 20px; border-radius: 6px; }
+        .question-card.wrong { border-left-color: #e53e3e; background-color: #fff5f5; }
+        .question-card.correct { border-left-color: #38a169; background-color: #f0fff4; }
+        .question-text { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+        .option { display: block; margin: 8px 0; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: all 0.2s; }
+        .option:hover { background: #edf2f7; }
+        .option.correct-option { background-color: #c6f6d5 !important; border-color: #38a169 !important; font-weight: bold; }
+        .option.wrong-option { background-color: #fed7d7 !important; border-color: #e53e3e !important; }
         .option input { margin-right: 10px; }
-        .btn-submit { display: block; width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-submit:hover { background: #219150; }
+        .btn-submit { display: block; width: 100%; padding: 16px; background: #38a169; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-submit:hover { background: #2f855a; }
         .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
-        .explanation { margin-top: 12px; padding: 10px; background: #e2e8f0; border-radius: 5px; font-size: 14px; color: #1e293b; display: none; }
-        .status-failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
-        .status-passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+        .explanation { margin-top: 12px; padding: 12px; background: #e2e8f0; border-radius: 6px; font-size: 14px; color: #1a202c; display: none; }
+        .status-failed { background: #fed7d7; border: 1px solid #feb2b2; color: #9b2c2c; }
+        .status-passed { background: #c6f6d5; border: 1px solid #9ae6b4; color: #22543d; }
+        
+        .overlay-timeout { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .timeout-msg { background: #e53e3e; color: #ffffff; padding: 40px; border-radius: 12px; text-align: center; border: 5px solid #ffffff; box-shadow: 0 0 30px rgba(229,62,62,0.8); max-width: 90%; }
+        .timeout-msg h1 { font-size: 32px; margin: 0 0 15px 0; text-transform: uppercase; }
+        .timeout-msg p { font-size: 20px; margin: 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
+<div id="timeoutOverlay" class="overlay-timeout">
+    <div class="timeout-msg">
+        <h1>ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</h1>
+        <p>Время отведенное на прохождение теста (10 минут) истекло!</p>
+    </div>
+</div>
+
 <div class="quiz-container">
     <div class="header">
-        <h2>Тест №2: ТНВД, аккумуляторы давления, Common Rail и форсунки</h2>
-        <p>20 вопросов с перемешиванием | Ограничение: 10 минут</p>
+        <h2>Тест №2: Работа и узлы системы питания дизеля (Средний уровень)</h2>
+        <p>20 вопросов | Ограничение времени: 10 минут | Шкала оценки: 10 баллов (Мин. порог: 3)</p>
     </div>
 
     <div class="timer-box">
@@ -49,41 +61,78 @@
 
 <script>
 const rawQuestions = [
-    { q: "Что представляет собой плунжерная пара ТНВД?", options: ["Плунжер (поршень) и втулка (цилиндр) с высочайшей точностью подогнаны друг к другу", "Шестерня и корпус насоса", "Клапан и пружина", "Подшипник и вал"], correct: 0, exp: "Плунжерная пара является основным рабочим элементом ТНВД, где зазор составляет от 1 до 3 микрон." },
-    { q: "Как изменяется количество подаваемого топлива в секции классического рядногo ТНВД?", options: ["Поворотом плунжера вокруг своей оси с помощью спиральной отсечной канавки", "Изменением длины хода кулачка", "Изменением диаметра впускного клапана", "Изменением оборотов вентилятора"], correct: 0, exp: "При повороте плунжера отсечная канавка раньше или позже соединяет надплунжерное пространство со сливом." },
-    { q: "В чем главное отличие системы Common Rail от классических ТНВД?", options: ["Создание высокого давления в общей рампе независимо от оборотов двигателя", "Отсутствие форсунок", "Использование бензина вместо солярки", "Отсутствие электронного блока управления"], correct: 0, exp: "В Common Rail аккумулятором давления выступает рампа, а момент и доза впрыска управляются ЭБУ." },
-    { q: "Какое максимальное давление создают современные системы Common Rail (3-го и 4-го поколений)?", options: ["До 2000–2500 бар (200–250 МПа)", "До 50 бар", "До 300 бар", "До 10 000 бар"], correct: 0, exp: "Давление в современных аккумуляторах Common Rail достигает 2200–2500 бар для ультрамелкого распыла." },
-    { q: "Что такое пьезоэлектрическая форсунка (пьезофорсунка)?", options: ["Форсунка, использующая расширение пьезокристаллов под напряжением для сверхбыстрого открытия", "Форсунка с зажиганием от искры", "Форсунка, работающая от давления воздуха", "Форсунка с ручным приводом"], correct: 0, exp: "Пьезоактюатор срабатывает в 4-5 раз быстрее электромагнитного клапана, позволяя делать до 8 впрысков за цикл." },
-    { q: "Для чего в современных дизелях применяется предвпрыск (пилотный впрыск)?", options: ["Для снижения жесткости сгорания, шума и уменьшения выбросов NOx", "Для продувки выхлопного тракта", "Для охлаждения цилиндра", "Для увеличения расхода топлива"], correct: 0, exp: "Малая доза топлива плавно поднимает температуру в цилиндре перед основным впрыском." },
-    { q: "Какую роль выполняет датчик давления топлива в рампе Common Rail?", options: ["Передает данные на ЭБУ для управления клапаном-регулятором давления", "Отключает аккумулятор", "Показывает уровень топлива в баке", "Включает свечи накала"], correct: 0, exp: "ЭБУ непрерывно отслеживает фактическое давление в рампе и корректирует работу клапанов." },
-    { q: "Что из себя представляет насос-форсунка?", options: ["Узел, объединяющий плунжерный насос высокого давления и распылитель в одном корпусе", "Обычный топливный фильтр", "Электрический насос в баке", "Клапан сброса давления"], correct: 0, exp: "Насос-форсунка устанавливается в ГБЦ индивидуально на каждый цилиндр и приводится кулачком распредвала." },
-    { q: "Зачем в ТНВД распределительного типа (например, Bosch VE) используется один плунжер?", options: ["Один плунжер совершает возвратно-поступательное и вращательное движение, подавая топливо во все цилиндры", "Он питает только один цилиндр", "Для охлаждения масла", "Для защиты от воды"], correct: 0, exp: "Распределительный плунжер за один оборот поочередно обслуживает все форсунки двигателя." },
-    { q: "Какую функцию выполняет нагнетательный клапан ТНВД?", options: ["Быстро отсекает подачу и разгружает магистраль высокого давления для предотвращения подкапывания", "Фильтрует солярку", "Увеличивает объем топлива в баке", "Нагнетает воздух во впуск"], correct: 0, exp: "Клапан стравливает остаточное давление из трубки, чтобы игла форсунки садилась четко и без капель." },
-    { q: "Зачем в дизельных системах с Common Rail устанавливается охладитель топлива на обратной магистрали?", options: ["Топливо в рампе сильного сжимается и нагревается, слив горячего топлива может повредить пластиковый бак", "Чтобы заморозить воду", "Для подогрева салона", "Для конденсирования газов"], correct: 0, exp: "Сжатие до 2000 бар сильно нагревает дизтопливо, поэтому слив в бак требует охлаждения." },
-    { q: "Что такое «мультипликатор давления» в гидравлической форсунке Common Rail?", options: ["Поршень управления, который передает давление топлива на иглу распылителя", "Устройство для смешивания с воздухом", "Регулятор оборотов", "Электрический трансформер"], correct: 0, exp: "Мультипликатор уравновешивает или стравливает давление над иглой для ее подъема." },
-    { q: "Какое преимущество дает использование многоструйных распылителей с 6–8 отверстиями?", options: ["Равномерное распределение факела топлива по всему объему камеры сгорания", "Уменьшение давления впрыска", "Быстрый слив топлива в бак", "Упрощение конструкции"], correct: 0, exp: "Множество микронных отверстий равномерно заполняет топливной взвесью коаксиальную чашу поршня." },
-    { q: "Как называется клапан, удерживающий заданный уровень давления в рампе Common Rail?", options: ["Регулятор давления топлива (PCV / DRV)", "Обратный клапан бака", "Перепускной клапан фильтра", "Дроссельный клапан"], correct: 0, exp: "Клапан регулировки давления сбрасывает избыток топлива из рампы обратно в сливную магистраль." },
-    { q: "Что происходит с топливом в цилиндре во время «поствпрыска» (дополнительного впрыска на такте расширения/выпуска)?", options: ["Топливо попадает в выпускной тракт для разогрева сажевого фильтра (DPF)", "Увеличивает мощность на 50%", "Охлаждает поршень", "Снижает давление в рампе"], correct: 0, exp: "Поствпрыск применяется для процесса активной регенерации сажевого фильтра." },
-    { q: "За счет чего происходит подъем иглы в электромагнитной форсунке Common Rail?", options: ["За счет стравливания давления из управляющей камеры над мультипликатором", "Прямым механическим действием магнита на иглу", "За счет подкачки воздуха", "Под действием пружины"], correct: 0, exp: "Электромагнит открывает управляющий клапан, давление над поршнем падает, и высокое давление снизу поднимает иглу." },
-    { q: "Какое масло используется для смазки деталей плунжерных пар ТНВД современных дизелей?", options: ["Прокачиваемое через них дизельное топливо", "Моторное масло из картера", "Трансмиссионная смазка", "Пластичная смазка Литол"], correct: 0, exp: "Современные ТНВД смазываются исключительно проходящим через них дизельным топливом." },
-    { q: "Зачем на входе в ТНВД Common Rail часто устанавливают дозирующий клапан (VCV / ZME)?", options: ["Чтобы насос сжимал только необходимый для текущего режима объем топлива", "Чтобы полностью перекрывать воздух", "Для измерения температуры", "Для разгона турбины"], correct: 0, exp: "Дозирование на входе снижает затраты мощности двигателя на привод ТНВД и уменьшает нагрев топлива." },
-    { q: "Что измеряет датчик температуры топлива в дизельной системе?", options: ["Плотность топлива для корректировки ЭБУ длительности впрыска", "Уровень масла", "Температуру выхлопных газов", "Загрязнение фильтра"], correct: 0, exp: "При нагреве плотность и вязкость дизтоплива падают, поэтому ЭБУ вносит температурную компенсацию." },
-    { q: "Как вихревые заслонки во впускном коллекторе влияют на смесеобразование?", options: ["Перекрывают часть каналов на малых нагрузках для создания интенсивного завихрения воздуха", "Уменьшают компрессию", "Отсекают подачу топлива", "Фильтруют поступающий воздух"], correct: 0, exp: "Вихревое движение улучшает перемешивание топлива с воздухом на низких оборотах." }
+    { q: "Как изменяется цикловая подача топлива в секции ТНВД с поворотным плунжером?", options: ["Поворотом плунжера вокруг своей оси с помощью зубчатой рейки", "Увеличением хода кулачкового вала", "Изменением жесткости пружины форсунки", "Регулировкой давления подкачивающего насоса"], correct: 0, exp: "Поворот плунжера изменяет положение его винтовой кромки относительно отсечного отверстия." },
+    { q: "Какое главное отличие аккумуляторной системы питания Common Rail от механических ТНВД?", options: ["Давление создается в общей рампе независимо от оборотов ДВС", "Топливо впрыскивается механическим толкателем", "Отсутствует фильтр тонкой очистки", "Впрыск происходит только один раз за цикл"], correct: 0, exp: "В Common Rail аккумулятором высокого давления является рампа, а управляет впрыском ЭБУ." },
+    { q: "Что регулирует муфта опережения впрыска топлива на механических ТНВД?", options: ["Угол опережения впрыска в зависимости от частоты вращения коленвала", "Давление в топливном баке", "Количество топлива на холостом ходу", "Температуру топлива"], correct: 0, exp: "Центробежная муфта поворачивает вал ТНВД относительно привода, меняя момент начала подаче топлива." },
+    { q: "За счет чего открывается электрогидравлическая форсунка в системе Common Rail?", options: ["Падением давления над мультипликатором при открытии электромагнитного/пьезо клапана", "Прямым давлением на кулачок", "Механической тягой от педали", "Сжатым воздухом"], correct: 0, exp: "Клапан сбрасывает давление из камеры управления, и высокое давление снизу поднимает иглу." },
+    { q: "Какую роль выполняет нагнетательный клапан секции ТНВД?", options: ["Предотвращает обратный переток топлива и обеспечивает четкую отсечку впрыска", "Регулирует состав воздуха", "Создает вакуум в цилиндре", "Фильтрует топливо"], correct: 0, exp: "Нагнетательный клапан вместе с разгрузочным пояском резко снижает давление в трубке для четкого закрытия форсунки." },
+    { q: "В чем преимущество применения пьезоэлектрических форсунок перед электромагнитными?", options: ["Высочайшее быстродействие и возможность совершать до 7-9 впрысков за цикл", "Меньшая стоимость изготовления", "Полная независимость от электричества", "Отсутствие обратной магистрали"], correct: 0, exp: "Пьезоэлементы срабатывают в разы быстрее электромагнитов, обеспечивая сверхточную дозировку." },
+    { q: "Как называется смесеобразование, при котором топливо распыляется непосредственно в объем камеры сгорания в поршне?", options: ["Непосредственное (прямое)", "Предкамерное", "Вихрекамерное", "Карбюраторное"], correct: 0, exp: "При непосредственном впрыске (Direct Injection) камера сгорания расположена прямо в днище поршня." },
+    { q: "Какую функцию выполняет редукционный (перепускной) клапан в ТНВД?", options: ["Поддерживает стабильное давление топлива в канале низкого давления ТНВД", "Перекрывает подачу воздуха", "Отключает форсунки при торможении", "Сливает топливо из фильтра"], correct: 0, exp: "Перепускной клапан сбрасывает избыток топлива от подкачивающего насоса обратно на впуск." },
+    { q: "Для чего используется датчик давления топлива в рампе Common Rail?", options: ["Передает данные в ЭБУ для управления клапаном регулятором давления", "Включает свечи накала", "Измеряет уровень топлива в баке", "Показывает температуру масла"], correct: 0, exp: "ЭБУ считывает сигнал датчика (RPS) и регулирует работу клапанов высокого давления." },
+    { q: "Что происходит при попадании воздуха в магистраль высокого давления механического дизеля?", options: ["Воздух сжимается плунжером, и давления не хватает для открытия форсунки", "Двигатель набирает максимальные обороты", "Давление в системе вырастает", "Форсунка начинает лить топливо рекой"], correct: 0, exp: "Воздух сжимаем в отличие от жидкости, поэтому плунжер лишь сжимает пузырь без подъема иглы." },
+    { q: "Какое преимущество дает многофазный впрыск (предварительный, основной, дополнительный)?", options: ["Мягкая работа ДВС, снижение шума, полнота сгорания и снижение выбросов", "Увеличение расхода топлива", "Повышение температуры выхлопных газов до 2000 градусов", "Уменьшение мощности"], correct: 0, exp: "Пилотный (предварительный) впрыск подготавливает температуру в цилиндре, устраняя жесткий стук." },
+    { q: "Как влияет износ рабочей фаски и иглы распылителя форсунки на сгорание?", options: ["Ухудшается качество распыла, топливо капает, появляется черный дым", "Двигатель работает тише", "Компрессия увеличивается", "Снижается расход топлива"], correct: 0, exp: "Изношенная игла не перекрывает канал четко, выхватывая 'капли', что ведет к нагарообразованию и дымности." },
+    { q: "Что такое насос-форсунка?", options: ["Агрегат, объединяющий в едином корпусе плунжерный насос и форсунку", "Подкачивающий насос в баке", "Обычная форсунка с датчиком", "ТНВД с электрическим двигателем"], correct: 0, exp: "Насос-форсунка приводится в действие кулачком распредвала и не имеет трубок высокого давления." },
+    { q: "Какое давление может развиваться в современных системах Common Rail (3-4 поколения)?", options: ["Более 2000 - 2500 бар", "10-20 бар", "100-150 бар", "5000 бар"], correct: 0, exp: "Современные системы работают под давлением 2000–2700 бар для максимально тонкого распыления." },
+    { q: "Какова задача охладителя топлива (топливного радиатора) в обратной магистрали?", options: ["Снижение температуры топлива, нагретого сжатием в рампе/ТНВД, перед возвратом в бак", "Нагрев топлива зимой", "Заморозка пара", "Очистка от серы"], correct: 0, exp: "Топливо из рампы возвращается очень горячим и может расплавить пластиковый бак или перегреть систему." },
+    { q: "За счет чего происходит смазка внутренних деталей ТНВД распределительного типа и Common Rail?", options: ["Непосредственно прокачиваемым дизельным топливом", "Автоматической подачей консистентной смазки (литола)", "Отдельной системой с пластичной смазкой", "Трансмиссионным маслом"], correct: 0, exp: "Дизельное топливо обладает смазывающими свойствами, поэтому важно его качество (смазывающая способность)." },
+    { q: "Что такое геометрический начало подачи топлива секцией ТНВД?", options: ["Момент перекрытия плунжером впускного/входного отверстия втулки", "Момент полного открытия форсунки", "Момент остановки поршня в НМТ", "Момент нажатия на педаль газа"], correct: 0, exp: "Когда плунжер перекрывает отверстие, начинается сжатие и нагнетание топлива." },
+    { q: "Какую роль выполняет аварийный предохранительный клапан на рампе Common Rail?", options: ["Сбрасывает давление в обратку при превышении допустимого лимита", "Увеличивает давление в 2 раза", "Отключает генератор", "Блокирует рулевое управление"], correct: 0, exp: "Клапан защищает элементы высокой магистрали от механического разрушения при сбое регулятора." },
+    { q: "Для чего на некоторых дизелях применяют подогреватель топливного фильтра?", options: ["Для растворения кристаллов парафина в солярке при отрицательных температурах", "Для выпаривания воды", "Для повышения октанового числа", "Для ускорения сгорания"], correct: 0, exp: "При морозе парафины забивают поры фильтра; подогрев возвращает жидкую фракцию." },
+    { q: "Как называется угол поворота коленчатого вала от начала впрыска до начала горения?", options: ["Период (задержка) самовоспламенения", "Такт расширения", "Фаза перекрытия", "Угол опережения зажигания"], correct: 0, exp: "Задержка самовоспламенения — ключевая фаза сгорания в дизельном ДВС." }
 ];
 
-function shuffle(array) {
-    let cur = array.length, rIdx;
-    while (cur !== 0) {
-        rIdx = Math.floor(Math.random() * cur);
-        cur--;
-        [array[cur], array[rIdx]] = [array[rIdx], array[cur]];
+function shuffleArray(arr) {
+    let array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 }
 
-const quizData = shuffle([...rawQuestions]);
+let activeQuestions = [];
 let timeLeft = 600;
 let timerInterval;
+
+function initQuiz() {
+    let shuffledQ = shuffleArray(rawQuestions);
+    activeQuestions = shuffledQ.map(qObj => {
+        let optionsWithFlag = qObj.options.map((optText, index) => ({
+            text: optText,
+            isCorrect: index === qObj.correct
+        }));
+        let shuffledOpts = shuffleArray(optionsWithFlag);
+        return {
+            q: qObj.q,
+            options: shuffledOpts,
+            exp: qObj.exp
+        };
+    });
+
+    renderQuiz();
+    startTimer();
+}
+
+function renderQuiz() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    
+    activeQuestions.forEach((item, qIdx) => {
+        let html = `<div class="question-card" id="card_${qIdx}">
+            <div class="question-text">Вопрос ${qIdx + 1}. ${item.q}</div>`;
+        
+        item.options.forEach((opt, optIdx) => {
+            html += `<label class="option" id="opt_${qIdx}_${optIdx}">
+                <input type="radio" name="q${qIdx}" value="${optIdx}"> ${opt.text}
+            </label>`;
+        });
+        
+        html += `<div class="explanation" id="exp_${qIdx}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
+        container.innerHTML += html;
+    });
+}
 
 function startTimer() {
     timerInterval = setInterval(() => {
@@ -91,60 +140,59 @@ function startTimer() {
         let min = Math.floor(timeLeft / 60);
         let sec = timeLeft % 60;
         document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            finishQuiz(true);
+            triggerTimeout();
         }
     }, 1000);
 }
 
-function renderQuiz() {
-    const container = document.getElementById('questionsContainer');
-    quizData.forEach((item, index) => {
-        let html = `<div class="question-card" id="card_${index}">
-            <div class="question-text">${index + 1}. ${item.q}</div>`;
-        item.options.forEach((opt, optIdx) => {
-            html += `<label class="option" id="opt_${index}_${optIdx}">
-                <input type="radio" name="q${index}" value="${optIdx}"> ${opt}
-            </label>`;
-        });
-        html += `<div class="explanation" id="exp_${index}"><strong>Пояснение:</strong> ${item.exp}</div></div>`;
-        container.innerHTML += html;
-    });
+function triggerTimeout() {
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(i => i.disabled = true);
+    document.getElementById('timeoutOverlay').style.display = 'flex';
+}
+
+function calculateScore(correctCount) {
+    if (correctCount >= 19) return 10;
+    if (correctCount >= 17) return 9;
+    if (correctCount >= 15) return 8;
+    if (correctCount >= 13) return 7;
+    if (correctCount >= 11) return 6;
+    if (correctCount >= 9) return 5;
+    if (correctCount >= 7) return 4;
+    if (correctCount >= 5) return 3;
+    return 2;
 }
 
 function finishQuiz(isTimeout) {
+    if (isTimeout) return;
     clearInterval(timerInterval);
+
     const inputs = document.querySelectorAll('input[type="radio"]');
     inputs.forEach(i => i.disabled = true);
 
-    const resultBox = document.getElementById('resultBox');
-    resultBox.style.display = 'block';
+    let correctCount = 0;
 
-    if (isTimeout) {
-        resultBox.className = 'result-box status-failed';
-        resultBox.innerHTML = `<h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2><p><strong>Время (10 минут) истекло!</strong> Оценка: <strong>2 (Неудовлетворительно)</strong>.</p>`;
-        return;
-    }
-
-    let score = 0;
-    quizData.forEach((item, index) => {
-        const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        const card = document.getElementById(`card_${index}`);
-        const exp = document.getElementById(`exp_${index}`);
+    activeQuestions.forEach((item, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const card = document.getElementById(`card_${qIdx}`);
+        const exp = document.getElementById(`exp_${qIdx}`);
         exp.style.display = 'block';
 
-        const correctOptEl = document.getElementById(`opt_${index}_${item.correct}`);
+        let correctOptIdx = item.options.findIndex(o => o.isCorrect);
+        const correctOptEl = document.getElementById(`opt_${qIdx}_${correctOptIdx}`);
         if (correctOptEl) correctOptEl.classList.add('correct-option');
 
         if (selected) {
-            const userAns = parseInt(selected.value);
-            if (userAns === item.correct) {
-                score++;
+            const userAnsIdx = parseInt(selected.value);
+            if (item.options[userAnsIdx].isCorrect) {
+                correctCount++;
                 card.classList.add('correct');
             } else {
                 card.classList.add('wrong');
-                const wrongOptEl = document.getElementById(`opt_${index}_${userAns}`);
+                const wrongOptEl = document.getElementById(`opt_${qIdx}_${userAnsIdx}`);
                 if (wrongOptEl) wrongOptEl.classList.add('wrong-option');
             }
         } else {
@@ -152,26 +200,26 @@ function finishQuiz(isTimeout) {
         }
     });
 
-    let mark = "";
-    let statusClass = "";
-    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "status-passed"; }
-    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "status-passed"; }
-    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "status-passed"; }
-    else { mark = "2 (Неудовлетворительно)"; statusClass = "status-failed"; }
+    const score = calculateScore(correctCount);
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
 
-    resultBox.className = `result-box ${statusClass}`;
+    const isPassed = score >= 3;
+    resultBox.className = `result-box ${isPassed ? 'status-passed' : 'status-failed'}`;
+
     resultBox.innerHTML = `
-        <h2>Результаты проверки</h2>
-        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
-        <p>Итоговая оценка: <strong>${mark}</strong></p>
-        <hr><p>Правильные ответы подсвечены зеленым цветом, ошибочные — красным.</p>
+        <h2>Результаты прохождения теста</h2>
+        <p>Правильных ответов: <strong>${correctCount} из 20</strong></p>
+        <p>Итоговая оценка: <strong>${score} баллов из 10</strong></p>
+        <p>Статус: <strong>${isPassed ? 'ТЕСТ СДАН' : 'ТЕСТ НЕ ПРОЙДЕН'}</strong> (Минимальный порог: 3 балла)</p>
+        <hr>
+        <p><small>Зеленым цветом выделены верные ответы, красным — ваши ошибочные варианты.</small></p>
     `;
+    
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-window.onload = function() {
-    renderQuiz();
-    startTimer();
-};
+window.onload = initQuiz;
 </script>
 </body>
 </html>
