@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест 1: Базовый уровень — Система пуска трактора</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .timer-sticky { position: sticky; top: 10px; background: #2c3e50; color: #fff; padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 5px; text-align: center; z-index: 1000; }
+        .q-block { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { margin: 6px 0; }
+        label { cursor: pointer; }
+        button { background-color: #27ae60; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:hover { background-color: #219150; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 6px; }
+        .failed-banner { background-color: #e74c3c; color: white; text-align: center; font-size: 28px; font-weight: bold; padding: 30px; border-radius: 8px; margin-top: 20px; text-transform: uppercase; }
+        .explanation { margin-top: 8px; padding: 8px; border-left: 4px solid #3498db; background: #ebf5fb; font-size: 14px; }
+        .correct-ans { color: #27ae60; font-weight: bold; }
+        .wrong-ans { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Тест 1: Базовые основы и устройство системы пуска</h2>
+    <div class="timer-sticky" id="timer">Осталось времени: 10:00</div>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Основное назначение системы пуска тракторного двигателя заключается в:", options: ["Преобразовании топлива в механическую энергию", "Прокручивании коленчатого вала дизеля до пусковых оборотов", "Охлаждении цилиндров дизеля", "Подаче топлива в цилиндры под высоким давлением"], a: 1, exp: "Система пуска предназначена для вращения коленчатого вала основного дизеля до частоты, при которой происходит воспламенение смеси." },
+    { q: "Какой способ пуска чаще всего применяется на тракторах малой и средней мощности?", options: ["Пусковым двигателем", "Электростартерный пуск", "Пневматический пуск", "Пуск с буксира"], a: 1, exp: "На тракторах небольшой и средней мощности преимущество отдается прямому электростартерному пуску." },
+    { q: "Какое устройство превращает электрическую энергию аккумулятора в механическую энергию вращения при пуске?", options: ["Генератор", "Электростартер", "Магнето", "Реле-регулятор"], a: 1, exp: "Электростартер представляет собой электродвигатель постоянного тока высокой мощности." },
+    { q: "Как называется вспомогательный карбюраторный двигатель, используемый для пуска мощных тракторных дизелей?", options: ["Пусковой двигатель (ПД)", "Компрессор", "Турбокомпрессор", "Гидромотор"], a: 0, exp: "Для пуска дизелей высокой мощности применяются двухтактные бензиновые пусковые двигатели (например, ПД-10, П-350)." },
+    { q: "Какое топливо используется для работы пусковых двигателей типа ПД-10У?", options: ["Дизельное топливо", "Смесь бензина с моторным маслом", "Чистый бензин АИ-92", "Керосин"], a: 1, exp: "Двухтактные пусковые двигатели смазываются маслом, добавленным в бензин в пропорции (обычно 1:15–1:20)." },
+    { q: "Механизм, передающий вращение от пускового двигателя к маховику основного дизеля, называется:", options: ["Коробка передач", "Редуктор пускового двигателя (трансмиссия пуска)", "Раздаточная коробка", "Дифференциал"], a: 1, exp: "Редуктор пускового двигателя снижает обороты и увеличивает крутящий момент, передаваемый на маховик." },
+    { q: "Какую роль выполняет муфта свободного хода (бендикс) в приводном механизме стартера?", options: ["Увеличивает мощность стартера", "Предохраняет якорь стартера от размотки после пуска дизеля", "Отключает аккумулятор", "Регулирует угол опережения впрыска"], a: 1, exp: "Муфта свободного хода разъединяет стартер и маховик, когда дизель набирает обороты, защищая стартер от разрушения." },
+    { q: "Для чего предназначен декомпрессионный механизм дизеля при пуске?", options: ["Для повышения давления в цилиндрах", "Для уменьшения сопротивления прокручиванию коленчатого вала", "Для подачи воздуха в цилиндры", "Для остановки двигателя"], a: 1, exp: "Декомпрессор приоткрывает клапаны, снимая компрессию и облегчая раскрутку коленвала." },
+    { q: "Какое устройство обеспечивает искрообразование в системе зажигания пускового двигателя?", options: ["Аккумулятор", "Генератор", "Магнето", "Стартер"], a: 2, exp: "В системах зажигания пусковых двигателей применяется автономное магнето." },
+    { q: "Шестерня привода редуктора пускового двигателя входит в зацепление с:", options: ["Шестерней распределительного вала", "Венечной шестерней маховика дизеля", "Шестерней масляного насоса", "Шкивом генератора"], a: 1, exp: "Вращение от пускового устройства передается непосредственно на зубчатый венец маховика." },
+    { q: "Какое средство облегчения пуска дизеля при низких температурах разогревает воздух во впускном коллекторе?", options: ["Свечи накаливания / Электрофакельный подогреватель (ЭФП)", "Декомпрессор", "Магнето", "Турбокомпрессор"], a: 0, exp: "ЭФП и свечи накаливания подогревают всасываемый воздух для облегчения воспламенения топлива в морозы." },
+    { q: "Тяговое (втягивающее) реле стартера выполняет следующую функцию:", options: ["Вводит шестерню привода в зацепление с венцом маховика и замыкает силовые контакты", "Регулирует напряжение генератора", "Отключает массу", "Заряжает аккумулятор"], a: 0, exp: "Втягивающее реле перемещает бендикс к маховику и включает питание электродвигателя стартера." },
+    { q: "По какому прибору или индикатору проверяют отсутствие давления в системе смазки при пуске?", options: ["Тахометр", "Указатель давления масла (манометр / контрольная лампа)", "Вольтметр", "Амперметр"], a: 1, exp: "После пуска дизеля необходимо контролировать давление масла по манометру или лампе." },
+    { q: "Свеча зажигания в пусковом двигателе предназначена для:", options: ["Подогрева топлива", "Воспламенения рабочей смеси искровым разрядом", "Измерения температуры", "Вывода выхлопных газов"], a: 1, exp: "Свеча зажигания создает искру в камеру сгорания бензинового ПД." },
+    { q: "Сколько тактов имеет рабочий цикл большинства пусковых двигателей тракторов (ПД-10, П-350)?", options: ["2 такта", "4 такта", "6 тактов", "1 такт"], a: 0, exp: "Пусковые двигатели ПД-10 и П-350 являются двухтактными." },
+    { q: "Для предотвращения пуска дизеля при включенной передаче в трансмиссии трактора применяется:", options: ["Блокировочное устройство в крышке КПП", "Декомпрессор", "Предохранитель в магнето", "Замок зажигания"], a: 0, exp: "Блокировочный механизм КПП размыкает цепь пуска стартера, если включена передача." },
+    { q: "За счет чего осуществляется смазка кривошипно-шатунного механизма двухтактного пускового двигателя?", options: ["От масляного насоса под давлением", "Разбрызгиванием масла, находящегося в смеси с бензином", "Из системы смазки основного дизеля", "Путем консистентной смазки через масленку"], a: 1, exp: "Масло, растворенное в бензине, вместе с горючей смесью поступает в картер и смазывает детали." },
+    { q: "Каким образом запускается сам пусковой двигатель ПД-10?", options: ["Электростартером или вручную (пусковым шнуром)", "Гидромотором", "Сжатым воздухом", "Только с буксира"], a: 0, exp: "ПД имеет собственный небольшой маломощный электростартер (или запускается шнуром)." },
+    { q: "Какое устройство автоматически отключает шестерню привода пускового двигателя после пуска дизеля?", options: ["Автомат отключения (фрикционный или грузиковый механизм редуктора)", "Декомпрессор", "Магнето", "Карбюратор"], a: 0, exp: "При возрастании оборотов маховика дизеля грузики автомата выталкивают шестерню из зацепления." },
+    { q: "Жидкостный подогреватель (ПЖБ) перед пуском дизеля в зимнее время разогревает:", options: ["Только аккумулятор", "Охлаждающую жидкость и масло в поддоне", "Воздух в кабине", "Топливо в баке"], a: 1, exp: "Предпусковой подогреватель разогревает блок цилиндров (тосолом/водой) и масло в картере дизеля." }
+];
+
+let questions = [];
+let timeLeft = 600; // 10 минут
+let timerInterval;
+
+function shuffle(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function initQuiz() {
+    questions = shuffle(rawQuestions).map(q => {
+        let optsWithIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.a }));
+        optsWithIndex = shuffle(optsWithIndex);
+        return { q: q.q, options: optsWithIndex, exp: q.exp };
+    });
+
+    const container = document.getElementById("questionsContainer");
+    container.innerHTML = "";
+    questions.forEach((q, qIdx) => {
+        let html = `<div class="q-block"><div class="q-title">Вопрос ${qIdx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<div class="option">
+                <label><input type="radio" name="q${qIdx}" value="${oIdx}"> ${opt.text}</label>
+            </div>`;
+        });
+        html += `</div>`;
+        container.innerHTML += html;
+    });
+
+    startTimer();
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById("timer").innerText = `Осталось времени: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timeOutFailed();
+        }
+    }, 1000);
+}
+
+function timeOutFailed() {
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("result").innerHTML = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</div>`;
+}
+
+function calculateGrade(score) {
+    if (score >= 19) return 10;
+    if (score >= 17) return 9;
+    if (score >= 15) return 8;
+    if (score >= 13) return 7;
+    if (score >= 11) return 6;
+    if (score >= 9) return 5;
+    if (score >= 7) return 4;
+    if (score >= 5) return 3;
+    return 2;
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").style.display = "none";
+
+    let score = 0;
+    let reviewHtml = "<h3>Результаты проверки:</h3>";
+
+    questions.forEach((q, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const userAns = selected ? parseInt(selected.value) : -1;
+        const correctOptIndex = q.options.findIndex(o => o.isCorrect);
+
+        reviewHtml += `<div class="q-block"><strong>Вопрос ${qIdx + 1}:</strong> ${q.q}<br>`;
+        if (userAns !== -1 && q.options[userAns].isCorrect) {
+            score++;
+            reviewHtml += `<span class="correct-ans">Ваш ответ верный: ${q.options[userAns].text}</span>`;
+        } else {
+            let userText = userAns !== -1 ? q.options[userAns].text : "Нет ответа";
+            reviewHtml += `<span class="wrong-ans">Ваш ответ: ${userText}</span><br>`;
+            reviewHtml += `<span class="correct-ans">Правильный ответ: ${q.options[correctOptIndex].text}</span>`;
+        }
+        reviewHtml += `<div class="explanation"><b>Пояснение:</b> ${q.exp}</div></div>`;
+    });
+
+    const mark = calculateGrade(score);
+    let gradeHeader = "";
+    if (mark < 3) {
+        gradeHeader = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ<br><span style="font-size:18px">Правильных ответов: ${score} из 20 (Оценка: ${mark} баллов)</span></div>`;
+    } else {
+        gradeHeader = `<div class="result-box" style="background:#d4edda; color:#155724; border:1px solid #c3e6cb;">
+            <h2>Тест завершен!</h2>
+            <p>Правильных ответов: <b>${score} из 20</b></p>
+            <p>Ваша оценка: <b style="font-size:24px">${mark} баллов</b></p>
+        </div>`;
+    }
+
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("result").innerHTML = gradeHeader + reviewHtml;
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>

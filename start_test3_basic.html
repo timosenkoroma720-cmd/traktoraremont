@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест 3: Повышенный уровень — Система пуска трактора</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .timer-sticky { position: sticky; top: 10px; background: #2c3e50; color: #fff; padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 5px; text-align: center; z-index: 1000; }
+        .q-block { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { margin: 6px 0; }
+        label { cursor: pointer; }
+        button { background-color: #27ae60; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:hover { background-color: #219150; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 6px; }
+        .failed-banner { background-color: #e74c3c; color: white; text-align: center; font-size: 28px; font-weight: bold; padding: 30px; border-radius: 8px; margin-top: 20px; text-transform: uppercase; }
+        .explanation { margin-top: 8px; padding: 8px; border-left: 4px solid #3498db; background: #ebf5fb; font-size: 14px; }
+        .correct-ans { color: #27ae60; font-weight: bold; }
+        .wrong-ans { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Тест 3: Сложная диагностика, расчёты и устройство систем пуска</h2>
+    <div class="timer-sticky" id="timer">Осталось времени: 10:00</div>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Падение напряжения в цепи питания стартера при пуске под нагрузкой не должно превышать:", options: ["0,8–1,2 В", "5,0 В", "0,1 В", "3,5 В"], a: 0, exp: "При суммарных потерях на проводах и контактах свыше 1,2 В резко падает мощность и обороты стартера." },
+    { q: "При пуске дизеля стартером сила потребляемого тока в момент трогания (в заторможенном состоянии) может достигать:", options: ["300–800 А (и более)", "10–20 А", "50–80 А", "2000 А"], a: 0, exp: "Пусковой ток стартера тракторного дизеля в момент включения достигает сотен ампер." },
+    { q: "Какое явление наблюдается, если муфта свободного хода роликового типа (бендикс) пробуксовывает?", options: ["Якорь стартера вращается с высоким гулом, но маховик дизеля остается неподвижным", "Дизель заклинивает", "Втягивающее реле не срабатывает", "Выбивает предохранитель"], a: 0, exp: "При износе роликов или пазов роликовая муфта не заклинивает на обойме и вращается вхолостую." },
+    { q: "Механизм автомата отключения шестерни редуктора ПД срабатывает под действием:", options: ["Центробежных сил грузиков при достижении дизелем пусковых оборотов", "Гидравлического давления масла", "Вакуума во впускном коллекторе", "Электромагнита"], a: 0, exp: "При разгоне маховика дизеля грузики преодолевают сопротивление пружины и выбивают шестерню из зацепления." },
+    { q: "Какая неисправность магнето пускового двигателя вызывает отсутствие искры на свече?", options: ["Пробой конденсатора, обрыв обмотки трансформатора или окисление контактов прерывателя", "Засор воздушного фильтра", "Износ фрикционных дисков", "Низкий уровень масла в дизеле"], a: 0, exp: "Электрическая часть магнето чувствительна к состоянию контактов, конденсатора и целостности обмоток." },
+    { q: "При каком значении минимальной частоты вращения коленвала дизеля возможен надежный пуск без средств облегчения?", options: ["150–250 об/мин", "20–30 об/мин", "600–800 об/мин", "1000 об/мин"], a: 0, exp: "Для сжатия воздуха и его нагрева до температуры воспламенения солярки нужны обороты не менее 150–200 об/мин." },
+    { q: "Какая основная задача тормозка, установленного в редукторе пускового двигателя?", options: ["Быстрая остановка вращения валов редуктора при переключении передач в редукторе", "Остановка трактора", "Глушение пускового двигателя", "Блокировка дифференциала"], a: 0, exp: "Тормозок притормаживает вращающиеся детали редуктора для безударного ввода шестерни в венец маховика." },
+    { q: "Причины искрения и подгорания контактов прерывателя магнето пускового двигателя:", options: ["Неисправность или пробой конденсатора", "Засор жиклера карбюратора", "Слишком богатая смесь", "Большой зазор в свече"], a: 0, exp: "Конденсатор подключается параллельно контактам именно для гашения дуги и искрообразования при их размыкании." },
+    { q: "Для чего в схему управления стартером вводят дополнительное промежуточное реле?", options: ["Чтобы разгрузить контакты замка зажигания от больших токов обмотки тягового реле", "Для изменения полярности", "Для понижения напряжения", "Для автоматического включения фар"], a: 0, exp: "Промежуточное реле коммутирует ток тягового реле (20–40 А), защищая контакты выключателя зажигания." },
+    { q: "В случае износа зубьев венца маховика в зоне пуска наблюдается:", options: ["Металлический скрежет и невозможность ввода шестерни стартера/ПД в зацепление", "Перегрев аккумулятора", "Повышение оборотов стартера", "Заглушение двигателя"], a: 0, exp: "Сбитые зубья венца не дают шестерне привода зайти в зацепление, вызывает скрежет." },
+    { q: "С какой целью на некоторых тракторных дизелях применяется двухскоростной редуктор пускового двигателя?", options: ["Первая передача — для прокрутки и прогрева холодного дизеля, вторая — для непосредственного пуска", "Для движения назад", "Для изменения оборотов масляного насоса", "Для экономии бензина"], a: 0, exp: "Двухступенчатый редуктор позволяет сначала провернуть застывший дизель с большим моментом, а затем разогнать его." },
+    { q: "Сопротивление обмоток стартера имеет значение порядка десятых и сотых долей Ома для того, чтобы:", options: ["Обеспечить максимальную силу тока и высокий крутящий момент", "Снизить нагрев", "Увеличить напряжение", "Уменьшить габариты АКБ"], a: 0, exp: "Малое сопротивление обмоток согласуется с внутренним сопротивлением АКБ для получения максимальной мощности." },
+    { q: "Какова функция выдувных и продувочных окон в цилиндре двухтактного ПД-10?", options: ["Обеспечение газообмена (удаление продуктов сгорания и заполнение цилиндра горючей смесью)", "Охлаждение поршня маслом", "Подача искры", "Слив излишков топлива"], a: 0, exp: "Двухтактный цикл не имеет клапанов; газообмен происходит через продувочные и выпускные окна цилиндра." },
+    { q: "При диагностике стартера подгорание коллектора и износ щеток приводят к:", options: ["Падению мощности стартера и снижению оборотов прокрутки", "Повышению напряжения в сети", "Заклиниванию маховика", "Взрыву аккумулятора"], a: 0, exp: "Ухудшение контакта щеток с коллектором увеличивает переходное сопротивление и снижает ток." },
+    { q: "Почему при пуске дизеля пусковым двигателем запрещается превышать время прокрутки с декомпрессором более 2-3 минут?", options: ["Из-за риска перегрева пускового двигателя и редуктора", "Из-за разряда магнето", "Из-за завоздушивания топливной системы", "Из-за поломки турбины"], a: 0, exp: "Длительная работа под нагрузкой без достаточного охлаждения циркуляцией тосола приводит к перегреву ПД." },
+    { q: "Как влияет низкая температура окружающей среды на емкость АКБ и пуск дизеля?", options: ["Емкость АКБ падает, вязкость масла растет, что резко затрудняет пуск", "Емкость АКБ возрастает", "Вязкость масла снижается", "Никак не влияет"], a: 0, exp: "При морозе химические реакции в АКБ замедляются (падение емкости), а густое масло создает высокое сопротивление." },
+    { q: "Какое напряжение должно быть на выводах АКБ в момент активной работы стартера при исправной системе?", options: ["Не менее 9,0–9,5 В (для 12-вольтовой системы)", "12,6 В", "14,5 В", "Ниже 5,0 В"], a: 0, exp: "Из-за высокого пускового тока напряжение на АКБ проседает, но не должно опускаться ниже 9 В." },
+    { q: "Устройство дизельного пускового подогревателя (ПЖБ) включает в себя:", options: ["Котел подогревателя, горелку, электровентилятор, топливный насос и систему зажигания", "Только электротены", "Магнето и карбюратор", "Гидротрансформатор"], a: 0, exp: "ПЖБ — автономный агрегат, сжигающий топливо в котле для разогрева охлаждающей жидкости дизеля." },
+    { q: "Осевой люфт вала якоря стартера регулируется с помощью:", options: ["Регулировочных шайб на валу якоря", "Натяжения ремня", "Втягивающего реле", "Изменения давления щеток"], a: 0, exp: "Толщиной подборных шайб устанавливают допустимый осевой люфт вала якоря в крышках." },
+    { q: "По какому признаку судят о правильности установки зазора между шестерней привода стартера и упорной втулкой?", options: ["По величине зазора в момент полного втягивания якоря реле (обычно 1–4 мм)", "По цвету искры", "По шуму реле", "По температуре корпуса"], a: 0, exp: "Зазор между шестерней и втулкой гарантирует полное вхождение зубьев в венец и четкое замыкание контактов." }
+];
+
+let questions = [];
+let timeLeft = 600;
+let timerInterval;
+
+function shuffle(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function initQuiz() {
+    questions = shuffle(rawQuestions).map(q => {
+        let optsWithIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.a }));
+        optsWithIndex = shuffle(optsWithIndex);
+        return { q: q.q, options: optsWithIndex, exp: q.exp };
+    });
+
+    const container = document.getElementById("questionsContainer");
+    container.innerHTML = "";
+    questions.forEach((q, qIdx) => {
+        let html = `<div class="q-block"><div class="q-title">Вопрос ${qIdx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<div class="option">
+                <label><input type="radio" name="q${qIdx}" value="${oIdx}"> ${opt.text}</label>
+            </div>`;
+        });
+        html += `</div>`;
+        container.innerHTML += html;
+    });
+
+    startTimer();
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById("timer").innerText = `Осталось времени: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timeOutFailed();
+        }
+    }, 1000);
+}
+
+function timeOutFailed() {
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("result").innerHTML = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</div>`;
+}
+
+function calculateGrade(score) {
+    if (score >= 19) return 10;
+    if (score >= 17) return 9;
+    if (score >= 15) return 8;
+    if (score >= 13) return 7;
+    if (score >= 11) return 6;
+    if (score >= 9) return 5;
+    if (score >= 7) return 4;
+    if (score >= 5) return 3;
+    return 2;
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").style.display = "none";
+
+    let score = 0;
+    let reviewHtml = "<h3>Результаты проверки:</h3>";
+
+    questions.forEach((q, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const userAns = selected ? parseInt(selected.value) : -1;
+        const correctOptIndex = q.options.findIndex(o => o.isCorrect);
+
+        reviewHtml += `<div class="q-block"><strong>Вопрос ${qIdx + 1}:</strong> ${q.q}<br>`;
+        if (userAns !== -1 && q.options[userAns].isCorrect) {
+            score++;
+            reviewHtml += `<span class="correct-ans">Ваш ответ верный: ${q.options[userAns].text}</span>`;
+        } else {
+            let userText = userAns !== -1 ? q.options[userAns].text : "Нет ответа";
+            reviewHtml += `<span class="wrong-ans">Ваш ответ: ${userText}</span><br>`;
+            reviewHtml += `<span class="correct-ans">Правильный ответ: ${q.options[correctOptIndex].text}</span>`;
+        }
+        reviewHtml += `<div class="explanation"><b>Пояснение:</b> ${q.exp}</div></div>`;
+    });
+
+    const mark = calculateGrade(score);
+    let gradeHeader = "";
+    if (mark < 3) {
+        gradeHeader = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ<br><span style="font-size:18px">Правильных ответов: ${score} из 20 (Оценка: ${mark} баллов)</span></div>`;
+    } else {
+        gradeHeader = `<div class="result-box" style="background:#d4edda; color:#155724; border:1px solid #c3e6cb;">
+            <h2>Тест завершен!</h2>
+            <p>Правильных ответов: <b>${score} из 20</b></p>
+            <p>Ваша оценка: <b style="font-size:24px">${mark} баллов</b></p>
+        </div>`;
+    }
+
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("result").innerHTML = gradeHeader + reviewHtml;
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
