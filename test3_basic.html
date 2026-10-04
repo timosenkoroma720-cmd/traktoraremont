@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест 3: Повышенный уровень — Источники электроэнергии трактора</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .timer-sticky { position: sticky; top: 10px; background: #2c3e50; color: #fff; padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 5px; text-align: center; z-index: 1000; }
+        .q-block { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { margin: 6px 0; }
+        label { cursor: pointer; }
+        button { background-color: #27ae60; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:hover { background-color: #219150; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 6px; }
+        .failed-banner { background-color: #e74c3c; color: white; text-align: center; font-size: 28px; font-weight: bold; padding: 30px; border-radius: 8px; margin-top: 20px; text-transform: uppercase; }
+        .explanation { margin-top: 8px; padding: 8px; border-left: 4px solid #3498db; background: #ebf5fb; font-size: 14px; }
+        .correct-ans { color: #27ae60; font-weight: bold; }
+        .wrong-ans { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Тест 3: Диагностика, технические характеристики и расчеты</h2>
+    <div class="timer-sticky" id="timer">Осталось времени: 10:00</div>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "При проверке АКБ нагрузочной вилкой напряжение под нагрузкой в течение 5 секунд не должно опускаться ниже:", options: ["10,5 В", "8,9 В", "6,0 В", "12,6 В"], a: 1, exp: "Исправная и заряженная 12-вольтовая АКБ под нагрузкой вилкой должна удерживать напряжение не менее 8,9–9,0 В." },
+    { q: "Какое напряжение должна поддерживать исправная генераторная установка на тракторе при средней частоте вращения коленвала?", options: ["11,5–12,0 В", "13,8–14,5 В", "15,5–16,2 В", "22,0–24,0 В"], a: 1, exp: "Рабочее напряжение 12-вольтовой системы с учетом компенсации составляет 13,8–14,5 В." },
+    { q: "О чем свидетельствует сильное кипение электролита и частая необходимость доливки воды в АКБ при эксплуатации?", options: ["Об обрыве цепи генератора", "О перезаряде АКБ из-за повышенного напряжения регулятора", "О коротком замыкании пластин", "О сульфатации"], a: 1, exp: "Завышенное напряжение регулятора приводит к непрерывному электролизу воды (перезаряду)." },
+    { q: "Если при включении потребителей амперметр показывает разряд при средних оборотах двигателя, вероятной причиной является:", options: ["Замыкание пластин АКБ", "Проскальзывание ремня генератора или пробой диодов выпрямителя", "Высокая плотность электролита", "Перезаряд АКБ"], a: 1, exp: "Недостаточная отдача генератора вынуждает систему питаться от аккумулятора." },
+    { q: "Какое явление происходит в свинцово-кислотном аккумуляторе при замерзании электролита низкой плотности?", options: ["Разрушение (растрескивание) моноблока и деформация пластин", "Повышение емкости", "Увеличение напряжения", "Уменьшение саморазряда"], a: 0, exp: "Замерзающий электролит расширяется, разрушая корпус АКБ и пластины." },
+    { q: "В чем заключается эффект температурной компенсации в современных регуляторах напряжения?", options: ["Повышение напряжения летом и понижение зимой", "Повышение регулируемого напряжения при снижении температуры окружающей среды", "Отключение генератора при $+40^\circ C$", "Увеличение тока при перегреве"], a: 1, exp: "При низких температурах химические реакции в АКБ замедляются, поэтому требуется повышенное напряжение заряда." },
+    { q: "Пробой одного из диодов выпрямительного блока генератора приводит к:", options: ["Увеличению мощности генератора", "Появлению переменного компонента тока и снижению отдачи генератора", "Автоматическому включению стартера", "Повышению частоты вращения"], a: 1, exp: "При повреждении диода возникает пульсирующий ток, приводящий к шуму генератора и разряду АКБ." },
+    { q: "Какое химическое соединение образуется на пластинах АКБ при полном ее разряде?", options: ["Диоксид свинца ($PbO_2$)", "Сульфат свинца ($PbSO_4$)", "Губчатый свинец ($Pb$)", "Нитрат свинца"], a: 1, exp: "И на положительных, и на отрицательных пластинах при разряде образуется мелкокристаллический сульфат свинца." },
+    { q: "Саморазряд АКБ считающим нормой не должен превышать в сутки при хранении:", options: ["0,5–1%", "5–10%", "15–20%", "25%"], a: 0, exp: "Естественный саморазряд исправной батареи при умеренной температуре составляет менее 1% в сутки." },
+    { q: "Как влияет повышение температуры электролита выше $+45^\circ C$ на работу АКБ при заряде?", options: ["Увеличивает срок службы", "Ускоряет разрушение активной массы пластин и коррозию решеток", "Увеличивает плотность", "Не оказывает влияния"], a: 1, exp: "Перегрев электролита резко ускоряет разрушение пластин и сокращает ресурс АКБ." },
+    { q: "В индукторном генераторе обмотка возбуждения расположена на:", options: ["Вращающемся роторе", "Неподвижном статоре (или крышке)", "Приводном шкиве", "Клемме выпрямителя"], a: 1, exp: "У индукторных генераторов обмотка возбуждения неподвижна, что устраняет необходимость в кольцах и щетках." },
+    { q: "Если величина падения напряжения в цепи между генератором и АКБ превышает 0,5 В, это указывает на:", options: ["Нормальную работу цепи", "Повышенное сопротивление контактов (окисление, ослабление зажимов)", "Пробой конденсатора", "Короткое замыкание статора"], a: 1, exp: "Плохой контакт в соединениях приводит к потере напряжения и недозаряду АКБ." },
+    { q: "При определении степени разряженности АКБ по плотности электролита снижению плотности на $0{,}01 \text{ г/см}^3$ соответствует разряд примерно на:", options: ["1%", "6–8%", "15%", "25%"], a: 1, exp: "Падение плотности на $0{,}01 \text{ г/см}^3$ означает разрядку АКБ примерно на 6–8%." },
+    { q: "С какой целью параллельно выпрямительному блоку генератора в схему подсоединяют конденсатор?", options: ["Для накопления энергии", "Для сглаживания пульсаций и подавления радиопомех", "Для автоматического пуска", "Для защиты от перегрева"], a: 1, exp: "Конденсатор гасит высокочастотные пики напряжения и радиопомехи." },
+    { q: "Дополнительные диоды в генераторных установках применяются для питания:", options: ["Фар головного света", "Обмотки возбуждения генератора", "Электростартера", "Звукового сигнала"], a: 1, exp: "Дополнительный трехфазный выпрямитель питает обмотку возбуждения при работе генератора." },
+    { q: "При какой частоте вращения ротора генератор должен отдавать 100% номинального тока?", options: ["При минимально холостых оборотах", "При номинальной (рабочей) частоте вращения", "Только при максимальном разгоне", "Частота не влияет"], a: 1, exp: "Номинальная ток генератора гарантируется при достижении его рабочей частоты вращения (около 3000–5000 об/мин ротора)." },
+    { q: "Что произойдет с генератором, если при работе двигателя отсоединить клемму аккумулятора?", options: ["Ничего не изменится", "Возможен опасный скачок напряжения и выход из строя электроники и регулятора", "Генератор мгновенно остановится", "Сгорит ремень привода"], a: 1, exp: "АКБ работает как мощный буферный конденсатор; без нее броски напряжения повреждают полупроводники." },
+    { q: "Как влияет загрязнение поверхности крышки АКБ пылью и электролитом на ее работу?", options: ["Не влияет", "Вызывает повышенный ток саморазряда по поверхности крышки", "Увеличивает емкость", "Повышает плотность"], a: 1, exp: "Пленка из пролитого электролита и грязи образует токопроводящий мостик между выводами." },
+    { q: "Чему равна суммарная емкость системы из двух одинаковых АКБ емкостью 100 А·ч каждая при их параллельном соединении?", options: ["50 А·ч", "100 А·ч", "200 А·ч", "400 А·ч"], a: 2, exp: "При параллельном соединении емкости складываются: $100 + 100 = 200 \text{ А·ч}$." },
+    { q: "Чему равно суммарное напряжение двух АКБ напряжением 12 В каждая при их последовательном соединении?", options: ["6 В", "12 В", "24 В", "36 В"], a: 2, exp: "При последовательном соединении напряжения складываются: $12 + 12 = 24 \text{ В}$." }
+];
+
+let questions = [];
+let timeLeft = 600;
+let timerInterval;
+
+function shuffle(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function initQuiz() {
+    questions = shuffle(rawQuestions).map(q => {
+        let optsWithIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.a }));
+        optsWithIndex = shuffle(optsWithIndex);
+        return { q: q.q, options: optsWithIndex, exp: q.exp };
+    });
+
+    const container = document.getElementById("questionsContainer");
+    container.innerHTML = "";
+    questions.forEach((q, qIdx) => {
+        let html = `<div class="q-block"><div class="q-title">Вопрос ${qIdx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<div class="option">
+                <label><input type="radio" name="q${qIdx}" value="${oIdx}"> ${opt.text}</label>
+            </div>`;
+        });
+        html += `</div>`;
+        container.innerHTML += html;
+    });
+
+    startTimer();
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById("timer").innerText = `Осталось времени: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timeOutFailed();
+        }
+    }, 1000);
+}
+
+function timeOutFailed() {
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("result").innerHTML = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</div>`;
+}
+
+function calculateGrade(score) {
+    if (score >= 19) return 10;
+    if (score >= 17) return 9;
+    if (score >= 15) return 8;
+    if (score >= 13) return 7;
+    if (score >= 11) return 6;
+    if (score >= 9) return 5;
+    if (score >= 7) return 4;
+    if (score >= 5) return 3;
+    return 2;
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").style.display = "none";
+
+    let score = 0;
+    let reviewHtml = "<h3>Результаты проверки:</h3>";
+
+    questions.forEach((q, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const userAns = selected ? parseInt(selected.value) : -1;
+        const correctOptIndex = q.options.findIndex(o => o.isCorrect);
+
+        reviewHtml += `<div class="q-block"><strong>Вопрос ${qIdx + 1}:</strong> ${q.q}<br>`;
+        if (userAns !== -1 && q.options[userAns].isCorrect) {
+            score++;
+            reviewHtml += `<span class="correct-ans">Ваш ответ верный: ${q.options[userAns].text}</span>`;
+        } else {
+            let userText = userAns !== -1 ? q.options[userAns].text : "Нет ответа";
+            reviewHtml += `<span class="wrong-ans">Ваш ответ: ${userText}</span><br>`;
+            reviewHtml += `<span class="correct-ans">Правильный ответ: ${q.options[correctOptIndex].text}</span>`;
+        }
+        reviewHtml += `<div class="explanation"><b>Пояснение:</b> ${q.exp}</div></div>`;
+    });
+
+    const mark = calculateGrade(score);
+    let gradeHeader = "";
+    if (mark < 3) {
+        gradeHeader = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ<br><span style="font-size:18px">Правильных ответов: ${score} из 20 (Оценка: ${mark} баллов)</span></div>`;
+    } else {
+        gradeHeader = `<div class="result-box" style="background:#d4edda; color:#155724; border:1px solid #c3e6cb;">
+            <h2>Тест завершен!</h2>
+            <p>Правильных ответов: <b>${score} из 20</b></p>
+            <p>Ваша оценка: <b style="font-size:24px">${mark} баллов</b></p>
+        </div>`;
+    }
+
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("result").innerHTML = gradeHeader + reviewHtml;
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>

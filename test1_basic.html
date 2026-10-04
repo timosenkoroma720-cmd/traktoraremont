@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест 1: Базовый уровень — Источники электроэнергии трактора</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .timer-sticky { position: sticky; top: 10px; background: #2c3e50; color: #fff; padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 5px; text-align: center; z-index: 1000; }
+        .q-block { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+        .q-title { font-weight: bold; margin-bottom: 10px; }
+        .option { margin: 6px 0; }
+        label { cursor: pointer; }
+        button { background-color: #27ae60; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:hover { background-color: #219150; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 6px; }
+        .failed-banner { background-color: #e74c3c; color: white; text-align: center; font-size: 28px; font-weight: bold; padding: 30px; border-radius: 8px; margin-top: 20px; text-transform: uppercase; }
+        .explanation { margin-top: 8px; padding: 8px; border-left: 4px solid #3498db; background: #ebf5fb; font-size: 14px; }
+        .correct-ans { color: #27ae60; font-weight: bold; }
+        .wrong-ans { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Тест 1: Базовые основы и устройство источников э/э</h2>
+    <div class="timer-sticky" id="timer">Осталось времени: 10:00</div>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="submitQuiz()">Завершить тест</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+const rawQuestions = [
+    { q: "Основной источник электрической энергии при работающем двигателе трактора — это:", options: ["Аккумуляторная батарея", "Генератор переменного тока", "Стартер", "Реле-регулятор"], a: 1, exp: "Генератор питает всех потребителей и заряжает АКБ во время работы двигателя." },
+    { q: "Основной источник электрической энергии при пуске двигателя — это:", options: ["Генератор", "Аккумуляторная батарея", "Магнето", "Трансформатор"], a: 1, exp: "АКБ обеспечивает питанием стартер во время пуска двигателя." },
+    { q: "Какое напряжение имеет стандартная бортовая сеть большинства современных тракторов?", options: ["6 В", "12 В или 24 В", "36 В", "220 В"], a: 1, exp: "В тракторостроении стандартными являются бортовые сети на 12 В и 24 В." },
+    { q: "Для чего предназначен выпрямительный блок генератора?", options: ["Для понижения напряжения", "Для преобразования переменного тока в постоянный", "Для автоматического отключения АКБ", "Для регулирования частоты вращения"], a: 1, exp: "Потребителям и АКБ нужен постоянный ток, а генератор вырабатывает переменный." },
+    { q: "Какое вещество служит электролитом в традиционных свинцово-кислотных АКБ?", options: ["Раствор азотной кислоты", "Дистиллированная вода", "Раствор серной кислоты в дистиллированной воде", "Машинное масло"], a: 2, exp: "Электролит состоит из серной кислоты ($H_2SO_4$) и дистиллированной воды ($H_2O$)." },
+    { q: "Положительные пластины заряженной свинцово-кислотной АКБ состоят из:", options: ["Губчатого свинца", "Диоксида свинца ($PbO_2$)", "Сульфата свинца", "Меди"], a: 1, exp: "Активное вещество положительных пластин — диоксид свинца ($PbO_2$)." },
+    { q: "Отрицательные пластины заряженной свинцово-кислотной АКБ состоят из:", options: ["Губчатого свинца ($Pb$)", "Диоксида свинца", "Алюминия", "Цинка"], a: 0, exp: "Активное вещество отрицательных пластин — губчатый свинец ($Pb$)." },
+    { q: "Устройство, поддерживающее напряжение генератора в заданных пределах независимо от оборотов двигателя:", options: ["Предохранитель", "Регулятор напряжения", "Замок зажигания", "Амперметр"], a: 1, exp: "Регулятор напряжения стабилизирует напряжение бортовой сети при изменении частоты вращения вала." },
+    { q: "Как подключаются аккумуляторные батареи для увеличения емкости при сохранении напряжения?", options: ["Последовательно", "Параллельно", "Смешанно", "Через реле"], a: 1, exp: "При параллельном соединении емкости складываются, а напряжение остается прежним." },
+    { q: "Как подключаются две 12-вольтовые АКБ для получения напряжения 24 В?", options: ["Параллельно", "Последовательно", "Напрямую к корпусу", "Нельзя соединять"], a: 1, exp: "При последовательном соединении («+» одной к «-» другой) напряжения складываются." },
+    { q: "Для чего в АКБ между положительными и отрицательными пластинами устанавливают сепараторы?", options: ["Для охлаждения", "Для предотвращения короткого замыкания между пластинами", "Для сохранения массы", "Для повышения плотности"], a: 1, exp: "Сепараторы — пористые изолирующие перегородки, исключающие прямое касание пластин." },
+    { q: "Что заливают в сухозаряженную аккумуляторную батарею при вводе в эксплуатацию?", options: ["Только дистиллированную воду", "Чистую серную кислоту", "Электролит требуемой плотности", "Антифриз"], a: 2, exp: "При первичной подготовке сухозаряженной АКБ заливают подготовленный электролит." },
+    { q: "Какую жидкость доливают в свинцово-кислотный аккумулятор при снижении уровня электролита из-за выкипания?", options: ["Электролит", "Серную кислоту", "Дистиллированную воду", "Водопроводную воду"], a: 2, exp: "При эксплуатации выкипает вода, поэтому доливают только дистиллированную воду." },
+    { q: "Привод генератора тракторного двигателя обычно осуществляется с помощью:", options: ["Цепной передачи", "Ременной передачи от шкива коленвала", "Зубчатого редуктора", "Карданного вала"], a: 1, exp: "Генератор приводится во вращение клиновым или поликлиновым ремнем от шкива коленчатого вала." },
+    { q: "При разряде свинцово-кислотного аккумулятора плотность электролита:", options: ["Повышается", "Понижается", "Не изменяется", "Сначала растет, потом падает"], a: 1, exp: "При разряде кислота расходуется на образование сульфата свинца, и плотность снижается." },
+    { q: "По какому прибору на панели приборов проверяют работу генератора и режим заряда АКБ?", options: ["Тахометр", "Манометр", "Амперметр или вольтметр", "Спидометр"], a: 2, exp: "Вольтметр показывает напряжение сети, амперметр — ток заряда/разряда АКБ." },
+    { q: "Что происходит с ротором генератора при работе?", options: ["Он остается неподвижным", "Вращается и создает вращающееся магнитное поле", "Вырабатывает постоянный ток напрямую", "Охлаждает выпрямитель"], a: 1, exp: "Ротор — вращающаяся часть генератора с обмоткой возбуждения." },
+    { q: "Статор генератора представляет собой:", options: ["Подвижную часть с щетками", "Неподвижную часть с многофазной обмоткой", "Корпус аккумулятора", "Реле выпрямителя"], a: 1, exp: "В обмотках статора под действием магнитного поля ротора наводится переменный ток." },
+    { q: "Маркировка «6СТ-75» на АКБ означает, что батарея состоит из 6 аккумуляторов и имеет номинальную емкость:", options: ["6 А·ч", "75 А·ч", "750 А", "7.5 В"], a: 1, exp: "Цифра после букв «СТ» обозначает номинальную емкость в ампер-часах ($А\cdot ч$)." },
+    { q: "Какое поле создает обмотка возбуждения генератора?", options: ["Гравитационное", "Магнитное", "Электростатическое", "Тепловое"], a: 1, exp: "Ток, проходящий по обмотке возбуждения, создает магнитное поле, необходимое для индукции." }
+];
+
+let questions = [];
+let timeLeft = 600; // 10 минут
+let timerInterval;
+
+function shuffle(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function initQuiz() {
+    questions = shuffle(rawQuestions).map(q => {
+        let optsWithIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.a }));
+        optsWithIndex = shuffle(optsWithIndex);
+        return {
+            q: q.q,
+            options: optsWithIndex,
+            exp: q.exp
+        };
+    });
+
+    const container = document.getElementById("questionsContainer");
+    container.innerHTML = "";
+    questions.forEach((q, qIdx) => {
+        let html = `<div class="q-block">
+            <div class="q-title">Вопрос ${qIdx + 1}: ${q.q}</div>`;
+        q.options.forEach((opt, oIdx) => {
+            html += `<div class="option">
+                <label>
+                    <input type="radio" name="q${qIdx}" value="${oIdx}">
+                    ${opt.text}
+                </label>
+            </div>`;
+        });
+        html += `</div>`;
+        container.innerHTML += html;
+    });
+
+    startTimer();
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById("timer").innerText = `Осталось времени: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timeOutFailed();
+        }
+    }, 1000);
+}
+
+function timeOutFailed() {
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("result").innerHTML = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ</div>`;
+}
+
+function calculateGrade(score) {
+    if (score >= 19) return 10;
+    if (score >= 17) return 9;
+    if (score >= 15) return 8;
+    if (score >= 13) return 7;
+    if (score >= 11) return 6;
+    if (score >= 9) return 5;
+    if (score >= 7) return 4;
+    if (score >= 5) return 3;
+    return 2;
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").style.display = "none";
+
+    let score = 0;
+    let reviewHtml = "<h3>Результаты проверки:</h3>";
+
+    questions.forEach((q, qIdx) => {
+        const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+        const userAns = selected ? parseInt(selected.value) : -1;
+        const correctOptIndex = q.options.findIndex(o => o.isCorrect);
+
+        reviewHtml += `<div class="q-block"><strong>Вопрос ${qIdx + 1}:</strong> ${q.q}<br>`;
+        
+        if (userAns !== -1 && q.options[userAns].isCorrect) {
+            score++;
+            reviewHtml += `<span class="correct-ans">Ваш ответ верный: ${q.options[userAns].text}</span>`;
+        } else {
+            let userText = userAns !== -1 ? q.options[userAns].text : "Нет ответа";
+            reviewHtml += `<span class="wrong-ans">Ваш ответ: ${userText}</span><br>`;
+            reviewHtml += `<span class="correct-ans">Правильный ответ: ${q.options[correctOptIndex].text}</span>`;
+        }
+        reviewHtml += `<div class="explanation"><b>Пояснение:</b> ${q.exp}</div></div>`;
+    });
+
+    const mark = calculateGrade(score);
+    let gradeHeader = "";
+    if (mark < 3) {
+        gradeHeader = `<div class="failed-banner">ТЕСТ НЕ ПРОЙДЕН, ОБРАТИТЕСЬ К УЧИТЕЛЮ<br><span style="font-size:18px">Правильных ответов: ${score} из 20 (Оценка: ${mark} баллов)</span></div>`;
+    } else {
+        gradeHeader = `<div class="result-box" style="background:#d4edda; color:#155724; border:1px solid #c3e6cb;">
+            <h2>Тест завершен!</h2>
+            <p>Правильных ответов: <b>${score} из 20</b></p>
+            <p>Ваша оценка: <b style="font-size:24px">${mark} баллов</b></p>
+        </div>`;
+    }
+
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("result").innerHTML = gradeHeader + reviewHtml;
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
