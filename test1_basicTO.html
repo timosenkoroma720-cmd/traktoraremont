@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест 1: Разъёмные и неразъёмные соединения (Базовый уровень)</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --success: #15803d;
+      --error: #b91c1c;
+      --border: #cbd5e1;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      padding-top: 90px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .header-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .header-title { font-size: 1.1rem; font-weight: 600; }
+    .timer-box {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
+    }
+    .question-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+    .option-label {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .option-label:hover { background-color: #f1f5f9; }
+    .option-label input { margin-right: 12px; }
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn:hover { opacity: 0.9; }
+    #time-out-banner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--error);
+      color: white;
+      z-index: 2000;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    #time-out-banner h1 { font-size: 2.5rem; margin-bottom: 15px; }
+    #time-out-banner p { font-size: 1.5rem; }
+    .explanation {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .correct-exp { background-color: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+    .incorrect-exp { background-color: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+    .score-banner {
+      background: #eff6ff;
+      border: 2px solid var(--primary);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div class="header-title">Тест 1: Базовый уровень (Соединения в системе питания)</div>
+  <div class="timer-box" id="timer">10:00</div>
+</div>
+
+<div class="container">
+  <form id="quiz-form">
+    <div id="questions-container"></div>
+    <button type="button" class="btn" onclick="submitQuiz()">Завершить тест</button>
+  </form>
+
+  <div id="results" style="display: none;"></div>
+</div>
+
+<div id="time-out-banner">
+  <h1>ТЕСТ НЕ ПРОЙДЕН</h1>
+  <p>ОБРАТИТЕСЬ К УЧИТЕЛЮ</p>
+</div>
+
+<script>
+const rawQuestions = [
+  {
+    q: "Какое соединение называют разъёмным?",
+    options: ["Соединение, которое можно разобрать без разрушения деталей", "Соединение, разборка которого требует разрушения крепежа", "Соединение, выполненное с помощью сварки", "Соединение, зафиксированное клеем"],
+    correct: 0,
+    exp: "Разъёмные соединения допускают повторную сборку и разборку без повреждения элементов."
+  },
+  {
+    q: "Какое соединение относится к неразъёмным?",
+    options: ["Болтовое", "Шпилечное", "Сварное", "Шлицевое"],
+    correct: 2,
+    exp: "Сварка образует неразъёмное соединение за счет межатомных связей."
+  },
+  {
+    q: "Для чего применяются резьбовые соединения в трубопроводах системы питания?",
+    options: ["Для постоянной фиксации без возможности ремонта", "Для обеспечения герметичности и возможности разборки при ТО", "Только для декоративных целей", "Для уменьшения давления топлива"],
+    correct: 1,
+    exp: "Резьбовые соединения штуцеров и топропроводов позволяют проводить обслуживание и замену компонентов."
+  },
+  {
+    q: "Какой тип соединения используется для крепления топливного бака к кронштейнам рамы?",
+    options: ["Сварное намертво", "Болтовое или хомутовое с резьбой", "Паяное", "Клеевое"],
+    correct: 1,
+    exp: "Топливный бак крепится стяжными хомутами или болтами для удобства демонтажа."
+  },
+  {
+    q: "Что относится к крепежным деталям резьбовых соединений?",
+    options: ["Заклепки и сварные швы", "Болты, шпильки, гайки", "Припой и флюс", "Шпонки и заклёпки"],
+    correct: 1,
+    exp: "Болты, шпильки и гайки — стандартные изделия резьбовых разъёмных соединений."
+  },
+  {
+    q: "Как соединяются секции металлических топливных баков при их изготовлении?",
+    options: ["Шпоночным соединением", "Сваркой или штамповочно-закаточным швом", "Шлицевым соединением", "Болтами по периметру"],
+    correct: 1,
+    exp: "Корпус бака изготавливается методом сварки или неразъёмной закатки швов."
+  },
+  {
+    q: "Какую функцию выполняет медная или алюминиевая шайба в штуцерном соединении топливопровода?",
+    options: ["Увеличивает прочность штуцера", "Обеспечивает герметичность стыка", "Предотвращает коррозию резьбы", "Уменьшает массу узла"],
+    correct: 1,
+    exp: "Уплотнительные шайбы из мягкого металла пластично деформируются и герметизируют стык."
+  },
+  {
+    q: "Какое соединение применяется для установки форсунки в головку блока цилиндров?",
+    options: ["Сварное", "Резьбовое (шпильки/прижимная скоба или резьба корпуса)", "Паяное", "Заклепочное"],
+    correct: 1,
+    exp: "Форсунки фиксируются резьбовым способом (через фланцы, скобы или резьбу) для возможности замены."
+  },
+  {
+    q: "К какому типу относится соединение гибких резиновых шлангов с металлическими трубками системы питания?",
+    options: ["Разъёмное (хомутовое)", "Неразъёмное (сварное)", "Шпоночное", "Шлицевое"],
+    correct: 0,
+    exp: "Шланги фиксируются червячными или пружинными хомутами, что позволяет производить их замену."
+  },
+  {
+    q: "Что такое шпилька?",
+    options: ["Стержень с головкой под ключ", "Стержень с резьбой на обоих концах", "Деталь с внутренней резьбой", "Пластина с отверстием"],
+    correct: 1,
+    exp: "Шпилька представляет собой цилиндрический стержень с резьбой на обоих концах."
+  },
+  {
+    q: "Какое неразъёмное соединение используется при ремонте латунных элементов топливных фильтров и баков?",
+    options: ["Болтовое", "Пайка", "Шлицевое", "Шпоночное"],
+    correct: 1,
+    exp: "Пайка мягкими или твердыми припоями применяются для устранения течей латунных/медных элементов."
+  },
+  {
+    q: "Какое соединение называют шпоночным?",
+    options: ["Разъёмное соединение вала и втулки с помощью шпонки", "Неразъёмное соединение с помощью заклёпок", "Соединение деталей расплавленным металлом", "Соединение с помощью резьбы"],
+    correct: 0,
+    exp: "Шпоночное соединение служат для передачи крутящего момента от вала к ступице."
+  },
+  {
+    q: "Что предотвращает самопроизвольное отворачивание гаек в элементах системы питания?",
+    options: ["Прокладочный картон", "Пружинные шайбы (шайбы Гровера) и шплинты", "Солидол", "Медные шайбы"],
+    correct: 1,
+    exp: "Пружинные шайбы создают постоянное натяжение в резьбе, препятствуя самоотворачиванию от вибраций."
+  },
+  {
+    q: "Какое преимущество имеют разъёмные соединения перед неразъёмными?",
+    options: ["Выше абсолютная прочность", "Легкость ремонтопригодности и демонтажа", "Меньшая стоимость изготовления", "Полное отсутствие риска утечек"],
+    correct: 1,
+    exp: "Главное преимущество разъёмных соединений — удобство сборки, разборки и обслуживания."
+  },
+  {
+    q: "Где в системе питания применяются фланцевые соединения?",
+    options: ["В месте крепления подкачивающего насоса или ТНВД", "Внутри топливного бака", "На распылителе форсунки", "Внутри топливного провода"],
+    correct: 0,
+    exp: "Фланцы с болтовым или шпилечным креплением применяются для монтажа корпусных агрегатов."
+  },
+  {
+    q: "Какое соединение получается при использовании заклёпок?",
+    options: ["Разъёмное", "Неразъёмное", "Подвижное", "Резьбовое"],
+    correct: 1,
+    exp: "Заклёпочное соединение является неразъёмным, так как разрушается при демонтаже."
+  },
+  {
+    q: "Какая деталь резьбового соединения имеет внутреннюю резьбу?",
+    options: ["Болт", "Винт", "Гайка", "Шпилька"],
+    correct: 2,
+    exp: "Гайка имеет внутреннее резьбовое отверстие под болт или шпильку."
+  },
+  {
+    q: "Что прокладывается между фланцами корпусных деталей системы питания для герметичности?",
+    options: ["Стальные шайбы", "Уплотнительные прокладки (паронит, картон, маслобензостойкая резина)", "Шпонки", "Заклёпки"],
+    correct: 1,
+    exp: "Мягкие уплотнительные прокладки заполняют микронеровности фланцев."
+  },
+  {
+    q: "К чему приводит чрезмерный затяг резьбовых штуцеров топливопроводов высокого давления?",
+    options: ["К улучшению работы двигателя", "К срыву резьбы или деформации конуса штуцера", "К увеличению мощности", "Ни к чему не приводит"],
+    correct: 1,
+    exp: "Перетяжка приводит к повреждению посадочных конусов и срыву резьбы."
+  },
+  {
+    q: "Каким инструментом выполняется сборка классических болтовых соединений?",
+    options: ["Паяльником", "Сварочным аппаратом", "Гаечными ключами", "Клепальным молотком"],
+    correct: 2,
+    exp: "Гаечные ключи — основной инструмент для работы с резьбовым крепежом."
+  }
+];
+
+let questions = [];
+let timeLeft = 600;
+let timerId = null;
+
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
+function initQuiz() {
+  questions = JSON.parse(JSON.stringify(rawQuestions));
+  shuffle(questions);
+  
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+
+  questions.forEach((qObj, qIndex) => {
+    let optionsWithIndex = qObj.options.map((opt, idx) => ({ text: opt, originalIdx: idx }));
+    shuffle(optionsWithIndex);
+    qObj.shuffledOptions = optionsWithIndex;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `q-card-${qIndex}`;
+
+    let optionsHTML = '';
+    optionsWithIndex.forEach((optObj) => {
+      optionsHTML += `
+        <label class="option-label">
+          <input type="radio" name="question_${qIndex}" value="${optObj.originalIdx}">
+          <span>${optObj.text}</span>
+        </label>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="question-title">Вопрос ${qIndex + 1}: ${qObj.q}</div>
+      <div>${optionsHTML}</div>
+      <div class="explanation" id="exp-${qIndex}"></div>
+    `;
+    container.appendChild(card);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  const timerDisplay = document.getElementById('timer');
+  timerId = setInterval(() => {
+    timeLeft--;
+    let mins = Math.floor(timeLeft / 60);
+    let secs = timeLeft % 60;
+    timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      document.getElementById('time-out-banner').style.display = 'flex';
+    }
+  }, 1000);
+}
+
+function submitQuiz() {
+  clearInterval(timerId);
+  let correctCount = 0;
+
+  questions.forEach((qObj, qIndex) => {
+    const selected = document.querySelector(`input[name="question_${qIndex}"]:checked`);
+    const expDiv = document.getElementById(`exp-${qIndex}`);
+    expDiv.style.display = 'block';
+
+    if (selected && parseInt(selected.value) === qObj.correct) {
+      correctCount++;
+      expDiv.className = 'explanation correct-exp';
+      expDiv.innerHTML = `<strong>Верно!</strong> ${qObj.exp}`;
+    } else {
+      expDiv.className = 'explanation incorrect-exp';
+      const correctText = qObj.options[qObj.correct];
+      expDiv.innerHTML = `<strong>Неверно.</strong> Правильный ответ: ${correctText}.<br>${qObj.exp}`;
+    }
+  });
+
+  let score = Math.round((correctCount / 20) * 10);
+  if (score < 3 && correctCount > 0) score = 3; // регулировка минимального порога при наличии ответов
+
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.style.display = 'block';
+  
+  let statusText = score >= 3 ? "<span style='color: var(--success);'>Тест сдан</span>" : "<span style='color: var(--error);'>Тест не сдан</span>";
+
+  resultsDiv.innerHTML = `
+    <div class="score-banner">
+      <h2>Результаты тестирования</h2>
+      <p style="font-size: 1.3rem;">Правильных ответов: <strong>${correctCount} из 20</strong></p>
+      <p style="font-size: 1.8rem; font-weight: bold;">Итоговая оценка: ${score} баллов из 10</p>
+      <p style="font-size: 1.1rem;">Статус: ${statusText}</p>
+    </div>
+  `;
+
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
