@@ -364,7 +364,28 @@ function submitQuiz() {
       <p style="font-size: 1.8rem; font-weight: bold;">Итоговая оценка: ${score} баллов из 10</p>
       <p style="font-size: 1.1rem;">Статус: ${statusText}</p>
     </div>
-  `;
+  `;function saveTestResultToAdmin(userName, testTitle, score, percent) {
+    // Получаем ранее сохраненную историю
+    let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
+    
+    // Определяем номер попытки для текущего пользователя и теста
+    const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
+    
+    const record = {
+        userName: userName,            // ФИО учащегося
+        testTitle: testTitle,          // Название теста
+        score: score,                  // Оценка (например, 8)
+        percent: percent,              // Процент выполнения (например, 80)
+        attempt: previousAttempts + 1, // Номер попытки
+        timestamp: new Date().toLocaleString('ru-RU') // Дата и время
+    };
+
+    logs.push(record);
+    localStorage.setItem('test_results_log', JSON.stringify(logs));
+}
+
+// Пример вызова при завершении теста:
+// saveTestResultToAdmin("Иванов Иван", "Тема 01: Классификация тракторов - Тест 1", 9, 90);
 
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
