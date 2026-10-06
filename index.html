@@ -299,7 +299,7 @@
                     </button>
                     <div id="dev-topic-6" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <a href="cooling_test_level_1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="cooling_test_level_1_4.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
                             </a>
                             <a href="cooling_test_level_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
@@ -809,8 +809,36 @@
             }
         }
 
+        function getNormalizedLogs() {
+            let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
+            
+            // Если есть записи в устаревшем ключе quizResults, конвертируем их
+            let legacyResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+            if (legacyResults.length > 0) {
+                legacyResults.forEach(item => {
+                    const userName = item.name || "Ученик";
+                    const testTitle = item.test || "Тест 1: Базовый уровень";
+                    const previousAttempts = logs.filter(l => l.userName === userName && l.testTitle === testTitle).length;
+                    
+                    logs.push({
+                        userName: userName,
+                        testTitle: testTitle,
+                        score: item.mark || 1,
+                        percent: parseInt(item.percent) || 0,
+                        attempt: previousAttempts + 1,
+                        timestamp: item.date || new Date().toLocaleString('ru-RU')
+                    });
+                });
+                
+                localStorage.setItem('test_results_log', JSON.stringify(logs));
+                localStorage.removeItem('quizResults');
+            }
+
+            return logs;
+        }
+
         function renderAdminStats() {
-            const logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
+            const logs = getNormalizedLogs();
             const tbody = document.getElementById('admin-table-body');
             tbody.innerHTML = '';
 
@@ -849,7 +877,7 @@
                     </td>
                     <td class="p-3 text-slate-300">${log.testTitle}</td>
                     <td class="p-3 text-center">
-                        <span class="px-2.5 py-1 rounded-md font-mono font-bold ${log.score >= 7 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+                        <span class="px-2.5 py-1 rounded-md font-mono font-bold ${log.score >= 3 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
                             ${log.score} / 10
                         </span>
                     </td>
@@ -876,6 +904,7 @@
         function clearTestLogs() {
             if (confirm('Вы уверены, что хотите полностью очистить всю историю тестов?')) {
                 localStorage.removeItem('test_results_log');
+                localStorage.removeItem('quizResults');
                 renderAdminStats();
             }
         }

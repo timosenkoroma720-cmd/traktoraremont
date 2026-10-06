@@ -56,7 +56,7 @@
 </div>
 
 <script>
-const TEST_TITLE = "Тест 1: Базовый уровень";
+const TEST_TITLE = "Система охлаждения: Тест 1 (Базовый)";
 let studentName = "";
 
 const rawQuestions = [
@@ -131,21 +131,23 @@ function startQuiz() {
     }, 1000);
 }
 
-function saveResult(score, percent, mark) {
-    let results = JSON.parse(localStorage.getItem("quizResults") || "[]");
-    let now = new Date();
-    let timeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString().slice(0, 5);
+function saveResult(rawScore, percent, mark) {
+    let logs = JSON.parse(localStorage.getItem("test_results_log") || "[]");
+    let previousAttempts = logs.filter(item => item.userName === studentName && item.testTitle === TEST_TITLE).length;
     
-    results.push({
-        name: studentName,
-        test: TEST_TITLE,
-        score: `${score} / 20`,
-        percent: `${percent}%`,
-        mark: mark,
-        date: timeStr
+    let now = new Date();
+    let timeStr = now.toLocaleDateString('ru-RU') + " " + now.toLocaleTimeString('ru-RU').slice(0, 5);
+
+    logs.push({
+        userName: studentName,
+        testTitle: TEST_TITLE,
+        score: mark,
+        percent: percent,
+        attempt: previousAttempts + 1,
+        timestamp: timeStr
     });
 
-    localStorage.setItem("quizResults", JSON.stringify(results));
+    localStorage.setItem("test_results_log", JSON.stringify(logs));
 }
 
 function submitQuiz() {
