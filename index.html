@@ -227,13 +227,13 @@
                     </button>
                     <div id="dev-topic-3" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <a href="grm_test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="grm_test1_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
                             </a>
-                            <a href="grm_test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="grm_test2_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
                             </a>
-                            <a href="grm_test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="grm_test3_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
                             </a>
                         </div>
@@ -251,13 +251,13 @@
                     </button>
                     <div id="dev-topic-4" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <a href="diesel_test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="diesel_test1_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
                             </a>
-                            <a href="diesel_test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="diesel_test2_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 2
                             </a>
-                            <a href="diesel_test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="diesel_test3_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 3
                             </a>
                         </div>
@@ -299,7 +299,7 @@
                     </button>
                     <div id="dev-topic-6" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <a href="cooling_test_level_1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
+                            <a href="cooling_test_level_1_4.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
                                 <i data-lucide="file-text" class="w-4 h-4 text-brand-400 group-hover:text-industrial-950"></i> Тест 1
                             </a>
                             <a href="cooling_test_level_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">
@@ -812,7 +812,7 @@
         function getNormalizedLogs() {
             let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
             
-            // Если есть записи в устаревшем ключе quizResults, конвертируем их
+            // Конвертация записей из устаревшего ключа quizResults
             let legacyResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
             if (legacyResults.length > 0) {
                 legacyResults.forEach(item => {
@@ -909,7 +909,17 @@
             }
         }
 
-        // Глобальная функция для передачи данных из файлов тестов
+        // Слушатель событий изменения localStorage во вкладках для моментального обновления панели
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'test_results_log' || e.key === 'quizResults') {
+                const adminModal = document.getElementById('admin-panel-modal');
+                if (adminModal && !adminModal.classList.contains('hidden')) {
+                    renderAdminStats();
+                }
+            }
+        });
+
+        // Глобальная функция сохранения для обратной совместимости
         window.saveTestResultToAdmin = function(userName, testTitle, score, percent) {
             let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
             const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
