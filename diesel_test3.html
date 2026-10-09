@@ -29,9 +29,25 @@
         .timeout-msg { background: #e53e3e; color: #ffffff; padding: 40px; border-radius: 12px; text-align: center; border: 5px solid #ffffff; box-shadow: 0 0 30px rgba(229,62,62,0.8); max-width: 90%; }
         .timeout-msg h1 { font-size: 32px; margin: 0 0 15px 0; text-transform: uppercase; }
         .timeout-msg p { font-size: 20px; margin: 0; font-weight: bold; }
+
+        /* Окно авторизации ФИО */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .auth-modal { background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .auth-modal input { width: 100%; padding: 12px; margin: 15px 0; box-sizing: border-box; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .auth-modal button { background: #e53e3e; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; }
+        .auth-modal button:hover { background: #c53030; }
     </style>
 </head>
 <body>
+
+<div id="authModal" class="auth-overlay">
+    <div class="auth-modal">
+        <h3>Регистрация перед тестом</h3>
+        <p>Введите ваши Фамилию, Имя и Отчество:</p>
+        <input type="text" id="studentNameInput" placeholder="ФИО ученика..." required>
+        <button type="button" onclick="startQuiz()">Начать тест</button>
+    </div>
+</div>
 
 <div id="timeoutOverlay" class="overlay-timeout">
     <div class="timeout-msg">
@@ -47,7 +63,7 @@
     </div>
 
     <div class="timer-box">
-        <span>⏱️️ Оставшееся время:</span>
+        <span>⏱️ Оставшееся время:</span>
         <span id="timer">10:00</span>
     </div>
 
@@ -60,6 +76,9 @@
 </div>
 
 <script>
+const TEST_TITLE = "Система питания дизеля: Тест 3 (Сложный)";
+let studentName = "";
+
 const rawQuestions = [
     { q: "О какой неисправности системы питания чаще всего свидетельствует ЧЕРНЫЙ густой дым из выхлопной трубы?", options: ["Переобогащение смеси: недостаток воздуха или льющие (негерметичные) форсунки", "Попадание охлаждающей жидкости в цилиндры", "Завоздушивание системы питания", "Попадание масла в катализатор"], correct: 0, exp: "Черный дым — это нерастворившийся углерод (сажа), возникающий из-за недостатка воздуха или чрезмерной подачи топлива." },
     { q: "Какая неисправность вызывает появление БЕЛОГО дыма с запахом несгоревшего дизельного топлива на холодном ДВС?", options: ["Поздний впрыск топлива или пропуск воспламенения из-за низкой компрессии/свечи накала", "Ранний впрыск топлива", "Забитый сажевый фильтр", "Избыточное давление турбины"], correct: 0, exp: "Белый дым — это мелкодисперсные капли испарившегося, но не воспламенившегося дизельного топлива." },
@@ -94,9 +113,9 @@ function shuffleArray(arr) {
 
 let activeQuestions = [];
 let timeLeft = 600;
-let timerInterval;
+let timerInterval = null;
 
-function initQuiz() {
+function renderQuiz() {
     let shuffledQ = shuffleArray(rawQuestions);
     activeQuestions = shuffledQ.map(qObj => {
         let optionsWithFlag = qObj.options.map((optText, index) => ({
@@ -111,11 +130,6 @@ function initQuiz() {
         };
     });
 
-    renderQuiz();
-    startTimer();
-}
-
-function renderQuiz() {
     const container = document.getElementById('questionsContainer');
     container.innerHTML = '';
     
@@ -134,7 +148,15 @@ function renderQuiz() {
     });
 }
 
-function startTimer() {
+function startQuiz() {
+    let input = document.getElementById("studentNameInput").value.trim();
+    if (!input) {
+        alert("Пожалуйста, введите свое ФИО!");
+        return;
+    }
+    studentName = input;
+    document.getElementById("authModal").style.display = "none";
+
     timerInterval = setInterval(() => {
         timeLeft--;
         let min = Math.floor(timeLeft / 60);
@@ -152,6 +174,7 @@ function triggerTimeout() {
     const inputs = document.querySelectorAll('input[type="radio"]');
     inputs.forEach(i => i.disabled = true);
     document.getElementById('timeoutOverlay').style.display = 'flex';
+    saveResultToAdmin(2, 0);
 }
 
 function calculateScore(correctCount) {
@@ -166,9 +189,28 @@ function calculateScore(correctCount) {
     return 2;
 }
 
+function saveResultToAdmin(numMark, percent) {
+    let logs = JSON.parse(localStorage.getItem("test_results_log") || "[]");
+    let previousAttempts = logs.filter(item => item.userName === studentName && item.testTitle === TEST_TITLE).length;
+    
+    let now = new Date();
+    let timeStr = now.toLocaleDateString('ru-RU') + " " + now.toLocaleTimeString('ru-RU').slice(0, 5);
+
+    logs.push({
+        userName: studentName,
+        testTitle: TEST_TITLE,
+        score: numMark,
+        percent: percent,
+        attempt: previousAttempts + 1,
+        timestamp: timeStr
+    });
+
+    localStorage.setItem("test_results_log", JSON.stringify(logs));
+}
+
 function finishQuiz(isTimeout) {
     if (isTimeout) return;
-    clearInterval(timerInterval);
+    if (timerInterval) clearInterval(timerInterval);
 
     const inputs = document.querySelectorAll('input[type="radio"]');
     inputs.forEach(i => i.disabled = true);
@@ -201,6 +243,7 @@ function finishQuiz(isTimeout) {
     });
 
     const score = calculateScore(correctCount);
+    const percent = Math.round((correctCount / 20) * 100);
     const resultBox = document.getElementById('resultBox');
     resultBox.style.display = 'block';
 
@@ -209,17 +252,19 @@ function finishQuiz(isTimeout) {
 
     resultBox.innerHTML = `
         <h2>Результаты прохождения теста</h2>
-        <p>Правильных ответов: <strong>${correctCount} из 20</strong></p>
+        <p>Ученик: <strong>${studentName}</strong></p>
+        <p>Правильных ответов: <strong>${correctCount} из 20 (${percent}%)</strong></p>
         <p>Итоговая оценка: <strong>${score} баллов из 10</strong></p>
         <p>Статус: <strong>${isPassed ? 'ТЕСТ СДАН' : 'ТЕСТ НЕ ПРОЙДЕН'}</strong> (Минимальный порог: 3 балла)</p>
         <hr>
         <p><small>Зеленым цветом выделены верные ответы, красным — ваши ошибочные варианты.</small></p>
     `;
     
+    saveResultToAdmin(score, percent);
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-window.onload = initQuiz;
+window.onload = renderQuiz;
 </script>
 </body>
 </html>
