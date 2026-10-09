@@ -24,9 +24,26 @@
         .explanation { margin-top: 12px; padding: 10px; background: #e2e8f0; border-radius: 5px; font-size: 14px; color: #1e293b; display: none; }
         .status-failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
         .status-passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+
+        /* Окно ввода ФИО */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .auth-modal { background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .auth-modal input { width: 100%; padding: 12px; margin: 15px 0; box-sizing: border-box; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
+        .auth-modal button { padding: 12px 24px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .auth-modal button:hover { background: #219150; }
     </style>
 </head>
 <body>
+
+<!-- Модальное окно авторизации -->
+<div id="authModal" class="auth-overlay">
+    <div class="auth-modal">
+        <h3>Регистрация перед тестом</h3>
+        <p>Введите ваши Фамилию, Имя и Отчество:</p>
+        <input type="text" id="studentNameInput" placeholder="ФИО ученика..." required>
+        <button type="button" onclick="startQuiz()">Начать тест</button>
+    </div>
+</div>
 
 <div class="quiz-container">
     <div class="header">
@@ -48,6 +65,9 @@
 </div>
 
 <script>
+const TEST_TITLE = "ГРМ: Тест 1 (Базовый)";
+let studentName = "";
+
 const rawQuestions = [
     { q: "Каково основное назначение газораспределительного механизма (ГРМ) в ДВС?", options: ["Передача крутящего момента на ведущие колеса", "Своевременный впуск свежего заряда в цилиндры и выпуск отработавших газов", "Охлаждение деталей цилиндро-поршневой группы", "Подача масла под давлением к подшипникам"], correct: 1, exp: "ГРМ предназначен для управления процессами впуска горючей смеси/воздуха и выпуска продуктов сгорания." },
     { q: "Какой тип ГРМ наиболее распространен в современных четырехтактных автомобильных двигателях?", options: ["Клапанный", "Золотниковый", "Поршневой (с окнами в цилиндре)", "Мембранный"], correct: 0, exp: "Клапанные механизмы обеспечивают наилучшую герметичность камеры сгорания." },
@@ -85,6 +105,17 @@ const quizData = shuffle([...rawQuestions]);
 let timeLeft = 600;
 let timerInterval;
 
+function startQuiz() {
+    let input = document.getElementById("studentNameInput").value.trim();
+    if (!input) {
+        alert("Пожалуйста, введите свое ФИО!");
+        return;
+    }
+    studentName = input;
+    document.getElementById("authModal").style.display = "none";
+    startTimer();
+}
+
 function startTimer() {
     timerInterval = setInterval(() => {
         timeLeft--;
@@ -113,6 +144,25 @@ function renderQuiz() {
     });
 }
 
+function saveResultToAdmin(score, percent, markNum) {
+    let logs = JSON.parse(localStorage.getItem("test_results_log") || "[]");
+    let previousAttempts = logs.filter(item => item.userName === studentName && item.testTitle === TEST_TITLE).length;
+    
+    let now = new Date();
+    let timeStr = now.toLocaleDateString('ru-RU') + " " + now.toLocaleTimeString('ru-RU').slice(0, 5);
+
+    logs.push({
+        userName: studentName,
+        testTitle: TEST_TITLE,
+        score: markNum,
+        percent: percent,
+        attempt: previousAttempts + 1,
+        timestamp: timeStr
+    });
+
+    localStorage.setItem("test_results_log", JSON.stringify(logs));
+}
+
 function finishQuiz(isTimeout) {
     clearInterval(timerInterval);
     const inputs = document.querySelectorAll('input[type="radio"]');
@@ -123,7 +173,8 @@ function finishQuiz(isTimeout) {
 
     if (isTimeout) {
         resultBox.className = 'result-box status-failed';
-        resultBox.innerHTML = `<h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2><p><strong>Время (10 минут) истекло!</strong> Оценка: <strong>2 (Неудовлетворительно)</strong>.</p>`;
+        resultBox.innerHTML = `<h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2><p>Ученик: <strong>${studentName}</strong></p><p><strong>Время (10 минут) истекло!</strong> Оценка: <strong>2 (Неудовлетворительно)</strong>.</p>`;
+        saveResultToAdmin(0, 0, 2);
         return;
     }
 
@@ -152,25 +203,30 @@ function finishQuiz(isTimeout) {
         }
     });
 
-    let mark = "";
+    let percent = Math.round((score / quizData.length) * 100);
+    let markText = "";
+    let markNum = 2;
     let statusClass = "";
-    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "status-passed"; }
-    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "status-passed"; }
-    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "status-passed"; }
-    else { mark = "2 (Неудовлетворительно)"; statusClass = "status-failed"; }
+
+    if (score >= 18) { markText = "5 (Отлично)"; markNum = 10; statusClass = "status-passed"; }
+    else if (score >= 15) { markText = "4 (Хорошо)"; markNum = 8; statusClass = "status-passed"; }
+    else if (score >= 10) { markText = "3 (Удовлетворительно)"; markNum = 6; statusClass = "status-passed"; }
+    else { markText = "2 (Неудовлетворительно)"; markNum = 2; statusClass = "status-failed"; }
 
     resultBox.className = `result-box ${statusClass}`;
     resultBox.innerHTML = `
         <h2>Результаты проверки</h2>
-        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
-        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <p>Ученик: <strong>${studentName}</strong></p>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length} (${percent}%)</strong></p>
+        <p>Итоговая оценка: <strong>${markText}</strong></p>
         <hr><p>Правильные ответы подсвечены зеленым цветом, ошибочные — красным.</p>
     `;
+
+    saveResultToAdmin(score, percent, markNum);
 }
 
 window.onload = function() {
     renderQuiz();
-    startTimer();
 };
 </script>
 </body>

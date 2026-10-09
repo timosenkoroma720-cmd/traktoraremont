@@ -20,9 +20,26 @@
         .explanation { margin-top: 10px; padding: 10px; background: #e2e8f0; border-radius: 4px; font-size: 14px; color: #334155; display: none; }
         .failed { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
         .passed { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+
+        /* Окно ввода ФИО */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .auth-modal { background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .auth-modal input { width: 100%; padding: 12px; margin: 15px 0; box-sizing: border-box; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
+        .auth-modal button { padding: 12px 24px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .auth-modal button:hover { background: #2980b9; }
     </style>
 </head>
 <body>
+
+<!-- Модальное окно авторизации -->
+<div id="authModal" class="auth-overlay">
+    <div class="auth-modal">
+        <h3>Регистрация перед тестом</h3>
+        <p>Введите ваши Фамилию, Имя и Отчество:</p>
+        <input type="text" id="studentNameInput" placeholder="ФИО ученика..." required>
+        <button type="button" onclick="startQuiz()">Начать тест</button>
+    </div>
+</div>
 
 <div class="quiz-card">
     <div class="header">
@@ -44,6 +61,9 @@
 </div>
 
 <script>
+const TEST_TITLE = "КШМ: Тест 1 (Базовый)";
+let studentName = "";
+
 const quizData = [
     { q: "1. Каково основное назначение кривошипно-шатунного механизма (КШМ)?", options: ["Для передачи вращения на передний мост", "Для преобразования возвратно-поступательного движения поршня во вращательное движение коленчатого вала", "Для открытия и закрытия клапанов", "Для подачи топлива в цилиндры"], correct: 1, exp: "КШМ воспринимает давление газов и преобразует прямолинейное возвратно-поступательное движение поршня во вращение коленчатого вала." },
     { q: "2. На какие две группы подразделяются детали КШМ?", options: ["Основная и вспомогательная", "Подвижные и неподвижные", "Чугунные и стальные", "Верхняя и нижняя"], correct: 1, exp: "Детали КШМ разделяют на неподвижные (блок цилиндров, ГБЦ, поддон) и подвижные (поршень, шатун, коленчатый вал, маховик)." },
@@ -69,6 +89,17 @@ const quizData = [
 
 let timeLeft = 600;
 let timerInterval;
+
+function startQuiz() {
+    let input = document.getElementById("studentNameInput").value.trim();
+    if (!input) {
+        alert("Пожалуйста, введите свое ФИО!");
+        return;
+    }
+    studentName = input;
+    document.getElementById("authModal").style.display = "none";
+    startTimer();
+}
 
 function startTimer() {
     timerInterval = setInterval(() => {
@@ -98,6 +129,25 @@ function renderQuiz() {
     });
 }
 
+function saveResultToAdmin(score, percent, markNum) {
+    let logs = JSON.parse(localStorage.getItem("test_results_log") || "[]");
+    let previousAttempts = logs.filter(item => item.userName === studentName && item.testTitle === TEST_TITLE).length;
+    
+    let now = new Date();
+    let timeStr = now.toLocaleDateString('ru-RU') + " " + now.toLocaleTimeString('ru-RU').slice(0, 5);
+
+    logs.push({
+        userName: studentName,
+        testTitle: TEST_TITLE,
+        score: markNum,
+        percent: percent,
+        attempt: previousAttempts + 1,
+        timestamp: timeStr
+    });
+
+    localStorage.setItem("test_results_log", JSON.stringify(logs));
+}
+
 function finishQuiz(isTimeout) {
     clearInterval(timerInterval);
     const inputs = document.querySelectorAll('input[type="radio"]');
@@ -114,10 +164,12 @@ function finishQuiz(isTimeout) {
         resultBox.className = 'result-box failed';
         resultBox.innerHTML = `
             <h2>❌ ТЕСТ НЕ ПРОЙДЕН</h2>
+            <p>Ученик: <strong>${studentName}</strong></p>
             <p><strong>Причина:</strong> Время отведенное на тест (10 минут) истекло!</p>
             <p>Итоговая оценка: <strong>2 (Неудовлетворительно)</strong></p>
             <p>Ознакомьтесь с правильными ответами ниже.</p>
         `;
+        saveResultToAdmin(0, 0, 2);
         return;
     }
 
@@ -129,27 +181,31 @@ function finishQuiz(isTimeout) {
         }
     });
 
-    let mark = "";
+    let percent = Math.round((score / quizData.length) * 100);
+    let markText = "";
+    let markNum = 2;
     let statusClass = "";
 
-    if (score >= 18) { mark = "5 (Отлично)"; statusClass = "passed"; }
-    else if (score >= 15) { mark = "4 (Хорошо)"; statusClass = "passed"; }
-    else if (score >= 10) { mark = "3 (Удовлетворительно)"; statusClass = "passed"; }
-    else { mark = "2 (Неудовлетворительно)"; statusClass = "failed"; }
+    if (score >= 18) { markText = "5 (Отлично)"; markNum = 10; statusClass = "passed"; }
+    else if (score >= 15) { markText = "4 (Хорошо)"; markNum = 8; statusClass = "passed"; }
+    else if (score >= 10) { markText = "3 (Удовлетворительно)"; markNum = 6; statusClass = "passed"; }
+    else { markText = "2 (Неудовлетворительно)"; markNum = 2; statusClass = "failed"; }
 
     resultBox.className = `result-box ${statusClass}`;
     resultBox.innerHTML = `
         <h2>Результаты тестирования</h2>
-        <p>Правильных ответов: <strong>${score} из ${quizData.length}</strong></p>
-        <p>Итоговая оценка: <strong>${mark}</strong></p>
+        <p>Ученик: <strong>${studentName}</strong></p>
+        <p>Правильных ответов: <strong>${score} из ${quizData.length} (${percent}%)</strong></p>
+        <p>Итоговая оценка: <strong>${markText}</strong></p>
         <hr>
         <p>Ниже представлены правильные ответы и пояснения к каждому вопросу.</p>
     `;
+
+    saveResultToAdmin(score, percent, markNum);
 }
 
 window.onload = function() {
     renderQuiz();
-    startTimer();
 };
 </script>
 </body>
