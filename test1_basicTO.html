@@ -1,396 +1,486 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Тест 1: Разъёмные и неразъёмные соединения (Базовый уровень)</title>
-  <style>
-    :root {
-      --primary: #1e3a8a;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --success: #15803d;
-      --error: #b91c1c;
-      --border: #cbd5e1;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      padding-top: 90px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .header-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 25px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    .header-title { font-size: 1.1rem; font-weight: 600; }
-    .timer-box {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      border: 1px solid var(--border);
-    }
-    .question-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
-    .option-label {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .option-label:hover { background-color: #f1f5f9; }
-    .option-label input { margin-right: 12px; }
-    .btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-    }
-    .btn:hover { opacity: 0.9; }
-    #time-out-banner {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--error);
-      color: white;
-      z-index: 2000;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-    }
-    #time-out-banner h1 { font-size: 2.5rem; margin-bottom: 15px; }
-    #time-out-banner p { font-size: 1.5rem; }
-    .explanation {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      display: none;
-    }
-    .correct-exp { background-color: #dcfce7; color: #14532d; border: 1px solid #86efac; }
-    .incorrect-exp { background-color: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
-    .score-banner {
-      background: #eff6ff;
-      border: 2px solid var(--primary);
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      margin-bottom: 25px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-тест: Слесарное дело и Дизельные двигатели</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-<div class="header-bar">
-  <div class="header-title">Тест 1: Базовый уровень (Соединения в системе питания)</div>
-  <div class="timer-box" id="timer">10:00</div>
-</div>
+    <!-- Main Container -->
+    <div class="w-full max-w-4xl bg-slate-800 border border-slate-700 shadow-2xl rounded-2xl overflow-hidden my-6">
 
-<div class="container">
-  <form id="quiz-form">
-    <div id="questions-container"></div>
-    <button type="button" class="btn" onclick="submitQuiz()">Завершить тест</button>
-  </form>
+        <!-- Header -->
+        <header class="bg-slate-700 px-6 py-4 border-b border-slate-600 flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold tracking-wide text-amber-400">Слесарное дело и Дизельные двигатели</h1>
+            <div id="timer-container" class="hidden items-center space-x-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-600">
+                <svg class="w-5 h-5 text-red-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span id="timer" class="font-mono font-bold text-red-400 text-lg">10:00</span>
+            </div>
+        </header>
 
-  <div id="results" style="display: none;"></div>
-</div>
+        <!-- Main Body -->
+        <main class="p-6 md:p-8">
 
-<div id="time-out-banner">
-  <h1>ТЕСТ НЕ ПРОЙДЕН</h1>
-  <p>ОБРАТИТЕСЬ К УЧИТЕЛЮ</p>
-</div>
+            <!-- STEP 1: Registration -->
+            <section id="step-register" class="space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="text-2xl font-bold text-white">Регистрация ученика</h2>
+                    <p class="text-slate-400 text-sm max-w-md mx-auto">Введите ФИО для начала тестирования. В тесте 20 вопросов, время выполнения — 10 минут. Оценка рассчитывается по 10-балльной системе.</p>
+                </div>
+                <form id="register-form" class="space-y-4 max-w-md mx-auto">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">ФИО Ученика</label>
+                        <input type="text" id="student-name" required placeholder="Иванов Иван Иванович" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 font-semibold text-slate-950 py-3 rounded-lg transition shadow-lg cursor-pointer">Начать тест</button>
+                </form>
+            </section>
 
-<script>
-const rawQuestions = [
-  {
-    q: "Какое соединение называют разъёмным?",
-    options: ["Соединение, которое можно разобрать без разрушения деталей", "Соединение, разборка которого требует разрушения крепежа", "Соединение, выполненное с помощью сварки", "Соединение, зафиксированное клеем"],
-    correct: 0,
-    exp: "Разъёмные соединения допускают повторную сборку и разборку без повреждения элементов."
-  },
-  {
-    q: "Какое соединение относится к неразъёмным?",
-    options: ["Болтовое", "Шпилечное", "Сварное", "Шлицевое"],
-    correct: 2,
-    exp: "Сварка образует неразъёмное соединение за счет межатомных связей."
-  },
-  {
-    q: "Для чего применяются резьбовые соединения в трубопроводах системы питания?",
-    options: ["Для постоянной фиксации без возможности ремонта", "Для обеспечения герметичности и возможности разборки при ТО", "Только для декоративных целей", "Для уменьшения давления топлива"],
-    correct: 1,
-    exp: "Резьбовые соединения штуцеров и топропроводов позволяют проводить обслуживание и замену компонентов."
-  },
-  {
-    q: "Какой тип соединения используется для крепления топливного бака к кронштейнам рамы?",
-    options: ["Сварное намертво", "Болтовое или хомутовое с резьбой", "Паяное", "Клеевое"],
-    correct: 1,
-    exp: "Топливный бак крепится стяжными хомутами или болтами для удобства демонтажа."
-  },
-  {
-    q: "Что относится к крепежным деталям резьбовых соединений?",
-    options: ["Заклепки и сварные швы", "Болты, шпильки, гайки", "Припой и флюс", "Шпонки и заклёпки"],
-    correct: 1,
-    exp: "Болты, шпильки и гайки — стандартные изделия резьбовых разъёмных соединений."
-  },
-  {
-    q: "Как соединяются секции металлических топливных баков при их изготовлении?",
-    options: ["Шпоночным соединением", "Сваркой или штамповочно-закаточным швом", "Шлицевым соединением", "Болтами по периметру"],
-    correct: 1,
-    exp: "Корпус бака изготавливается методом сварки или неразъёмной закатки швов."
-  },
-  {
-    q: "Какую функцию выполняет медная или алюминиевая шайба в штуцерном соединении топливопровода?",
-    options: ["Увеличивает прочность штуцера", "Обеспечивает герметичность стыка", "Предотвращает коррозию резьбы", "Уменьшает массу узла"],
-    correct: 1,
-    exp: "Уплотнительные шайбы из мягкого металла пластично деформируются и герметизируют стык."
-  },
-  {
-    q: "Какое соединение применяется для установки форсунки в головку блока цилиндров?",
-    options: ["Сварное", "Резьбовое (шпильки/прижимная скоба или резьба корпуса)", "Паяное", "Заклепочное"],
-    correct: 1,
-    exp: "Форсунки фиксируются резьбовым способом (через фланцы, скобы или резьбу) для возможности замены."
-  },
-  {
-    q: "К какому типу относится соединение гибких резиновых шлангов с металлическими трубками системы питания?",
-    options: ["Разъёмное (хомутовое)", "Неразъёмное (сварное)", "Шпоночное", "Шлицевое"],
-    correct: 0,
-    exp: "Шланги фиксируются червячными или пружинными хомутами, что позволяет производить их замену."
-  },
-  {
-    q: "Что такое шпилька?",
-    options: ["Стержень с головкой под ключ", "Стержень с резьбой на обоих концах", "Деталь с внутренней резьбой", "Пластина с отверстием"],
-    correct: 1,
-    exp: "Шпилька представляет собой цилиндрический стержень с резьбой на обоих концах."
-  },
-  {
-    q: "Какое неразъёмное соединение используется при ремонте латунных элементов топливных фильтров и баков?",
-    options: ["Болтовое", "Пайка", "Шлицевое", "Шпоночное"],
-    correct: 1,
-    exp: "Пайка мягкими или твердыми припоями применяются для устранения течей латунных/медных элементов."
-  },
-  {
-    q: "Какое соединение называют шпоночным?",
-    options: ["Разъёмное соединение вала и втулки с помощью шпонки", "Неразъёмное соединение с помощью заклёпок", "Соединение деталей расплавленным металлом", "Соединение с помощью резьбы"],
-    correct: 0,
-    exp: "Шпоночное соединение служат для передачи крутящего момента от вала к ступице."
-  },
-  {
-    q: "Что предотвращает самопроизвольное отворачивание гаек в элементах системы питания?",
-    options: ["Прокладочный картон", "Пружинные шайбы (шайбы Гровера) и шплинты", "Солидол", "Медные шайбы"],
-    correct: 1,
-    exp: "Пружинные шайбы создают постоянное натяжение в резьбе, препятствуя самоотворачиванию от вибраций."
-  },
-  {
-    q: "Какое преимущество имеют разъёмные соединения перед неразъёмными?",
-    options: ["Выше абсолютная прочность", "Легкость ремонтопригодности и демонтажа", "Меньшая стоимость изготовления", "Полное отсутствие риска утечек"],
-    correct: 1,
-    exp: "Главное преимущество разъёмных соединений — удобство сборки, разборки и обслуживания."
-  },
-  {
-    q: "Где в системе питания применяются фланцевые соединения?",
-    options: ["В месте крепления подкачивающего насоса или ТНВД", "Внутри топливного бака", "На распылителе форсунки", "Внутри топливного провода"],
-    correct: 0,
-    exp: "Фланцы с болтовым или шпилечным креплением применяются для монтажа корпусных агрегатов."
-  },
-  {
-    q: "Какое соединение получается при использовании заклёпок?",
-    options: ["Разъёмное", "Неразъёмное", "Подвижное", "Резьбовое"],
-    correct: 1,
-    exp: "Заклёпочное соединение является неразъёмным, так как разрушается при демонтаже."
-  },
-  {
-    q: "Какая деталь резьбового соединения имеет внутреннюю резьбу?",
-    options: ["Болт", "Винт", "Гайка", "Шпилька"],
-    correct: 2,
-    exp: "Гайка имеет внутреннее резьбовое отверстие под болт или шпильку."
-  },
-  {
-    q: "Что прокладывается между фланцами корпусных деталей системы питания для герметичности?",
-    options: ["Стальные шайбы", "Уплотнительные прокладки (паронит, картон, маслобензостойкая резина)", "Шпонки", "Заклёпки"],
-    correct: 1,
-    exp: "Мягкие уплотнительные прокладки заполняют микронеровности фланцев."
-  },
-  {
-    q: "К чему приводит чрезмерный затяг резьбовых штуцеров топливопроводов высокого давления?",
-    options: ["К улучшению работы двигателя", "К срыву резьбы или деформации конуса штуцера", "К увеличению мощности", "Ни к чему не приводит"],
-    correct: 1,
-    exp: "Перетяжка приводит к повреждению посадочных конусов и срыву резьбы."
-  },
-  {
-    q: "Каким инструментом выполняется сборка классических болтовых соединений?",
-    options: ["Паяльником", "Сварочным аппаратом", "Гаечными ключами", "Клепальным молотком"],
-    correct: 2,
-    exp: "Гаечные ключи — основной инструмент для работы с резьбовым крепежом."
-  }
-];
+            <!-- STEP 2: Quiz Assessment -->
+            <section id="step-quiz" class="hidden space-y-6">
+                <div class="flex justify-between items-center text-sm text-slate-400 border-b border-slate-700 pb-3">
+                    <span id="question-tracker">Вопрос 1 из 20</span>
+                    <span id="current-topic" class="text-amber-400 font-medium">Тема</span>
+                </div>
 
-let questions = [];
-let timeLeft = 600;
-let timerId = null;
+                <div id="question-card" class="space-y-4">
+                    <h3 id="question-text" class="text-lg md:text-xl font-semibold text-white"></h3>
+                    <div id="options-container" class="space-y-3">
+                        <!-- Options injected dynamically -->
+                    </div>
+                </div>
 
-function shuffle(array) {
-  let currentIndex = array.length, randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  }
-  return array;
-}
+                <div class="flex justify-between pt-4 border-t border-slate-700">
+                    <button id="prev-btn" onclick="prevQuestion()" class="hidden bg-slate-700 hover:bg-slate-600 px-5 py-2.5 rounded-lg text-sm font-medium transition cursor-pointer">Назад</button>
+                    <div class="ml-auto">
+                        <button id="next-btn" onclick="nextQuestion()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-2.5 rounded-lg text-sm font-semibold transition cursor-pointer">Следующий</button>
+                    </div>
+                </div>
+            </section>
 
-function initQuiz() {
-  questions = JSON.parse(JSON.stringify(rawQuestions));
-  shuffle(questions);
-  
-  const container = document.getElementById('questions-container');
-  container.innerHTML = '';
+            <!-- STEP 3: Results Section -->
+            <section id="step-result" class="hidden space-y-6">
+                <!-- Timeout Banner (Shows only if time expired) -->
+                <div id="timeout-banner" class="hidden bg-red-600/90 border-2 border-red-500 text-white font-bold text-center p-4 rounded-xl shadow-lg text-lg animate-bounce">
+                    Тест не сдан, обратитесь к учителю (Истекло время!)
+                </div>
 
-  questions.forEach((qObj, qIndex) => {
-    let optionsWithIndex = qObj.options.map((opt, idx) => ({ text: opt, originalIdx: idx }));
-    shuffle(optionsWithIndex);
-    qObj.shuffledOptions = optionsWithIndex;
+                <!-- Result Header -->
+                <div class="text-center space-y-3 bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Тестирование завершено</h2>
+                    <p id="student-info-text" class="text-slate-300 font-medium text-lg"></p>
+                    <p id="result-score-text" class="text-xl text-amber-400 font-semibold"></p>
+                    <p id="admin-status" class="text-xs text-slate-400"></p>
+                </div>
 
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.id = `q-card-${qIndex}`;
+                <!-- Detailed Answers Review -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2">Детальный разбор ответов</h3>
+                    <div id="answers-review-container" class="space-y-4">
+                        <!-- Review item injected dynamically -->
+                    </div>
+                </div>
 
-    let optionsHTML = '';
-    optionsWithIndex.forEach((optObj) => {
-      optionsHTML += `
-        <label class="option-label">
-          <input type="radio" name="question_${qIndex}" value="${optObj.originalIdx}">
-          <span>${optObj.text}</span>
-        </label>
-      `;
-    });
+                <!-- Admin Section Toggle -->
+                <div class="pt-6 border-t border-slate-700 flex flex-col items-center space-y-4">
+                    <button onclick="toggleAdminPanel()" class="text-sm text-amber-400 hover:underline cursor-pointer">Панель администратора / Преподавателя (Журнал результатов)</button>
+                    
+                    <div id="admin-panel" class="hidden w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-left space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-white text-md">Журнал отправленных результатов</h4>
+                            <button onclick="clearLogs()" class="text-xs bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-1 rounded transition">Очистить лог</button>
+                        </div>
+                        <div id="logs-container" class="max-h-60 overflow-y-auto space-y-2 text-xs font-mono text-slate-300">
+                            <!-- Logs injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    card.innerHTML = `
-      <div class="question-title">Вопрос ${qIndex + 1}: ${qObj.q}</div>
-      <div>${optionsHTML}</div>
-      <div class="explanation" id="exp-${qIndex}"></div>
-    `;
-    container.appendChild(card);
-  });
-
-  startTimer();
-}
-
-function startTimer() {
-  const timerDisplay = document.getElementById('timer');
-  timerId = setInterval(() => {
-    timeLeft--;
-    let mins = Math.floor(timeLeft / 60);
-    let secs = timeLeft % 60;
-    timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-
-    if (timeLeft <= 0) {
-      clearInterval(timerId);
-      document.getElementById('time-out-banner').style.display = 'flex';
-    }
-  }, 1000);
-}
-
-function submitQuiz() {
-  clearInterval(timerId);
-  let correctCount = 0;
-
-  questions.forEach((qObj, qIndex) => {
-    const selected = document.querySelector(`input[name="question_${qIndex}"]:checked`);
-    const expDiv = document.getElementById(`exp-${qIndex}`);
-    expDiv.style.display = 'block';
-
-    if (selected && parseInt(selected.value) === qObj.correct) {
-      correctCount++;
-      expDiv.className = 'explanation correct-exp';
-      expDiv.innerHTML = `<strong>Верно!</strong> ${qObj.exp}`;
-    } else {
-      expDiv.className = 'explanation incorrect-exp';
-      const correctText = qObj.options[qObj.correct];
-      expDiv.innerHTML = `<strong>Неверно.</strong> Правильный ответ: ${correctText}.<br>${qObj.exp}`;
-    }
-  });
-
-  let score = Math.round((correctCount / 20) * 10);
-  if (score < 3 && correctCount > 0) score = 3; // регулировка минимального порога при наличии ответов
-
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.style.display = 'block';
-  
-  let statusText = score >= 3 ? "<span style='color: var(--success);'>Тест сдан</span>" : "<span style='color: var(--error);'>Тест не сдан</span>";
-
-  resultsDiv.innerHTML = `
-    <div class="score-banner">
-      <h2>Результаты тестирования</h2>
-      <p style="font-size: 1.3rem;">Правильных ответов: <strong>${correctCount} из 20</strong></p>
-      <p style="font-size: 1.8rem; font-weight: bold;">Итоговая оценка: ${score} баллов из 10</p>
-      <p style="font-size: 1.1rem;">Статус: ${statusText}</p>
+        </main>
     </div>
-  `;function saveTestResultToAdmin(userName, testTitle, score, percent) {
-    // Получаем ранее сохраненную историю
-    let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
-    
-    // Определяем номер попытки для текущего пользователя и теста
-    const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
-    
-    const record = {
-        userName: userName,            // ФИО учащегося
-        testTitle: testTitle,          // Название теста
-        score: score,                  // Оценка (например, 8)
-        percent: percent,              // Процент выполнения (например, 80)
-        attempt: previousAttempts + 1, // Номер попытки
-        timestamp: new Date().toLocaleString('ru-RU') // Дата и время
-    };
 
-    logs.push(record);
-    localStorage.setItem('test_results_log', JSON.stringify(logs));
-}
+    <script>
+        const questions = [
+            {
+                topic: "Рубка и резка металла",
+                question: "Какой инструмент используется для ручной рубки металла на плите или в тисках?",
+                options: ["Зубило", "Зенкер", "Шабер", "Метчик"],
+                answer: 0,
+                explanation: "Зубило является основным режущим слесарным инструментом для рубки металлов за счет ударов молотка."
+            },
+            {
+                topic: "Рубка и резка металла",
+                question: "Какое основное назначение ручных слесарных ножниц с кривыми лезвиями?",
+                options: ["Резка толстого листового проката по прямой", "Вырезание отверстий и криволинейных контуров в листовом металле", "Рубка листовой стали поперек волокон", "Зачистка кромок после газовой резки"],
+                answer: 1,
+                explanation: "Ножницы с изогнутыми лезвиями предназначены для фигурного раскроя и вырезания заготовок сложной формы."
+            },
+            {
+                topic: "Сверление и склеивание",
+                question: "Какой угол заточки при вершине спирального сверла выбирается для обработки обычной конструкционной стали?",
+                options: ["60°", "90°", "116° - 118°", "140° - 150°"],
+                answer: 2,
+                explanation: "Для сверления углеродистых и конструкционных сталей стандартным является угол заточки при вершине 116°–118°."
+            },
+            {
+                topic: "Сверление и склеивание",
+                question: "Что является обязательным условием для достижения максимальной прочности клеевого соединения металлов?",
+                options: ["Обильное смазывание маслом", "Тщательное обезжиривание и создание шероховатости", "Нагрев детали до температуры плавления металла", "Охлаждение деталей ниже 0°C"],
+                answer: 1,
+                explanation: "Обезжиривание удаляет масляные пленки, а шероховатость увеличивает площадь адгезионного контакта."
+            },
+            {
+                topic: "Правка и гибка металла",
+                question: "Какой инструмент применяют для правки заготовок с легкоповреждаемой поверхностью или тонкого листа?",
+                options: ["Деревянные или свинцовые молотки (киянки)", "Стальные тяжелые кувалды", "Чугунные молотки с острым бойком", "Правка молотком категорически запрещена"],
+                answer: 0,
+                explanation: "Мягкие молотки (из дерева, меди, свинца или резины) предотвращают образование вмятин на поверхности деталей."
+            },
+            {
+                topic: "Правка и гибка металла",
+                question: "Какое физическое явление необходимо учитывать при гибке листового металла во избежание искажения размеров?",
+                options: ["Упругое последействие (пружинение)", "Тепловое расширение материала", "Магнитную индукцию заготовки", "Акустический резонанс"],
+                answer: 0,
+                explanation: "Пружинение (упругое последействие) меняет угол гибки после снятия нагрузки, поэтому его компенсируют перегибом."
+            },
+            {
+                topic: "Клепка",
+                question: "Как называется стержневой элемент с закладной головкой, используемый для неразъемного соединения деталей?",
+                options: ["Шплинт", "Заклепка", "Шпонка", "Штифт"],
+                answer: 1,
+                explanation: "Заклепка состоит из стержня и закладной головки и формирует замыкающую головку при склепывании."
+            },
+            {
+                topic: "Клепка",
+                question: "Какой способ клепки обеспечивает наиболее плотное заполнение отверстия и прочность при больших диаметрах заклепок?",
+                options: ["Горячая клепка", "Холодная клепка", "Точечная сварка", "Ручная развальцовка"],
+                answer: 0,
+                explanation: "При горячей клепке разогретый стержень лучше заполняет отверстие, а при остывании стягивает соединяемые детали."
+            },
+            {
+                topic: "Зенкерование",
+                question: "Зенкерование — это процесс обработки:",
+                options: ["Нарезания внутренней резьбы", "Цилиндрических и конических отверстий после сверления для повышения точности и чистоты", "Наружной цилиндрической поверхности валов", "Шлифования плоских поверхностей"],
+                answer: 1,
+                explanation: "Зенкерование является промежуточной или окончательной операцией для улучшения геометрии и чистоты отверстия."
+            },
+            {
+                topic: "Зенкерование",
+                question: "Чем зенкер принципиально отличается от спирального сверла?",
+                options: ["Большим количеством режущих кромок (3-4) и отсутствием перемычки (поперечной кромки)", "Способностью нарезать резьбу", "Меньшей жесткостью конструкции", "Наличием только одной режущей пластины"],
+                answer: 0,
+                explanation: "Зенкер имеет 3 или 4 режущие кромки и высокую жесткость, но не может сверлить сплошной металл из-за отсутствия перемычки."
+            },
+            {
+                topic: "Притирка и доводка",
+                question: "Для чего применяется процесс притирки?",
+                options: ["Для грубого удаления больших припусков", "Для получения высокой герметичности и точности сопрягаемых поверхностей с помощью абразивных паст", "Для закалки поверхностного слоя деталей", "Для нанесения защитного антикоррозийного покрытия"],
+                answer: 1,
+                explanation: "Притирка — точная отделочная операция абразивами для достижения герметичности (например, клапанов или плунжерных пар)."
+            },
+            {
+                topic: "Притирка и доводка",
+                question: "Какой материал обычно используется в качестве притира для работы с абразивными пастами?",
+                options: ["Мягкий серый чугун, медь или бронза", "Закаленная инструментальная сталь", "Твердый абразивный камень", "Резина или пластик"],
+                answer: 0,
+                explanation: "Материал притира должен быть мягче обрабатываемой детали, чтобы абразивные зерна шаржировались (внедрялись) в него."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "Какая основная причина затрудненного пуска дизельного двигателя в холодное время года?",
+                options: ["Падение компрессии в цилиндрах и ухудшение самовоспламенения дизельного топлива", "Выход из строя каталитического нейтрализатора", "Обрыв ремня генератора", "Засорение фильтра салона"],
+                answer: 0,
+                explanation: "В дизеле топливо воспламеняется от высокой температуры сжатого воздуха. Низкая компрессия и холодный воздух препятствуют самовоспламенению."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "К чему приводит попадание воздуха в топливную систему высокого давления дизеля?",
+                options: ["К повышению мощности двигателя", "К неустойчивой работе двигателя, перебоям или его полной остановке", "К уменьшению расхода масла", "К автоматическому изменению угла опережения зажигания"],
+                answer: 1,
+                explanation: "Воздушные пробки сжимаются под давлением плунжера ТНВД, срывая подачу топлива к форсункам."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "О чем свидетельствует появление черного дыма из выхлопной трубы дизельного двигателя под нагрузкой?",
+                options: ["О неполном сгорании топлива из-за перегрузки, недостатка воздуха или неисправности форсунок", "О попадании охлаждающей жидкости в камеру сгорания", "О низком уровне моторного масла", "Об износе масляного насоса"],
+                answer: 0,
+                explanation: "Черный дым — это несгоревший углерод (сажа), возникающий из-за недостатка кислорода или избытка/плохого распыла топлива."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "Что означает появление сизого (голубоватого) дыма из выхлопной трубы прогретого дизеля?",
+                options: ["Попадание и сгорание моторного масла в цилиндрах (износ колец или сальников клапанов)", "Угольная пыль в выпускном коллекторе", "Слишком высокое давление в топливном баке", "Перегрев трансмиссии"],
+                answer: 0,
+                explanation: "Сизый дым с характерным запахом указывает на попадание и выгорание моторного масла в камере сгорания."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "Какую функцию выполняют свечи накаливания в дизельном двигателе?",
+                options: ["Создают искру для поджигания рабочей смеси", "Подогревают воздух в камере сгорания перед пуском холодного двигателя", "Обеспечивают подсветку подкапотного пространства", "Служат датчиками детонации"],
+                answer: 1,
+                explanation: "Свечи накаливания предварительно разогревают воздух в КС дизеля для надежного самовоспламенения топлива при старте."
+            },
+            {
+                topic: "Основные неисправности дизельного двигателя",
+                question: "Каковы последствия применения дизельного топлива с высоким содержанием воды и механопримесей?",
+                options: ["Увеличение ресурса прецизионных деталей", "Ускоренный износ, коррозия и заклинивание прецизионных пар форсунок и ТНВД", "Повышение октанового числа топлива", "Очистка камеры сгорания от нагара"],
+                answer: 1,
+                explanation: "Вода вызывает коррозию и разрушает масляную пленку, а примеси истирают прецизионные плунжерные пары и распылители."
+            },
+            {
+                topic: "Слесарное дело",
+                question: "Какая точность обработки достигается при слесарной доводке и притирке вручную?",
+                options: ["До 0,001 - 0,005 мм", "До 0,5 - 1,0 мм", "До 0,1 мм", "Точность не превышает 0,5 мм"],
+                answer: 0,
+                explanation: "Притирка и доводка позволяют достигать высочайшей точности до микронов (0,001 мм)."
+            },
+            {
+                topic: "Слесарное дело",
+                question: "Какой инструмент применяется для нарезания наружной резьбы вручную?",
+                options: ["Метчик", "Плашка (лерка)", "Зенкер", "Развертка"],
+                answer: 1,
+                explanation: "Плашки предназначены для нарезания наружной резьбы на стержнях, а метчики — для внутренней резьбы в отверстиях."
+            }
+        ];
 
-// Пример вызова при завершении теста:
-// saveTestResultToAdmin("Иванов Иван", "Тема 01: Классификация тракторов - Тест 1", 9, 90);
+        let currentStudent = "";
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval = null;
+        let timeLeft = 600; // 10 minutes in seconds
+        let isTimedOut = false;
 
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-}
+        const registerForm = document.getElementById('register-form');
+        const stepRegister = document.getElementById('step-register');
+        const stepQuiz = document.getElementById('step-quiz');
+        const stepResult = document.getElementById('step-result');
+        const timerContainer = document.getElementById('timer-container');
+        const timerElement = document.getElementById('timer');
 
-window.onload = initQuiz;
-</script>
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) return;
+            currentStudent = nameInput;
+            
+            stepRegister.classList.add('hidden');
+            stepQuiz.classList.remove('hidden');
+            timerContainer.classList.remove('hidden');
+            timerContainer.classList.add('flex');
+
+            startTimer();
+            renderQuestion();
+        });
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isTimedOut = true;
+                    finishQuiz();
+                    return;
+                }
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-tracker').textContent = `Вопрос ${currentQuestionIndex + 1} из ${questions.length}`;
+            document.getElementById('current-topic').textContent = q.topic;
+            document.getElementById('question-text').textContent = q.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border transition flex items-center justify-between cursor-pointer ${
+                    isSelected 
+                        ? 'bg-amber-500/20 border-amber-500 text-white font-medium' 
+                        : 'bg-slate-900 border-slate-700 hover:border-slate-500 text-slate-300'
+                }`;
+                btn.innerHTML = `<span>${opt}</span> <div class="w-4 h-4 rounded-full border ${isSelected ? 'border-amber-400 bg-amber-400' : 'border-slate-600'} flex items-center justify-center"></div>`;
+                btn.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Navigation controls
+            document.getElementById('prev-btn').classList.toggle('hidden', currentQuestionIndex === 0);
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.textContent = "Завершить тест";
+                nextBtn.className = "bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-6 py-2.5 rounded-lg text-sm font-semibold transition cursor-pointer";
+            } else {
+                nextBtn.textContent = "Следующий";
+                nextBtn.className = "bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-2.5 rounded-lg text-sm font-semibold transition cursor-pointer";
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function calculate10PointGrade(correctCount, total) {
+            const percentage = (correctCount / total) * 100;
+            if (percentage === 100) return 10;
+            if (percentage >= 90) return 9;
+            if (percentage >= 80) return 8;
+            if (percentage >= 70) return 7;
+            if (percentage >= 60) return 6;
+            if (percentage >= 50) return 5;
+            if (percentage >= 40) return 4;
+            if (percentage >= 30) return 3;
+            if (percentage >= 20) return 2;
+            return 1;
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            stepQuiz.classList.add('hidden');
+            timerContainer.classList.add('hidden');
+            stepResult.classList.remove('hidden');
+
+            let correctCount = 0;
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const grade10 = calculate10PointGrade(correctCount, questions.length);
+            const percentage = Math.round((correctCount / questions.length) * 100);
+
+            document.getElementById('student-info-text').textContent = `Ученик: ${currentStudent}`;
+
+            if (isTimedOut) {
+                document.getElementById('timeout-banner').classList.remove('hidden');
+                document.getElementById('result-score-text').innerHTML = `<span class="text-red-400">Результат не засчитан: время истекло (${correctCount} из ${questions.length} верно)</span>`;
+            } else {
+                document.getElementById('result-score-text').innerHTML = `Верно: ${correctCount} из ${questions.length} (${percentage}%) <br><span class="text-2xl font-bold text-emerald-400 mt-2 block">Оценка по 10-балльной системе: ${grade10} / 10</span>`;
+            }
+
+            // Save result to Admin log
+            const resultRecord = {
+                student: currentStudent,
+                score: `${correctCount}/${questions.length}`,
+                percentage: percentage + '%',
+                grade: isTimedOut ? 'НЕ СДАН (Время)' : `${grade10}/10`,
+                status: isTimedOut ? 'Время истекло' : 'Завершен',
+                date: new Date().toLocaleString()
+            };
+
+            let logs = JSON.parse(localStorage.getItem('quiz_admin_logs') || '[]');
+            logs.unshift(resultRecord);
+            localStorage.setItem('quiz_admin_logs', JSON.stringify(logs));
+
+            document.getElementById('admin-status').textContent = "Данные автоматически отправлены преподавателю.";
+
+            renderReviewList();
+            loadLogs();
+        }
+
+        function renderReviewList() {
+            const container = document.getElementById('answers-review-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.answer;
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${
+                    isCorrect ? 'bg-emerald-950/20 border-emerald-600/50' : 'bg-red-950/20 border-red-600/50'
+                } space-y-2`;
+
+                let userAnsText = userAns !== null ? q.options[userAns] : "Нет ответа";
+                let correctAnsText = q.options[q.answer];
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded ${isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
+                            Вопрос ${idx + 1}: ${isCorrect ? 'Верно' : 'Ошибка'}
+                        </span>
+                        <span class="text-xs text-slate-400">${q.topic}</span>
+                    </div>
+                    <p class="font-medium text-white text-sm md:text-base">${q.question}</p>
+                    
+                    <div class="text-xs md:text-sm space-y-1 pt-1">
+                        <div class="${isCorrect ? 'text-emerald-400' : 'text-red-400'}">
+                            <strong>Ваш ответ:</strong> ${userAnsText}
+                        </div>
+                        ${!isCorrect ? `<div class="text-emerald-400"><strong>Правильный ответ:</strong> ${correctAnsText}</div>` : ''}
+                    </div>
+
+                    <div class="mt-2 text-xs text-slate-300 bg-slate-900/80 p-3 rounded-lg border border-slate-700/60">
+                        <strong class="text-amber-400">Пояснение:</strong> ${q.explanation}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('hidden');
+            loadLogs();
+        }
+
+        function loadLogs() {
+            const container = document.getElementById('logs-container');
+            const logs = JSON.parse(localStorage.getItem('quiz_admin_logs') || '[]');
+            if (logs.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 italic">Журнал пуст.</p>';
+                return;
+            }
+            container.innerHTML = logs.map(log => `
+                <div class="bg-slate-800 p-2.5 rounded border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <span class="text-amber-400 font-semibold">${log.student}</span> — 
+                        <span>Баллы: ${log.score} (${log.percentage})</span> — 
+                        <span class="${log.status === 'Время истекло' ? 'text-red-400 font-bold' : 'text-emerald-400 font-bold'}">Оценка: ${log.grade}</span>
+                    </div>
+                    <span class="text-slate-500 text-[10px]">${log.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function clearLogs() {
+            localStorage.removeItem('quiz_admin_logs');
+            loadLogs();
+        }
+    </script>
+
 </body>
 </html>
