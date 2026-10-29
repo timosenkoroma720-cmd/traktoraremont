@@ -73,7 +73,7 @@
                 
                 <!-- Кнопка вызова админ-панели -->
                 <button onclick="openAdminAuth()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 text-slate-300 border border-slate-700 transition-all">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i> Администратор
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Панель администратора
                 </button>
             </div>
         </div>
@@ -103,7 +103,7 @@
                     <p class="text-slate-400 text-sm mt-2 line-clamp-2">Конструкция механизмов, систем и агрегатов современных колесных тракторов.</p>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-medium">
-                    <span class="text-slate-400 flex items-center gap-1"><i data-lucide="layers" class="w-4 h-4 text-brand-400"></i> 16 тем</span>
+                    <span class="text-slate-400 flex items-center gap-1"><i data-lucide="layers" class="w-4 h-4 text-brand-400"></i> 16 тем (48 тестов)</span>
                     <span class="text-brand-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Открыть <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </div>
             </div>
@@ -168,6 +168,7 @@
             </div>
 
             <div id="device-topics-list" class="p-5 sm:p-6 overflow-y-auto space-y-3 custom-scrollbar flex-1">
+                <!-- Тема 1 -->
                 <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
                     <button onclick="toggleAccordion('dev-topic-1')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
                         <span class="flex items-center gap-3">
@@ -184,6 +185,277 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Тема 2 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-2')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">02</span>
+                            <span class="topic-title">Кривошипно-шатунный механизм</span>
+                        </span>
+                        <i id="dev-topic-2-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-2" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="kshm_test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="kshm_test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="kshm_test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 3 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-3')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">03</span>
+                            <span class="topic-title">Механизм газораспределения</span>
+                        </span>
+                        <i id="dev-topic-3-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-3" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="grm_test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="grm_test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="grm_test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 4 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-4')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">04</span>
+                            <span class="topic-title">Система питания двигателя</span>
+                        </span>
+                        <i id="dev-topic-4-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-4" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="diesel_test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="diesel_test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="diesel_test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 5 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-5')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">05</span>
+                            <span class="topic-title">Система смазки</span>
+                        </span>
+                        <i id="dev-topic-5-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-5" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="test_level_1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="test_level_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="test_level_3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 6 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-6')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">06</span>
+                            <span class="topic-title">Система охлаждения</span>
+                        </span>
+                        <i id="dev-topic-6-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-6" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="cooling_test_level_1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="cooling_test_level_2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="cooling_test_level_3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 7 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-7')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">07</span>
+                            <span class="topic-title">Источники электрической энергии</span>
+                        </span>
+                        <i id="dev-topic-7-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-7" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="test1_basic.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="test2_basic.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="test3_basic.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 8 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-8')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">08</span>
+                            <span class="topic-title">Система пуска двигателя</span>
+                        </span>
+                        <i id="dev-topic-8-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-8" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="start_test1_basic.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="start_test2_medium.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="start_test3_advanced.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 9 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-9')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">09</span>
+                            <span class="topic-title">Система освещения и сигнализации</span>
+                        </span>
+                        <i id="dev-topic-9-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-9" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic9-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic9-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic9-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 10 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-10')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">10</span>
+                            <span class="topic-title">Трансмиссия</span>
+                        </span>
+                        <i id="dev-topic-10-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-10" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic10-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic10-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic10-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 11 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-11')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">11</span>
+                            <span class="topic-title">Остов и ходовая часть</span>
+                        </span>
+                        <i id="dev-topic-11-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-11" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic11-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic11-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic11-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 12 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-12')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">12</span>
+                            <span class="topic-title">Механизмы управления</span>
+                        </span>
+                        <i id="dev-topic-12-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-12" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic12-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic12-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic12-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 13 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-13')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">13</span>
+                            <span class="topic-title">Тормозная система</span>
+                        </span>
+                        <i id="dev-topic-13-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-13" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic13-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic13-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic13-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 14 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-14')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">14</span>
+                            <span class="topic-title">Рабочее оборудование колесных тракторов</span>
+                        </span>
+                        <i id="dev-topic-14-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-14" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic14-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic14-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic14-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 15 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-15')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">15</span>
+                            <span class="topic-title">Гидравлическая система управления навесным механизмом</span>
+                        </span>
+                        <i id="dev-topic-15-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-15" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic15-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic15-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic15-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тема 16 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden transition-colors">
+                    <button onclick="toggleAccordion('dev-topic-16')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-brand-400 font-bold">16</span>
+                            <span class="topic-title">Вспомогательное оборудование</span>
+                        </span>
+                        <i id="dev-topic-16-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="dev-topic-16" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <a href="device/topic16-test1.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 1</a>
+                            <a href="device/topic16-test2.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 2</a>
+                            <a href="device/topic16-test3.html" class="flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 border border-slate-700 text-sm font-medium transition-all group">Тест 3</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -204,13 +476,14 @@
             </div>
             
             <div class="p-5 sm:p-6 overflow-y-auto space-y-4 custom-scrollbar flex-1">
+                <!-- РАЗДЕЛ 1 -->
                 <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
                     <button onclick="toggleAccordion('maint-section-1')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
                         <span class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">01</span>
                             Раздел 1: Техническое обслуживание (ТО) тракторов
                         </span>
-                        <i id="maint-section-1-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400"></i>
+                        <i id="maint-section-1-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
                     </button>
                     <div id="maint-section-1" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
                         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
@@ -227,11 +500,112 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- РАЗДЕЛ 2 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('maint-section-2')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">02</span>
+                            Раздел 2: Диагностика неисправностей агрегатов
+                        </span>
+                        <i id="maint-section-2-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="maint-section-2" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                            <a href="maintenance/sec2_test1.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 1</a>
+                            <a href="maintenance/sec2_test2.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 2</a>
+                            <a href="maintenance/sec2_test3.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 3</a>
+                            <a href="maintenance/sec2_test4.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 4</a>
+                            <a href="maintenance/sec2_test5.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 5</a>
+                            <a href="maintenance/sec2_test6.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 6</a>
+                            <a href="maintenance/sec2_test7.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 7</a>
+                            <a href="maintenance/sec2_test8.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 8</a>
+                            <a href="maintenance/sec2_test9.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 9</a>
+                            <a href="maintenance/sec2_test10.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 10</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- РАЗДЕЛ 3 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('maint-section-3')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">03</span>
+                            Раздел 3: Разборка и сборка сборочных единиц
+                        </span>
+                        <i id="maint-section-3-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="maint-section-3" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                            <a href="maintenance/sec3_test1.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 1</a>
+                            <a href="maintenance/sec3_test2.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 2</a>
+                            <a href="maintenance/sec3_test3.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 3</a>
+                            <a href="maintenance/sec3_test4.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 4</a>
+                            <a href="maintenance/sec3_test5.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 5</a>
+                            <a href="maintenance/sec3_test6.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 6</a>
+                            <a href="maintenance/sec3_test7.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 7</a>
+                            <a href="maintenance/sec3_test8.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 8</a>
+                            <a href="maintenance/sec3_test9.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 9</a>
+                            <a href="maintenance/sec3_test10.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 10</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- РАЗДЕЛ 4 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('maint-section-4')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">04</span>
+                            Раздел 4: Восстановление изношенных деталей
+                        </span>
+                        <i id="maint-section-4-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="maint-section-4" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                            <a href="maintenance/sec4_test1.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 1</a>
+                            <a href="maintenance/sec4_test2.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 2</a>
+                            <a href="maintenance/sec4_test3.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 3</a>
+                            <a href="maintenance/sec4_test4.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 4</a>
+                            <a href="maintenance/sec4_test5.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 5</a>
+                            <a href="maintenance/sec4_test6.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 6</a>
+                            <a href="maintenance/sec4_test7.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 7</a>
+                            <a href="maintenance/sec4_test8.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 8</a>
+                            <a href="maintenance/sec4_test9.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 9</a>
+                            <a href="maintenance/sec4_test10.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 10</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- РАЗДЕЛ 5 -->
+                <div class="topic-item border border-slate-800 rounded-xl bg-slate-950/40 overflow-hidden">
+                    <button onclick="toggleAccordion('maint-section-5')" class="w-full p-4 text-left flex items-center justify-between font-medium text-slate-200 hover:bg-slate-800/50">
+                        <span class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-cyan-400 font-bold">05</span>
+                            Раздел 5: Обкатка и испытания после ремонта
+                        </span>
+                        <i id="maint-section-5-icon" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+                    </button>
+                    <div id="maint-section-5" class="hidden border-t border-slate-800/60 p-4 bg-slate-900/30">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                            <a href="maintenance/sec5_test1.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 1</a>
+                            <a href="maintenance/sec5_test2.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 2</a>
+                            <a href="maintenance/sec5_test3.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 3</a>
+                            <a href="maintenance/sec5_test4.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 4</a>
+                            <a href="maintenance/sec5_test5.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 5</a>
+                            <a href="maintenance/sec5_test6.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 6</a>
+                            <a href="maintenance/sec5_test7.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 7</a>
+                            <a href="maintenance/sec5_test8.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 8</a>
+                            <a href="maintenance/sec5_test9.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 9</a>
+                            <a href="maintenance/sec5_test10.html" class="flex items-center justify-center p-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-industrial-950 text-xs font-medium transition-all">Тест 10</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО 3: Материаловедение (Полностью обновлено согласно вашему списку) -->
+    <!-- МОДАЛЬНОЕ ОКНО 3: Материаловедение -->
     <div id="materials-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
         <div class="bg-industrial-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
             <div class="p-5 sm:p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 rounded-t-2xl">
@@ -626,6 +1000,7 @@
             }
         });
 
+        // Административные функции
         const ADMIN_PASSWORD = "08129930";
 
         function openAdminAuth() {
@@ -713,7 +1088,7 @@
                     </td>
                     <td class="p-3 text-slate-300">${log.testTitle}</td>
                     <td class="p-3 text-center">
-                        <span class="px-2.5 py-1 rounded-md font-mono font-bold ${log.score >= 3 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+                        <span class="px-2.5 py-1 rounded-md font-mono font-bold ${log.score >= 4 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
                             ${log.score} / 10
                         </span>
                     </td>
@@ -754,6 +1129,7 @@
             }
         });
 
+        // Функция отправки результатов в LocalStorage
         window.saveTestResultToAdmin = function(userName, testTitle, score, percent) {
             let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
             const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
