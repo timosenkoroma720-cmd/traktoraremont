@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 3: Диагностика, неисправности и регулировка сигнализации</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fff3c2',
+                            400: '#ffca28',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        industrial: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-industrial-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-brand-500 selection:text-industrial-950">
+
+    <header class="border-b border-slate-800 bg-industrial-900/90 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="p-2 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 text-slate-300 transition-colors">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </a>
+                <div>
+                    <span class="block font-bold text-sm sm:text-base text-white">Тест 3: ТО, регулировка и неисправности</span>
+                    <span class="block text-xs text-brand-400 font-mono">Система световой и звуковой сигнализации</span>
+                </div>
+            </div>
+            
+            <div id="timer-box" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-brand-400 font-mono font-bold text-sm">
+                <i data-lucide="clock" class="w-4 h-4 text-brand-400 animate-pulse"></i>
+                <span id="timer-display">10:00</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+
+        <!-- ЭКРАН 1: Авторизация -->
+        <div id="auth-screen" class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl max-w-lg mx-auto w-full">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="wrench" class="w-7 h-7"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Авторизация студента</h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Тест 3: Поиск неисправностей и регулировка систем</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="student-name" class="block text-xs font-mono font-medium text-slate-300 uppercase mb-2">ФИО Студента</label>
+                    <input type="text" id="student-name" placeholder="Введите ФИО..." class="w-full bg-industrial-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors">
+                    <p id="auth-error" class="text-red-400 text-xs mt-1.5 hidden flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Введите ФИО студента
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400 space-y-1.5 font-mono">
+                    <div class="flex items-center gap-2 text-slate-300 font-semibold">
+                        <i data-lucide="info" class="w-4 h-4 text-brand-400"></i> Правила проведения:
+                    </div>
+                    <p>• Лимит времени: <span class="text-brand-400 font-bold">10 минут</span>.</p>
+                    <p>• Число вопросов: <span class="text-brand-400 font-bold">20</span>.</p>
+                    <p>• Оценка автоматически пересылается преподавателю.</p>
+                </div>
+
+                <button onclick="startTest()" class="w-full bg-brand-500 hover:bg-brand-600 text-industrial-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2">
+                    <i data-lucide="play" class="w-5 h-5"></i> Начать тест
+                </button>
+
+                <div class="pt-4 border-t border-slate-800/80 text-center">
+                    <span class="text-xs text-slate-500 block mb-2">Выбор теста:</span>
+                    <div class="flex justify-center gap-2">
+                        <a href="topic9-test1.html" class="px-3 py-1.5 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Тест 1</a>
+                        <a href="topic9-test2.html" class="px-3 py-1.5 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Тест 2</a>
+                        <a href="topic9-test3.html" class="px-3 py-1.5 text-xs rounded-lg bg-brand-500 text-industrial-950 font-bold">Тест 3</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 2: Вопросы -->
+        <div id="quiz-screen" class="hidden bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-mono text-slate-400 mb-2">
+                    <span>Вопрос <span id="current-q-num" class="text-brand-400 font-bold">1</span> из 20</span>
+                    <span id="progress-percent">5%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-brand-600 to-brand-400 h-full w-1/20 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed"></h2>
+            </div>
+
+            <div id="options-container" class="space-y-3 mb-8"></div>
+
+            <div class="flex justify-end">
+                <button id="next-btn" onclick="nextQuestion()" disabled class="px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 text-slate-500 cursor-not-allowed transition-all flex items-center gap-2">
+                    Ответить <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: Тайм-аут -->
+        <div id="timeout-screen" class="hidden bg-red-950/80 border-2 border-red-600 rounded-2xl p-8 shadow-2xl text-center max-w-xl mx-auto w-full">
+            <div class="w-16 h-16 bg-red-500/20 text-red-500 border border-red-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="timer-off" class="w-8 h-8 animate-bounce"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-white mb-2">ВРЕМЯ ИСТЕКЛО</h2>
+            <div class="p-4 bg-red-900/50 border border-red-500/30 rounded-xl my-4 text-red-200 font-bold text-base sm:text-lg">
+                Тест не пройден время истекло обратитесь к учителю
+            </div>
+            <p class="text-xs text-red-300/80 mb-6 font-mono">Время 10 минут вышло.</p>
+            <a href="../index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition-all">
+                <i data-lucide="home" class="w-4 h-4"></i> Главная
+            </a>
+        </div>
+
+        <!-- ЭКРАН 4: Результаты -->
+        <div id="results-screen" class="hidden space-y-6">
+            <div class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Результат тестирования</span>
+                    <h2 id="result-user-name" class="text-2xl font-bold text-white mt-1"></h2>
+                    <p class="text-xs text-brand-400 font-mono mt-0.5">Тест 3: ТО, регулировка и неисправности</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Правильных ответов</span>
+                        <span id="res-correct-count" class="text-2xl font-bold text-emerald-400 mt-1 block">0 / 20</span>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Процент</span>
+                        <span id="res-percent" class="text-2xl font-bold text-brand-400 mt-1 block">0%</span>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Итоговая оценка</span>
+                        <span id="res-score" class="text-3xl font-extrabold text-white mt-1 block">0</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 justify-center pt-2 border-t border-slate-800">
+                    <a href="../index.html" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all flex items-center gap-2">
+                        <i data-lucide="home" class="w-4 h-4"></i> Главная
+                    </a>
+                    <button onclick="location.reload()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-industrial-950 text-xs font-bold transition-all flex items-center gap-2">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Повторить тест
+                    </button>
+                    <a href="topic9-test1.html" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all flex items-center gap-2">
+                        Вернуться к Тесту 1
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="file-search" class="w-5 h-5 text-brand-400"></i> Разбор ответов
+                </h3>
+                <div id="review-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const rawQuestions = [
+            {
+                question: "Что необходимо сделать перед регулировкой направления светового пучка фар трактора?",
+                options: [
+                    "Проверить и нормализовать давление воздуха в шинах трактора",
+                    "Снять рассеиватель и натереть отражатель маслом",
+                    "Включить звуковой сигнал на 1 минуту",
+                    "Разрядить аккумулятор"
+                ],
+                correct: 0,
+                explanation: "Для точной регулировки свет фар трактор должен стоять на ровной площадке с нормированным давлением в шинах."
+            },
+            {
+                question: "На каком расстоянии от фар устанавливается разметочный экран при проверке и регулировке фар?",
+                options: ["1 метр", "10 метров", "50 метров", "100 метров"],
+                correct: 1,
+                explanation: "По технологическим картам регулировку фар производят по нанесенному экрану, установленному на расстоянии 10 м от фары."
+            },
+            {
+                question: "Какая наиболее вероятная причина того, что лампа фары горит тускло и 'вполнакала'?",
+                options: [
+                    "Плохой контакт с 'массой' трактора в корпусе фары или окисление контактов",
+                    "Слишком высокое напряжение генератора",
+                    "Перегорал плавкий предохранитель",
+                    "Неисправность звукового сигнала"
+                ],
+                correct: 0,
+                explanation: "Повышенное переходное сопротивление в цепи массы снижает напряжение на лампе, из-за чего она горит слабо."
+            },
+            {
+                question: "Что происходит при перегорании плавкого предохранителя в цепи освещения?",
+                options: [
+                    "Все лампы данной цепи немедленно гаснут",
+                    "Лампы начинают мигать с высокой частотой",
+                    "Напряжение в цепи увеличивается вдвое",
+                    "Звуковой сигнал начинает звучать непрерывно"
+                ],
+                correct: 0,
+                explanation: "Предохранитель размыкает цепь, прекращая подачу тока к защищаемым приборам."
+            },
+            {
+                question: "Чем категорически запрещается заменять сгоревший плавкий предохранитель?",
+                options: [
+                    "Запасной вставкой с аналогичным номинальным током",
+                    "Самодельными 'жучками' (скрутками проволоки или гвоздями)",
+                    "Новым автоматическим предохранителем",
+                    "Штатным предохранителем той же марки"
+                ],
+                correct: 1,
+                explanation: "Установка 'жучков' приводит к перегреву проводки, короткому замыканию и возгоранию трактора."
+            },
+            {
+                question: "В чем заключается техническое обслуживание (ТО-2) фар и фонарей?",
+                options: [
+                    "Очистка от грязи, проверка креплений, целостности рассеивателей, надежности контактов и регулировка фар",
+                    "Полная замена всей проводки трактора",
+                    "Покраска отражателей фар изнутри черной краской",
+                    "Смазка рассеивателя солидолом"
+                ],
+                correct: 0,
+                explanation: "ТО включает визуальный осмотр, очистку, подтяжку резьбовых соединений и проверку световых лучей."
+            },
+            {
+                question: "Как протереть отражатель фары от пыли при снятом стекле, чтобы не повредить зеркальный слой?",
+                options: [
+                    "Наждачной бумагой fine зернистости",
+                    "Промыть бензином и вытереть жесткой ветошью",
+                    "Осторожно выдуть пыль воздухом или промыть чистой водой без трения",
+                    "Смочить кислотой"
+                ],
+                correct: 2,
+                explanation: "Алюминиевое или зеркальное покрытие отражателя крайне чувствительно к механическим царапинам, поэтому его нельзя течь тряпками."
+            },
+            {
+                question: "Если при включении указателя поворота лампы горят постоянно, не мигая, какая деталь неисправна?",
+                options: [
+                    "Реле-прерыватель указателей поворота",
+                    "Лампа стоп-сигнала",
+                    "Звуковой сигнал",
+                    "Выключатель массы"
+                ],
+                correct: 0,
+                explanation: "Залипание контактов или выход из строя схемы прерывателя приводит к постоянному горению ламп вместо мигания."
+            },
+            {
+                question: "Какая неисправность вызывает отсутствие звукового сигнала при нажатии на кнопку?",
+                options: [
+                    "Обрыв цепи питания, сгоревший предохранитель или обгорание контактов внутри сигнала",
+                    "Слишком высокий уровень масла в ДВС",
+                    "Перегорание лампы дальнего света",
+                    "Ослабление ремня вентилятора"
+                ],
+                correct: 0,
+                explanation: "Причиной отсутствия сигнала является отсутствие тока из-за обрыва, предохранителя или заклинивания якоря электромагнита."
+            },
+            {
+                question: "Чем регулируется громкость и чистота тона звукового сигнала?",
+                options: [
+                    "Винтом регулировки зазора прерывателя сигнала",
+                    "Затяжкой болтов крепления кабины",
+                    "Давлением в задних колесах",
+                    "Длиной рычага КПП"
+                ],
+                correct: 0,
+                explanation: "Вращение винта на корпусе сигнала меняет зазор между контактами прерывателя и амлитуду колебания мембраны."
+            },
+            {
+                question: "Почему нельзя устанавливать лампы большей мощности, чем предусмотрено заводом-изготовителем?",
+                options: [
+                    "Перегревается и плавится отражатель/рассеиватель, оплавляется проводка, разряжается АКБ",
+                    "Трактор теряет мощность двигателя",
+                    "Перестают работать тормоза",
+                    "Снижается давление масла"
+                ],
+                correct: 0,
+                explanation: "Более мощные лампы потребляют ток выше допустимого для проводки и выделяют избыточное тепло, повреждающее фару."
+            },
+            {
+                question: "Как проверить исправность лампы накаливания без подключения к бортовой сети?",
+                options: [
+                    "Проверить целостность нити накала визуально или мультиметром (омметром)",
+                    "Опустить лампу в воду",
+                    "Постучать по стеклу молотком",
+                    "Измерить диаметр цоколя штангенциркулем"
+                ],
+                correct: 0,
+                explanation: "Прозвонка омметром или визуальный осмотр спирали позволяет быстро определить обрыв."
+            },
+            {
+                question: "При нажатии педали тормоза стоп-сигнал не загорается. С проверки какого элемента следует начать диагностику?",
+                options: [
+                    "Предохранителя соответствующей цепи и лампочек в фонаре",
+                    "Генератора",
+                    "Реле стартера",
+                    "Давления в гидросистеме"
+                ],
+                correct: 0,
+                explanation: "Диагностику всегда начинают с простейших компонентов: предохранителей, ламп и контактов выключателя стоп-сигнала."
+            },
+            {
+                question: "В чем причина частого перегорания ламп в системе освещения трактора?",
+                options: [
+                    "Повышенное напряжение бортовой сети из-за неисправности реле-регулятора генератора",
+                    "Низкое качество дизельного топлива",
+                    "Плохая затяжка колесных гаек",
+                    "Засорение воздушного фильтра"
+                ],
+                correct: 0,
+                explanation: "Если реле-регулятор выдает напряжение выше 15 В, нити накала ламп быстро перегорают от перегрева."
+            },
+            {
+                question: "Что делать при обнаружении трещины или скола на рассеивателе фары?",
+                options: [
+                    "Заменить рассеиватель (или фару в сборе), так как внутри отражатель быстро запылится и потускнеет",
+                    "Закрасить трещину черной краской",
+                    "Ничего не делать",
+                    "Залить фару водой"
+                ],
+                correct: 0,
+                explanation: "Герметичность фары предотвращает попадание влаги и грязи на зеркальный отражатель."
+            },
+            {
+                question: "Какое прибор применяется электpиком для поиска обрыва провода в цепи освещения?",
+                options: [
+                    "Контрольная лампа (12В) или мультиметр в режиме voltmeter/continuity",
+                    "Ареометр",
+                    "Манометр",
+                    "Компрессометр"
+                ],
+                correct: 0,
+                explanation: "Мультиметр или пробник с лампой позволяют отследить наличие напряжения в ключевых точках цепи."
+            },
+            {
+                question: "Что происходит при окислении штыревых контактов штепсельного разъема прицепа?",
+                options: [
+                    "Периодически пропадает или тускнеет свет на прицепе (габариты, повороты)",
+                    "Двигатель трактора заглохнет",
+                    "Прицеп отсоединится от фаркопа",
+                    "Включится блокировка дифференциала"
+                ],
+                correct: 0,
+                explanation: "Окислы увеличивают сопротивление, приводя к падению напряжения и отказу фонарей прицепа."
+            },
+            {
+                question: "Каким инструментом или материалом очищают зажимы и контакты от окислов?",
+                options: [
+                    "Мелкой шлифовальной шкуркой или специальным спреем для контактов",
+                    "Моторным маслом",
+                    "Водой с мылом",
+                    "Соляной кислотой"
+                ],
+                correct: 0,
+                explanation: "Зачистка контактов до металлического блеска зачистной шкуркой восстанавливает надежную электропроводимость."
+            },
+            {
+                question: "За счет чего осуществляется вертикальная и горизонтальная регулировка луча передней фары трактора?",
+                options: [
+                    "Регулировочными винтами (болтами) на корпусе или шарнирном кронштейне фары",
+                    "Поворотом рулевого колеса",
+                    "Изменением количества масла в двигателе",
+                    "Сдвигом сиденья тракториста"
+                ],
+                correct: 0,
+                explanation: "Корпус фары закреплен на шарнире или имеет регулировочные винты для изменения наклона оптического элемента."
+            },
+            {
+                question: "При включении поворота налево мигают лампы с правой стороны. В чем причина?",
+                options: [
+                    "Неправильно подключены провода к переключателю указателей поворотов",
+                    "Сгорел предохранитель звукового сигнала",
+                    "Неисправен генератор",
+                    "Засорен масляный фильтр"
+                ],
+                correct: 0,
+                explanation: "Перепутаны местами левый и правый выводы от подрулевого переключателя к лампам бортов."
+            }
+        ];
+
+        let studentName = "";
+        let questions = [];
+        let currentIndex = 0;
+        let userAnswers = [];
+        let timerInterval = null;
+        let timeLeft = 600;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function prepareQuestions() {
+            const shuffledQ = shuffleArray(rawQuestions);
+            return shuffledQ.map(q => {
+                const optionsWithOrigIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct }));
+                const shuffledOpt = shuffleArray(optionsWithOrigIndex);
+                const newCorrect = shuffledOpt.findIndex(o => o.isCorrect);
+                return {
+                    question: q.question,
+                    options: shuffledOpt.map(o => o.text),
+                    correct: newCorrect,
+                    explanation: q.explanation
+                };
+            });
+        }
+
+        function startTest() {
+            const input = document.getElementById("student-name");
+            const val = input.value.trim();
+            if (val.length < 3) {
+                document.getElementById("auth-error").classList.remove("hidden");
+                return;
+            }
+            document.getElementById("auth-error").classList.add("hidden");
+            studentName = val;
+
+            questions = prepareQuestions();
+            currentIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+
+            document.getElementById("auth-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("timer-box").classList.remove("hidden");
+
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            timeLeft = 600;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById("timer-display").textContent = 
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function handleTimeout() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("timer-box").classList.add("hidden");
+            document.getElementById("timeout-screen").classList.remove("hidden");
+            saveResultToAdmin(studentName, "Тест 3: ТО, регулировка и неисправности", 0, 0);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById("current-q-num").textContent = currentIndex + 1;
+            
+            const pct = Math.round(((currentIndex + 1) / questions.length) * 100);
+            document.getElementById("progress-percent").textContent = pct + "%";
+            document.getElementById("progress-bar").style.width = pct + "%";
+
+            document.getElementById("question-text").textContent = q.question;
+
+            const container = document.getElementById("options-container");
+            container.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                const btn = document.createElement("button");
+                btn.className = `w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3 ${
+                    isSelected 
+                    ? "bg-brand-500/10 border-brand-500 text-white shadow-md shadow-brand-500/10" 
+                    : "bg-slate-950/40 border-slate-800 text-slate-300 hover:bg-slate-800/50 hover:border-slate-700"
+                }`;
+                btn.onclick = () => selectOption(idx);
+
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-xs font-bold shrink-0 mt-0.5 ${
+                        isSelected ? "bg-brand-500 text-industrial-950" : "bg-slate-800 text-slate-400"
+                    }">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-sm font-medium leading-relaxed">${opt}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById("next-btn");
+            if (userAnswers[currentIndex] !== null) {
+                nextBtn.disabled = false;
+                nextBtn.className = "px-6 py-3 rounded-xl font-bold text-sm bg-brand-500 text-industrial-950 hover:bg-brand-600 transition-all shadow-lg shadow-brand-500/20 flex items-center gap-2 cursor-pointer";
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.className = "px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 text-slate-500 cursor-not-allowed transition-all flex items-center gap-2";
+            }
+
+            if (currentIndex === questions.length - 1) {
+                nextBtn.innerHTML = `Завершить <i data-lucide="check-circle" class="w-4 h-4"></i>`;
+            } else {
+                nextBtn.innerHTML = `Ответить <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function selectOption(idx) {
+            userAnswers[currentIndex] = idx;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentIndex] === null) return;
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            questions.forEach((q, i) => {
+                if (userAnswers[i] === q.correct) correctCount++;
+            });
+
+            const percent = Math.round((correctCount / questions.length) * 100);
+            const score = Math.round((correctCount / questions.length) * 10);
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("timer-box").classList.add("hidden");
+            document.getElementById("results-screen").classList.remove("hidden");
+
+            document.getElementById("result-user-name").textContent = studentName;
+            document.getElementById("res-correct-count").textContent = `${correctCount} / ${questions.length}`;
+            document.getElementById("res-percent").textContent = `${percent}%`;
+            document.getElementById("res-score").textContent = `${score} / 10`;
+
+            saveResultToAdmin(studentName, "Тест 3: ТО, регулировка и неисправности", score, percent);
+            renderReview();
+        }
+
+        function renderReview() {
+            const container = document.getElementById("review-list");
+            container.innerHTML = "";
+
+            questions.forEach((q, i) => {
+                const uAns = userAnswers[i];
+                const isCorrect = uAns === q.correct;
+
+                const card = document.createElement("div");
+                card.className = `p-5 rounded-xl border ${
+                    isCorrect ? "bg-emerald-950/20 border-emerald-500/30" : "bg-red-950/20 border-red-500/30"
+                }`;
+
+                let optionsHtml = "";
+                q.options.forEach((opt, idx) => {
+                    let optStyle = "bg-slate-900/60 border-slate-800 text-slate-400";
+                    let icon = "";
+
+                    if (idx === q.correct) {
+                        optStyle = "bg-emerald-500/10 border-emerald-500/50 text-emerald-300 font-semibold";
+                        icon = `<i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>`;
+                    }
+                    if (idx === uAns && !isCorrect) {
+                        optStyle = "bg-red-500/10 border-red-500/50 text-red-300 font-semibold";
+                        icon = `<i data-lucide="x" class="w-4 h-4 text-red-400 shrink-0"></i>`;
+                    }
+
+                    optionsHtml += `
+                        <div class="p-3 rounded-lg border ${optStyle} text-xs sm:text-sm flex items-center justify-between gap-2">
+                            <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+                            ${icon}
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md ${
+                            isCorrect ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+                        }">
+                            Вопрос ${i + 1} (${isCorrect ? "Верно" : "Ошибка"})
+                        </span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white mb-3">${q.question}</h4>
+                    <div class="space-y-2 mb-3">${optionsHtml}</div>
+                    <div class="pt-3 border-t border-slate-800/80 text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-3 rounded-lg font-sans">
+                        <span class="font-bold text-brand-400 block mb-0.5 font-mono">Пояснение:</span>
+                        ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function saveResultToAdmin(userName, testTitle, score, percent) {
+            let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
+            const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
+            
+            const record = {
+                userName: userName,
+                testTitle: testTitle,
+                score: score,
+                percent: percent,
+                attempt: previousAttempts + 1,
+                timestamp: new Date().toLocaleString('ru-RU')
+            };
+
+            logs.push(record);
+            localStorage.setItem('test_results_log', JSON.stringify(logs));
+        }
+    </script>
+</body>
+</html>
