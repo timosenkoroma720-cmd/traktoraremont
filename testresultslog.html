@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест: Общие сведения о машинах и деталях машин</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fff3c2',
+                            400: '#ffca28',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        industrial: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-industrial-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-brand-500 selection:text-industrial-950">
+
+    <!-- Навигация / Шапка -->
+    <header class="border-b border-slate-800 bg-industrial-900/90 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="p-2 rounded-lg bg-slate-800 hover:bg-brand-500 hover:text-industrial-950 text-slate-300 transition-colors">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </a>
+                <div>
+                    <span class="block font-bold text-sm sm:text-base text-white">Общие сведения о машинах и деталях машин</span>
+                    <span class="block text-xs text-brand-400 font-mono">Контроль знаний студентов</span>
+                </div>
+            </div>
+            
+            <!-- Таймер -->
+            <div id="timer-box" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-brand-400 font-mono font-bold text-sm">
+                <i data-lucide="clock" class="w-4 h-4 text-brand-400 animate-pulse"></i>
+                <span id="timer-display">10:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+
+        <!-- ЭКРАН 1: Авторизация -->
+        <div id="auth-screen" class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl max-w-lg mx-auto w-full">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="cog" class="w-7 h-7"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Авторизация студента</h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Тест по дисциплине «Детали машин и основы конструирования»</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="student-name" class="block text-xs font-mono font-medium text-slate-300 uppercase mb-2">ФИО Студента</label>
+                    <input type="text" id="student-name" placeholder="Например: Сидоров Алексей Петрович" class="w-full bg-industrial-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors">
+                    <p id="auth-error" class="text-red-400 text-xs mt-1.5 hidden flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Пожалуйста, введите ваше ФИО
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400 space-y-1.5 font-mono">
+                    <div class="flex items-center gap-2 text-slate-300 font-semibold">
+                        <i data-lucide="info" class="w-4 h-4 text-brand-400"></i> Регламент прохождения:
+                    </div>
+                    <p>• На выполнение теста отведено <span class="text-brand-400 font-bold">10 минут</span>.</p>
+                    <p>• В тесте включено <span class="text-brand-400 font-bold">20 вопросов</span>.</p>
+                    <p>• Вопросы и варианты ответов перемешиваются случайным образом.</p>
+                    <p>• Итоговый балл рассчитывается по 10-балльной шкале.</p>
+                </div>
+
+                <button onclick="startTest()" class="w-full bg-brand-500 hover:bg-brand-600 text-industrial-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="play" class="w-5 h-5"></i> Начать тест
+                </button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 2: Вопросы -->
+        <div id="quiz-screen" class="hidden bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <!-- Индикатор прогресса -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-mono text-slate-400 mb-2">
+                    <span>Вопрос <span id="current-q-num" class="text-brand-400 font-bold">1</span> из 20</span>
+                    <span id="progress-percent">5%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-brand-600 to-brand-400 h-full w-1/20 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Текст вопроса -->
+            <div class="mb-6">
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed"></h2>
+            </div>
+
+            <!-- Варианты ответа -->
+            <div id="options-container" class="space-y-3 mb-8"></div>
+
+            <!-- Кнопки управления -->
+            <div class="flex justify-end">
+                <button id="next-btn" onclick="nextQuestion()" disabled class="px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 text-slate-500 cursor-not-allowed transition-all flex items-center gap-2">
+                    Ответить <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: Тайм-аут -->
+        <div id="timeout-screen" class="hidden bg-red-950/80 border-2 border-red-600 rounded-2xl p-8 shadow-2xl text-center max-w-xl mx-auto w-full">
+            <div class="w-16 h-16 bg-red-500/20 text-red-500 border border-red-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="timer-off" class="w-8 h-8 animate-bounce"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-white mb-2">ВРЕМЯ ИСТЕКЛО</h2>
+            <div class="p-4 bg-red-900/50 border border-red-500/30 rounded-xl my-4 text-red-200 font-bold text-base sm:text-lg">
+                Тест не пройден время истекло обратитесь к учителю
+            </div>
+            <p class="text-xs text-red-300/80 mb-6 font-mono">10 минут на прохождение теста истекли. Попытка автоматически завершена.</p>
+            <a href="../index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition-all">
+                <i data-lucide="home" class="w-4 h-4"></i> Вернуться на главную
+            </a>
+        </div>
+
+        <!-- ЭКРАН 4: Результаты -->
+        <div id="results-screen" class="hidden space-y-6">
+            <!-- Карточка сводки -->
+            <div class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Результаты теста</span>
+                    <h2 id="result-user-name" class="text-2xl font-bold text-white mt-1"></h2>
+                    <p class="text-xs text-brand-400 font-mono mt-0.5">Общие сведения о машинах и деталях машин</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Верных ответов</span>
+                        <span id="res-correct-count" class="text-2xl font-bold text-emerald-400 mt-1 block">0 / 20</span>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Процент успеха</span>
+                        <span id="res-percent" class="text-2xl font-bold text-brand-400 mt-1 block">0%</span>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block font-mono">Оценка (10-балльная)</span>
+                        <span id="res-score" class="text-3xl font-extrabold text-white mt-1 block">0</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 justify-center pt-2 border-t border-slate-800">
+                    <a href="../index.html" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all flex items-center gap-2">
+                        <i data-lucide="home" class="w-4 h-4"></i> На главную
+                    </a>
+                    <button onclick="location.reload()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-industrial-950 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Пройти повторно
+                    </button>
+                </div>
+            </div>
+
+            <!-- Список ответов с пояснениями -->
+            <div class="bg-industrial-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="file-search" class="w-5 h-5 text-brand-400"></i> Детальный анализ ответов
+                </h3>
+                <div id="review-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // БАЗА ВОПРОСОВ (20 вопросов по теме "Общие сведения о машинах и деталях машин")
+        const rawQuestions = [
+            {
+                question: "Что называется машиной в машиностроении?",
+                options: [
+                    "Устройство, совершающее механические движения для преобразования энергии, материалов или информации",
+                    "Любое металлическое изделие, собранное из скрепленных болтами элементов",
+                    "Совокупность нескольких неподвижно соединенных между собой деталей",
+                    "Прибор для измерения электрического сопротивления и напряжения"
+                ],
+                correct: 0,
+                explanation: "Машина — это устройство, совершающее целесообразные механические движения с целью преобразования энергии, материалов или информации."
+            },
+            {
+                question: "Что представляет собой деталь машины?",
+                options: [
+                    "Изделие, изготовленное из однородного по наименованию и марке материала без применения сборочных операций",
+                    "Набор из нескольких узлов, соединенных сваркой или резьбой",
+                    "Любая часть машины, которую можно разобрать на компоненты",
+                    "Конструктивный элемент, выполняющий исключительно передачу вращающего момента"
+                ],
+                correct: 0,
+                explanation: "Деталь — это элементарная часть машины, изготовленная без применения сборочных операций."
+            },
+            {
+                question: "Что называется сборочной единицей (узлом)?",
+                options: [
+                    "Изделие, составные части которого подлежат соединению между собой на предприятии-изготовителе сборочными операциями",
+                    "Отдельный кусочек металла до механической обработки",
+                    "Совокупность всех двигателей и передач машины",
+                    "Любой неразъемный элемент конструкции"
+                ],
+                correct: 0,
+                explanation: "Сборочная единица (узел) состоит из нескольких деталей, соединенных между собой с помощью сборочных операций (резьбовых, сварных, прессовых и др.)."
+            },
+            {
+                question: "Как классифицируются детали машин по назначению?",
+                options: [
+                    "Детали общего назначения и детали специального назначения",
+                    "Детали стальные и детали чугунные",
+                    "Детали вращающиеся и детали неподвижные",
+                    "Детали литые и детали штампованные"
+                ],
+                correct: 0,
+                explanation: "Детали делят на детали общего назначения (встречаются почти во всех машинах: болты, валы, подшипники) и специального назначения (поршни, поршневые кольца, турбинные лопатки)."
+            },
+            {
+                question: "К какой группе деталей относятся болты, гайки, шпонки и подшипники?",
+                options: [
+                    "К деталям общего назначения",
+                    "К деталям специального назначения",
+                    "К технологической оснастке",
+                    "К измерительным приборам"
+                ],
+                correct: 0,
+                explanation: "Болты, гайки, валы, подшипники и шпонки применяются практически во всех типах машин, поэтому являются деталями общего назначения."
+            },
+            {
+                question: "Что понимается под критерием работоспособности деталей машин «прочность»?",
+                options: [
+                    "Способность детали сопротивляться разрушению или возникновению недопустимых остаточных деформаций под действием нагрузок",
+                    "Способность детали сохранять изначальный внешний вид без коррозии",
+                    "Способность детали изменять форму под действием температуры",
+                    "Способность проводить электрический ток без потерь"
+                ],
+                correct: 0,
+                explanation: "Прочность — это главный критерий работоспособности, характеризующий способность детали воспринимать нагрузки без разрушения и пластических деформаций."
+            },
+            {
+                question: "Что характеризует критерий работоспособности «жесткость»?",
+                options: [
+                    "Способность детали сопротивляться изменению формы и размеров (упругим деформациям) под нагрузкой",
+                    "Сопротивляемость материала проникновению в него другого, более твердого тела",
+                    "Максимальную температуру нагрева детали при трении",
+                    "Способность гасить вибрации"
+                ],
+                correct: 0,
+                explanation: "Жесткость — способность конструкции сопротивляться упругим деформациям под действием приложенных сил."
+            },
+            {
+                question: "Что называется износостойкостью детали?",
+                options: [
+                    "Свойство материала оказывать сопротивление изнашиванию в определенных условиях трения",
+                    "Предел прочности при растяжении",
+                    "Устойчивость к резким перепадам температуры",
+                    "Способность выдерживать повторно-переменные нагрузки"
+                ],
+                correct: 0,
+                explanation: "Износостойкость определяет способность поверхности детали сопротивляться истиранию и разрушению при трении."
+            },
+            {
+                question: "Какая функция у передаточных механизмов (механических передач) в машинах?",
+                options: [
+                    "Передача механической энергии от двигателя к рабочему органу с изменением параметров движения (скорости, момента)",
+                    "Преобразование электрической энергии в тепловую",
+                    "Фиксация машины на фундаменте",
+                    "Охлаждение трущихся поверхностей"
+                ],
+                correct: 0,
+                explanation: "Передаточные механизмы передают движение от двигателя к рабочему органу, изменяя при этом частоту вращения, направление или крутящий момент."
+            },
+            {
+                question: "Что такое коэффициент полезного действия (КПД) машины или механизма?",
+                options: [
+                    "Отношение полезной работы (мощности) к затраченной работе (мощности)",
+                    "Произведение входной мощности на время работы",
+                    "Отношение масс движущихся частей к массе корпуса",
+                    "Разность между подведенной и потерянной мощностью"
+                ],
+                correct: 0,
+                explanation: "КПД (η) показывает эффективность механизма и определяется как отношение полезной мощности к подведенной (затраченной)."
+            },
+            {
+                question: "Что называется усталостным разрушением металла?",
+                options: [
+                    "Разрушение детали в результате многократного повторения циклических напряжений",
+                    "Быстрое расплавление детали при трении",
+                    "Коррозионное разрушение на воздухе",
+                    "Остаточный изгиб при однократном превышении нагрузки"
+                ],
+                correct: 0,
+                explanation: "Усталостное разрушение возникает под действием переменных (циклических) нагрузок при напряжениях, меньших предела прочности."
+            },
+            {
+                question: "К какому типу соединений относятся резьбовые и шпоночные соединения?",
+                options: [
+                    "Разъемные соединения",
+                    "Неразъемные соединения",
+                    "Сварные соединения",
+                    "Клепаные соединения"
+                ],
+                correct: 0,
+                explanation: "Резьбовые, шпоночные и шлицевые соединения являются разъемными, так как допускают разборку и сборку без повреждения деталей."
+            },
+            {
+                question: "К какому типу соединений относятся сварные, клепаные и паяные соединения?",
+                options: [
+                    "Неразъемные соединения",
+                    "Разъемные соединения",
+                    "Шарнирные соединения",
+                    "Упругие соединения"
+                ],
+                correct: 0,
+                explanation: "Неразъемные соединения нельзя разобрать без разрушения или повреждения соединительных элементов или деталей."
+            },
+            {
+                question: "Какое главное преимущество имеют стандартные детали и узлы (стандартизация)?",
+                options: [
+                    "Взаимозаменяемость, снижение стоимости и упрощение ремонта",
+                    "Увеличение массы и габаритов машин",
+                    "Уникальность формы каждой детали",
+                    "Отсутствие необходимости проведения расчетного контроля"
+                ],
+                correct: 0,
+                explanation: "Стандартизация обеспечивают взаимозаменяемость деталей, снижает затраты на производство и существенно упрощает обслуживание и ремонт."
+            },
+            {
+                question: "Как называется способность детали выполнять заданные функции, сохраняя эксплуатационные показатели в допустимых пределах?",
+                options: [
+                    "Работоспособность",
+                    "Твердость",
+                    "Технологичность",
+                    "Упругость"
+                ],
+                correct: 0,
+                explanation: "Работоспособность — состояние объекта, при котором он способен выполнять заданные функции с параметрами, установленными документацией."
+            },
+            {
+                question: "Какое движение преобразует кривошипно-ползунный механизм?",
+                options: [
+                    "Вращательное движение кривошипа в возвратно-поступательное движение ползуна (и наоборот)",
+                    "Прерывистое вращение в непрерывное вращение",
+                    "Колебательное движение в винтовое",
+                    "Равномерное движение в ускоренное без изменения траектории"
+                ],
+                correct: 0,
+                explanation: "Кривошипно-ползунный механизм преобразует вращательное движение (например, коленвала) в возвратно-поступательное (поршня)."
+            },
+            {
+                question: "Что называется виброустойчивостью детали или машины?",
+                options: [
+                    "Способность конструкции работать в заданном режиме без недопустимых колебаний и резонанса",
+                    "Способность деталей противостоять химическому воздействию среды",
+                    "Сопротивление поверхности механическому износу",
+                    "Максимальное значение крутящего момента на валу"
+                ],
+                correct: 0,
+                explanation: "Виброустойчивость предотвращает опасные резонансные колебания, снижающие прочность и точность работы машины."
+            },
+            {
+                question: "Какое требование к конструкции называется «технологичностью»?",
+                options: [
+                    "Простота и экономичность изготовления детали при заданном объеме выпуска",
+                    "Максимальная сложность геометрической формы детали",
+                    "Использование исключительно дорогостоящих сплавов",
+                    "Увеличение числа сборочных единиц"
+                ],
+                correct: 0,
+                explanation: "Технологичность конструкции определяет возможность ее изготовления с минимальными затратами труда, материалов и средств."
+            },
+            {
+                question: "Для чего служат валы в машинах?",
+                options: [
+                    "Для передачи крутящего момента вдоль своей оси и поддержания вращающихся деталей",
+                    "Только для неподвижного соединения двух корпусов",
+                    "Для защиты узлов от попадания пыли и грязи",
+                    "Для гашения гидравлических ударов"
+                ],
+                correct: 0,
+                explanation: "Валы передают крутящий момент и поддерживают сидящие на них детали (зубчатые колеса, шкивы и др.)."
+            },
+            {
+                question: "Чем отличается ось от вала?",
+                options: [
+                    "Ось поддерживает вращающиеся детали, но не передает полезного крутящего момента (работает только на изгиб)",
+                    "Ось передает только крутящий момент и не испытывает изгиба",
+                    "Ось всегда изготавливается из чугуна, а вал — из бронзы",
+                    "Ось применяется только в разъемных соединениях"
+                ],
+                correct: 0,
+                explanation: "В отличие от вала, ось поддерживает установленные на ней детали и воспринимает изгибающие силы, но не передает крутящий момент."
+            }
+        ];
+
+        // Переменные состояния
+        let studentName = "";
+        let questions = [];
+        let currentIndex = 0;
+        let userAnswers = [];
+        let timerInterval = null;
+        let timeLeft = 600; // 10 минут
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+
+        // Функция перемешивания массивов (Fisher-Yates)
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Подготовка случайного порядка вопросов и вариантов
+        function prepareQuestions() {
+            const shuffledQ = shuffleArray(rawQuestions);
+            return shuffledQ.map(q => {
+                const optionsWithOrigIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct }));
+                const shuffledOpt = shuffleArray(optionsWithOrigIndex);
+                const newCorrect = shuffledOpt.findIndex(o => o.isCorrect);
+                return {
+                    question: q.question,
+                    options: shuffledOpt.map(o => o.text),
+                    correct: newCorrect,
+                    explanation: q.explanation
+                };
+            });
+        }
+
+        // Запуск теста
+        function startTest() {
+            const input = document.getElementById("student-name");
+            const val = input.value.trim();
+            if (val.length < 3) {
+                document.getElementById("auth-error").classList.remove("hidden");
+                return;
+            }
+            document.getElementById("auth-error").classList.add("hidden");
+            studentName = val;
+
+            questions = prepareQuestions();
+            currentIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+
+            document.getElementById("auth-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("timer-box").classList.remove("hidden");
+
+            startTimer();
+            renderQuestion();
+        }
+
+        // Работа таймера
+        function startTimer() {
+            timeLeft = 600;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById("timer-display").textContent = 
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function handleTimeout() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("timer-box").classList.add("hidden");
+            document.getElementById("timeout-screen").classList.remove("hidden");
+            
+            // Фиксация неудовлетворительного результата при таймауте
+            saveResultToAdmin(studentName, "Общие сведения о машинах и деталях машин", 0, 0);
+        }
+
+        // Отрисовка текущего вопроса
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById("current-q-num").textContent = currentIndex + 1;
+            
+            const pct = Math.round(((currentIndex + 1) / questions.length) * 100);
+            document.getElementById("progress-percent").textContent = pct + "%";
+            document.getElementById("progress-bar").style.width = pct + "%";
+
+            document.getElementById("question-text").textContent = q.question;
+
+            const container = document.getElementById("options-container");
+            container.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                const btn = document.createElement("button");
+                btn.className = `w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3 cursor-pointer ${
+                    isSelected 
+                    ? "bg-brand-500/10 border-brand-500 text-white shadow-md shadow-brand-500/10" 
+                    : "bg-slate-950/40 border-slate-800 text-slate-300 hover:bg-slate-800/50 hover:border-slate-700"
+                }`;
+                btn.onclick = () => selectOption(idx);
+
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-xs font-bold shrink-0 mt-0.5 ${
+                        isSelected ? "bg-brand-500 text-industrial-950" : "bg-slate-800 text-slate-400"
+                    }">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-sm font-medium leading-relaxed">${opt}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById("next-btn");
+            if (userAnswers[currentIndex] !== null) {
+                nextBtn.disabled = false;
+                nextBtn.className = "px-6 py-3 rounded-xl font-bold text-sm bg-brand-500 text-industrial-950 hover:bg-brand-600 transition-all shadow-lg shadow-brand-500/20 flex items-center gap-2 cursor-pointer";
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.className = "px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 text-slate-500 cursor-not-allowed transition-all flex items-center gap-2";
+            }
+
+            if (currentIndex === questions.length - 1) {
+                nextBtn.innerHTML = `Завершить тест <i data-lucide="check-circle" class="w-4 h-4"></i>`;
+            } else {
+                nextBtn.innerHTML = `Ответить <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function selectOption(idx) {
+            userAnswers[currentIndex] = idx;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentIndex] === null) return;
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // Финиш и расчет результатов
+        function finishQuiz() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            questions.forEach((q, i) => {
+                if (userAnswers[i] === q.correct) correctCount++;
+            });
+
+            const percent = Math.round((correctCount / questions.length) * 100);
+            // Расчет 10-балльной оценки
+            const score = Math.round((correctCount / questions.length) * 10);
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("timer-box").classList.add("hidden");
+            document.getElementById("results-screen").classList.remove("hidden");
+
+            document.getElementById("result-user-name").textContent = studentName;
+            document.getElementById("res-correct-count").textContent = `${correctCount} / ${questions.length}`;
+            document.getElementById("res-percent").textContent = `${percent}%`;
+            document.getElementById("res-score").textContent = `${score} / 10`;
+
+            // Сохранение результатов для админки
+            saveResultToAdmin(studentName, "Общие сведения о машинах и деталях машин", score, percent);
+
+            // Формирование подробного разбора
+            renderReview();
+        }
+
+        function renderReview() {
+            const container = document.getElementById("review-list");
+            container.innerHTML = "";
+
+            questions.forEach((q, i) => {
+                const uAns = userAnswers[i];
+                const isCorrect = uAns === q.correct;
+
+                const card = document.createElement("div");
+                card.className = `p-5 rounded-xl border ${
+                    isCorrect ? "bg-emerald-950/20 border-emerald-500/30" : "bg-red-950/20 border-red-500/30"
+                }`;
+
+                let optionsHtml = "";
+                q.options.forEach((opt, idx) => {
+                    let optStyle = "bg-slate-900/60 border-slate-800 text-slate-400";
+                    let icon = "";
+
+                    if (idx === q.correct) {
+                        optStyle = "bg-emerald-500/10 border-emerald-500/50 text-emerald-300 font-semibold";
+                        icon = `<i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>`;
+                    }
+                    if (idx === uAns && !isCorrect) {
+                        optStyle = "bg-red-500/10 border-red-500/50 text-red-300 font-semibold";
+                        icon = `<i data-lucide="x" class="w-4 h-4 text-red-400 shrink-0"></i>`;
+                    }
+
+                    optionsHtml += `
+                        <div class="p-3 rounded-lg border ${optStyle} text-xs sm:text-sm flex items-center justify-between gap-2">
+                            <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+                            ${icon}
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md ${
+                            isCorrect ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+                        }">
+                            Вопрос ${i + 1} (${isCorrect ? "Верно" : "Ошибка"})
+                        </span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white mb-3">${q.question}</h4>
+                    <div class="space-y-2 mb-3">${optionsHtml}</div>
+                    <div class="pt-3 border-t border-slate-800/80 text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-3 rounded-lg font-sans">
+                        <span class="font-bold text-brand-400 block mb-0.5 font-mono">Пояснение:</span>
+                        ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Функция сохранения данных в единую админ-панель (localStorage)
+        function saveResultToAdmin(userName, testTitle, score, percent) {
+            let logs = JSON.parse(localStorage.getItem('test_results_log') || '[]');
+            const previousAttempts = logs.filter(item => item.userName === userName && item.testTitle === testTitle).length;
+            
+            const record = {
+                userName: userName,
+                testTitle: testTitle,
+                score: score,
+                percent: percent,
+                attempt: previousAttempts + 1,
+                timestamp: new Date().toLocaleString('ru-RU')
+            };
+
+            logs.push(record);
+            localStorage.setItem('test_results_log', JSON.stringify(logs));
+            
+            if (window.saveTestResultToAdmin) {
+                window.saveTestResultToAdmin(userName, testTitle, score, percent);
+            }
+        }
+    </script>
+</body>
+</html>
