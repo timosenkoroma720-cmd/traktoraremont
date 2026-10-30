@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-тест: Разъёмные и неразъёмные соединения</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121212',
+                        darkcard: '#1e1e2e',
+                        darkborder: '#2e2e3e',
+                        accent: '#6366f1',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #121212;
+            color: #e2e8f0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e1e2e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3f3f56;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar bg-darkbg text-slate-200 antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-darkborder bg-darkcard/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-gears"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg leading-tight text-white">Разъёмные и неразъёмные соединения</h1>
+                    <p class="text-xs text-slate-400">Инженерная графика и детали машин</p>
+                </div>
+            </div>
+
+            <!-- Header Timer (Visible during quiz) -->
+            <div id="header-timer-container" class="hidden flex items-center gap-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-rose-500/30 text-rose-400 font-mono text-lg font-bold">
+                <i class="fa-regular fa-clock animate-pulse"></i>
+                <span id="header-timer">10:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- STEP 1: START SCREEN (Student Registration) -->
+        <div id="screen-start" class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-10 shadow-2xl space-y-6">
+            <div class="text-center space-y-3">
+                <div class="inline-flex p-3 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-2">
+                    <i class="fa-solid fa-user-pen text-3xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white">Регистрация студента</h2>
+                <p class="text-slate-400 text-sm max-w-md mx-auto">
+                    Перед началом прохождения теста введите ваши полные данные (ФИО). На выполнение работы даётся ровно 10 минут.
+                </p>
+            </div>
+
+            <!-- Rules Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 py-4">
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-darkborder flex items-center gap-3">
+                    <i class="fa-solid fa-list-check text-indigo-400 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-400">Количество вопросов</div>
+                        <div class="font-semibold text-white">20 вопросов</div>
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-darkborder flex items-center gap-3">
+                    <i class="fa-solid fa-stopwatch text-amber-400 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-400">Ограничение времени</div>
+                        <div class="font-semibold text-white">10 минут</div>
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-darkborder flex items-center gap-3">
+                    <i class="fa-solid fa-graduation-cap text-emerald-400 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-400">Система оценки</div>
+                        <div class="font-semibold text-white">10-балльная</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Form -->
+            <form id="start-form" onsubmit="startQuiz(event)" class="space-y-4 max-w-lg mx-auto pt-2">
+                <div>
+                    <label for="student-fio" class="block text-sm font-medium text-slate-300 mb-2">
+                        Фамилия, Имя и Отчество (ФИО) <span class="text-rose-400">*</span>
+                    </label>
+                    <input type="text" id="student-fio" required
+                        placeholder="Например: Иванов Иван Иванович"
+                        class="w-full px-4 py-3 bg-slate-900 border border-darkborder rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-slate-500 outline-none transition">
+                    <p id="fio-error" class="text-rose-400 text-xs mt-1 hidden">Пожалуйста, введите ваше ФИО.</p>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 transition duration-150 flex items-center justify-center gap-2">
+                    <span>Начать тестирование</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: TIMEOUT EXPIRED ERROR BANNER -->
+        <div id="screen-timeout" class="hidden bg-rose-950/80 border-2 border-rose-500 rounded-2xl p-8 md:p-12 text-center space-y-6 shadow-2xl backdrop-blur animate-fade-in">
+            <div class="w-20 h-20 bg-rose-500/20 text-rose-500 border border-rose-500/40 rounded-full flex items-center justify-center mx-auto text-4xl">
+                <i class="fa-solid fa-hourglass-end"></i>
+            </div>
+            <div class="space-y-3">
+                <h2 class="text-2xl md:text-4xl font-extrabold text-rose-200">ТЕСТ НЕ ПРОЙДЕН</h2>
+                <div class="inline-block bg-rose-600 text-white font-bold text-lg md:text-xl px-6 py-3 rounded-xl shadow-lg">
+                    Время истекло, обратитесь к учителю!
+                </div>
+            </div>
+            <p class="text-slate-300 max-w-md mx-auto text-sm">
+                Вы превысили отведённый лимит времени (10 минут). Ваши текущие попытки зафиксированы в административной системе.
+            </p>
+        </div>
+
+        <!-- STEP 3: ACTIVE QUIZ SCREEN -->
+        <div id="screen-quiz" class="hidden space-y-6">
+            <!-- Progress Bar Card -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-4 shadow-lg space-y-2">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-400">Вопрос <span id="current-question-num" class="text-indigo-400 font-bold">1</span> из <span id="total-questions-num" class="font-bold">20</span></span>
+                    <span id="quiz-student-name" class="text-slate-300 font-medium truncate max-w-[200px] md:max-w-xs"></span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-darkborder">
+                    <div id="progress-bar" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl space-y-6">
+                <div class="space-y-2">
+                    <span id="question-category" class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                        Категория соединения
+                    </span>
+                    <h3 id="question-text" class="text-lg md:text-xl font-bold text-white leading-relaxed">
+                        Текст вопроса заменяется динамически...
+                    </h3>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Dynamic Answer Radio / Options -->
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="pt-4 flex justify-end border-t border-darkborder">
+                    <button id="btn-next" onclick="nextQuestion()" disabled
+                        class="px-6 py-3 bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 transition duration-150 flex items-center gap-2">
+                        <span id="btn-next-text">Следующий вопрос</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: FINAL RESULT & REVIEW SCREEN -->
+        <div id="screen-result" class="hidden space-y-8">
+            <!-- Score Overview Card -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-10 shadow-2xl text-center space-y-6">
+                <div class="inline-block px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    Тестирование завершено
+                </div>
+                
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white">Результаты тестирования</h2>
+                
+                <div id="result-student-info" class="text-slate-300 text-base font-medium"></div>
+
+                <!-- Grade Badge Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto pt-2">
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-darkborder flex flex-col items-center justify-center">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Оценка (10-балльная)</span>
+                        <span id="grade-score" class="text-4xl md:text-5xl font-black text-indigo-400 my-1">0 / 10</span>
+                        <span id="grade-text" class="text-xs font-semibold text-slate-300"></span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-darkborder flex flex-col items-center justify-center">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Процент ответов</span>
+                        <span id="percent-score" class="text-4xl md:text-5xl font-black text-emerald-400 my-1">0%</span>
+                        <span id="correct-count-text" class="text-xs text-slate-400">0 из 20 верно</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-darkborder flex flex-col items-center justify-center">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Затраченное время</span>
+                        <span id="time-spent" class="text-3xl font-bold text-amber-400 my-2">00:00</span>
+                        <span class="text-xs text-slate-400">Лимит: 10 минут</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Answer Review Header -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-indigo-400"></i>
+                        <span>Подробный разбор ответов</span>
+                    </h3>
+                    <span class="text-xs text-slate-400">Правильные ответы выделены зелёным, ошибки — красным</span>
+                </div>
+
+                <!-- Review Items Container -->
+                <div id="review-container" class="space-y-4">
+                    <!-- Dynamic Detailed Questions list -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer & Admin Access -->
+    <footer class="border-t border-darkborder py-4 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
+            <span>© Дисциплина: Детали машин и ОК</span>
+            <button onclick="toggleAdminModal()" class="hover:text-slate-300 transition flex items-center gap-1">
+                <i class="fa-solid fa-lock text-[10px]"></i> Панель преподавателя
+            </button>
+        </div>
+    </footer>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-darkcard border border-darkborder rounded-2xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center pb-4 border-b border-darkborder">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield text-indigo-400"></i> Панель администратора / результаты
+                </h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="py-4 overflow-y-auto flex-grow space-y-4 custom-scrollbar">
+                <div id="admin-login-sec" class="space-y-3">
+                    <p class="text-sm text-slate-300">Введите пароль доступа для просмотра всех сохранённых результатов студентов:</p>
+                    <div class="flex gap-2">
+                        <input type="password" id="admin-pass" placeholder="Пароль (по умолчанию: admin123)" class="bg-slate-900 border border-darkborder px-3 py-2 rounded-xl text-sm text-white w-full outline-none focus:border-indigo-500">
+                        <button onclick="checkAdminPass()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">Войти</button>
+                    </div>
+                    <p id="admin-err" class="text-rose-400 text-xs hidden">Неверный пароль!</p>
+                </div>
+
+                <div id="admin-content-sec" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-slate-300">Журнал попыток в `localStorage`:</span>
+                        <button onclick="clearAdminLogs()" class="text-xs bg-rose-500/20 text-rose-300 border border-rose-500/30 px-3 py-1.5 rounded-lg hover:bg-rose-500/30">Очистить базу</button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-slate-300 border border-darkborder rounded-lg">
+                            <thead class="bg-slate-900 text-slate-400 uppercase border-b border-darkborder">
+                                <tr>
+                                    <th class="p-2.5">Дата/Время</th>
+                                    <th class="p-2.5">ФИО Студента</th>
+                                    <th class="p-2.5">Балл (10)</th>
+                                    <th class="p-2.5">%</th>
+                                    <th class="p-2.5">Время</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-results-table">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ JAVASCRIPT LOGIC -->
+    <script>
+        // Full Question Bank: 20 Highly accurate engineering questions
+        const rawQuestions = [
+            {
+                id: 1,
+                category: "Разъёмные соединения",
+                question: "К какому типу соединений относятся стандартные болтовые, шпилечные и винтовые соединения?",
+                options: [
+                    "К неразъёмным соединениям",
+                    "К разъёмным резьбовым соединениям",
+                    "К прессовым соединениям",
+                    "К сварным соединениям"
+                ],
+                correct: 1,
+                explanation: "Болтовые, шпилечные и винтовые соединения являются разъёмными резьбовыми соединениями, так как позволяют производить многократную сборку и разборку деталей без их повреждения."
+            },
+            {
+                id: 2,
+                category: "Неразъёмные соединения",
+                question: "Какое из перечисленных соединений является НЕРАЗЪЁМНЫМ?",
+                options: [
+                    "Шпоночное соединение",
+                    "Шлицевое соединение",
+                    "Сварное соединение",
+                    "Штифтовое соединение"
+                ],
+                correct: 2,
+                explanation: "Сварное соединение является неразъёмным, так как демонтаж деталей невозможно выполнить без разрушения самого сварного шва или соединяемых элементов."
+            },
+            {
+                id: 3,
+                category: "Резьбовые соединения",
+                question: "Какой профиль имеет стандартная метрическая резьба общего назначения?",
+                options: [
+                    "Трапецеидальный с углом 30°",
+                    "Прямоугольный",
+                    "Угольный с углом профиля 55°",
+                    "Равносторонний треугольник с углом при вершине 60°"
+                ],
+                correct: 3,
+                explanation: "Основная метрическая резьба имеет треугольный профиль с углом при вершине 60° и плоскосрезанными или закруглёнными вершинами и впадинами."
+            },
+            {
+                id: 4,
+                category: "Резьбовые соединения",
+                question: "Для чего преимущественно применяются трапецеидальные и упорные резьбы?",
+                options: [
+                    "Для крепежных соединений тонкостенных труб",
+                    "В ходовых винтах и механизмах передачи движения под нагрузкой",
+                    "Для герметичного соединения гидравлических арматур",
+                    "Только для контрения гаек"
+                ],
+                correct: 1,
+                explanation: "Трапецеидальная и упорная резьбы обладают высоким КПД и прочностью, поэтому применяются в ходовых винтах (домкраты, прессы, ходовые винты станков) для передачи силового перемещения."
+            },
+            {
+                id: 5,
+                category: "Шпоночные соединения",
+                question: "Какая шпонка имеет форму сегмента и устанавливается в глубокий паз соответствующей формы на валу?",
+                options: [
+                    "Призматическая шпонка",
+                    "Клиновая шпонка",
+                    "Сегментная шпонка",
+                    "Тангенциальная шпонка"
+                ],
+                correct: 2,
+                explanation: "Сегментная шпонка имеет форму полукруга (сегмента). Она устойчива в пазу вала и удобна при массовом производстве, однако глубокий паз ослабляет вал."
+            },
+            {
+                id: 6,
+                category: "Шлицевые соединения",
+                question: "В чём заключается главное преимущество шлицевых соединений по сравнению со шпоночными?",
+                options: [
+                    "Более низкая стоимость изготовления",
+                    "Высокая нагрузочная способность и точное центрирование деталей",
+                    "Возможность применения без смазки",
+                    "Полное отсутствие концентраторов напряжений"
+                ],
+                correct: 1,
+                explanation: "Шлицевые соединения за счёт множества зубьев передают значительно больший крутящий момент, лучше центрируют деталь на валу и обладают высокой надежностью при динамических нагрузках."
+            },
+            {
+                id: 7,
+                category: "Штифтовые соединения",
+                question: "Каково основное назначение цилиндрических и конических штифтов в машиностроении?",
+                options: [
+                    "Для точной фиксации взаимного положения деталей или передаче небольших нагрузок",
+                    "Для передачи больших крутящих моментов в тяжелом машиностроении",
+                    "Для герметизации стыков под высоким давлением",
+                    "Для гашения вибраций"
+                ],
+                correct: 0,
+                explanation: "Штифты служат позиционирующими элементами для точного фиксирования деталей относительно друг друга при сборке, а также как установочные и предохранительные детали."
+            },
+            {
+                id: 8,
+                category: "Сварные соединения",
+                question: "Как называется сварное соединение, в котором элементы примыкают друг к другу торцовыми поверхностями и расположены на одной поверхности?",
+                options: [
+                    "Нахлёсточное соединение",
+                    "Тавровое соединение",
+                    "Стыковое соединение",
+                    "Угловое соединение"
+                ],
+                correct: 2,
+                explanation: "Стыковое соединение — это соединение двух элементов, примыкающих друг к другу торцовыми поверхностями и лежащих в одной плоскости."
+            },
+            {
+                id: 9,
+                category: "Сварные соединения",
+                question: "Какое соединение образуется, когда элементы расположены под прямым углом и торцы одного привариваются к боковой поверхности другого в форме буквы 'Т'?",
+                options: [
+                    "Стыковое",
+                    "Нахлёсточное",
+                    "Тавровое",
+                    "Штифтовое"
+                ],
+                correct: 2,
+                explanation: "Тавровое соединение (Т-образное) — сварное соединение, в котором торец одного элемента приваривается под углом к боковой поверхности другого элемента."
+            },
+            {
+                id: 10,
+                category: "Заклёпочные соединения",
+                question: "В каких случаях предпочтительно использовать заклёпочные соединения вместо сварных?",
+                options: [
+                    "В соединениях несвариваемых материалов или при воздействии сильных вибраций и ограничении по нагреву",
+                    "Когда требуется максимально снизить массу конструкции",
+                    "Только в декоративных целях",
+                    "Для соединения массивных стальных отливок"
+                ],
+                correct: 0,
+                explanation: "Заклёпочные соединения применяют при соединении разнородных/несвариваемых материалов (например, алюминия со сталью), а также в конструкциях, подверженных сильным вибрационным и ударным нагрузкам, где нагрев от сварки недопустим."
+            },
+            {
+                id: 11,
+                category: "Прессовые соединения",
+                question: "За счёт чего передаётся крутящий момент или осевая сила в соединениях с натягом (прессовых)?",
+                options: [
+                    "За счёт сдвига штифтов",
+                    "За счёт упругой деформации и возникающих сил трения на сопрягаемых поверхностях",
+                    "За счёт нанесения клея",
+                    "За счёт резьбового клина"
+                ],
+                correct: 1,
+                explanation: "В прессовых соединениях посадка осуществляется с натягом: размеры вала превышают размеры отверстия. Соединение удерживается за счёт сил трения, вызваных упругими деформациями материалов."
+            },
+            {
+                id: 12,
+                category: "Паяные соединения",
+                question: "В чём заключается ключевое отличие пайки от сварки?",
+                options: [
+                    "При пайке расплавляется только основной металл деталей",
+                    "При пайке основные соединяемые металлы не расплавляются, а заполнение шва происходит расплавленным припоем",
+                    "Пайка применяется только для пластиков",
+                    "Сварка происходит при более низких температурах, чем пайка"
+                ],
+                correct: 1,
+                explanation: "При пайке соединяемые детали нагреваются ниже температуры их плавления, а шов заполняется расплавленным припоем, обладающим более низкой температурой плавления."
+            },
+            {
+                id: 13,
+                category: "Клеевые соединения",
+                question: "Укажите главное преимущество клеевых соединений в современных конструкциях:",
+                options: [
+                    "Высокая термостойкость выше 1000 °C",
+                    "Возможность соединения разнородных материалов и равномерное распределение напряжений по всей площади",
+                    "Абсолютная мгновенная прочность без выдержки",
+                    "Возможность лёгкой постоянной пересборки"
+                ],
+                correct: 1,
+                explanation: "Клеевые соединения позволяют скреплять практически любые разнородные материалы (металл, пластик, стекло), обеспечивают герметичность и отсутствие концентраторов напряжений, характерных для точечных крепежей."
+            },
+            {
+                id: 14,
+                category: "Резьбовые соединения",
+                question: "Что такое «стопорение» (контрение) резьбового соединения?",
+                options: [
+                    "Процесс нарезания внутренней резьбы",
+                    "Предохранение резьбового соединения от самоотвинчивания при вибрациях и переменных нагрузках",
+                    "Смазка резьбы перед затяжкой",
+                    "Увеличение шага резьбы"
+                ],
+                correct: 1,
+                explanation: "Стопорение предотвращает самопроизвольное отвинчивание гаек и болтов при динамических и вибрационных нагрузках (используют контргайки, шплинты, шайбы Гровера и анаэробные герметики)."
+            },
+            {
+                id: 15,
+                category: "Шпоночные соединения",
+                question: "Какая рабочая поверхность передаёт крутящий момент в призматической шпонке?",
+                options: [
+                    "Верхняя и нижняя широкие грани",
+                    "Боковые узкие грани",
+                    "Торцевые закруглённые грани",
+                    "Все грани одновременно"
+                ],
+                correct: 1,
+                explanation: "В призматическом шпоночном соединении рабочими являются боковые грани шпонки, работающие на смятие и срез."
+            },
+            {
+                id: 16,
+                category: "Шлицевые соединения",
+                question: "Какая форма профиля зубьев НЕ используется в стандартных шлицевых соединениях?",
+                options: [
+                    "Прямобочная",
+                    "Эвольвентная",
+                    "Треугольная",
+                    "Сферическая параболическая"
+                ],
+                correct: 3,
+                explanation: "В шлицевых соединениях стандартизированы прямобочный, эвольвентный и треугольный профили зубьев."
+            },
+            {
+                id: 17,
+                category: "Штифтовые соединения",
+                question: "Какую конусность имеют стандартные конические штифты?",
+                options: [
+                    "1:50",
+                    "1:10",
+                    "1:100",
+                    "1:5"
+                ],
+                correct: 0,
+                explanation: "Стандартные конические штифты имеют конусность 1:50, что обеспечивает отличное самоторможение и точную центровку при повторных сборках."
+            },
+            {
+                id: 18,
+                category: "Резьбовые соединения",
+                question: "Чем отличается шпилька от болта?",
+                options: [
+                    "Шпилька имеет шестигранную головку",
+                    "Шпилька представляет собой стержень с резьбой с обоих концов и не имеет головки",
+                    "Шпилька используется только в деревянных деталях",
+                    "Шпилька изготовлена исключительно из цветных металлов"
+                ],
+                correct: 1,
+                explanation: "Шпилька — это цилиндрический стержень, имеющий резьбу на обоих концах (или по всей длине), и не имеющий конструктивной головки как у болта или винта."
+            },
+            {
+                id: 19,
+                category: "Заклёпочные соединения",
+                question: "Как называется часть заклёпки, образующаяся на противоположной стороне в процессе клёпки?",
+                options: [
+                    "Закладная головка",
+                    "Замыкающая головка",
+                    "Упорная хвостовина",
+                    "Посадочный буртик"
+                ],
+                correct: 1,
+                explanation: "Головка заклёпки, выполненная заранее на заводе, называется закладной, а головка, формируемая при расклёпывании стержня — замыкающей."
+            },
+            {
+                id: 20,
+                category: "Прессовые соединения",
+                question: "Каким технологическим методом чаще всего собирают прессовые соединения с большими натягами для облегчения сборки?",
+                options: [
+                    "Нагревом охватывающей детали или охлаждением охватываемой детали",
+                    "Смазкой густым мазутом без нагрева",
+                    "Ударным забиванием кувалдой",
+                    "Ультразвуковой проковкой"
+                ],
+                correct: 0,
+                explanation: "Для предотвращения задиров и снижения необходимых усилий охватывающую деталь (например, втулку) нагревают, либо охватываемую деталь (вал) охлаждают (например, жидким азотом)."
+            }
+        ];
+
+        // State variables
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let studentName = "";
+        let userAnswers = {}; // questionIndex -> selectedOptionIndex
+        let timerInterval = null;
+        let timeRemaining = 600; // 10 minutes in seconds
+        let totalTimeSpent = 0;
+        let isQuizEnded = false;
+
+        // Shuffle Array Helper
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Start Quiz Logic
+        function startQuiz(e) {
+            e.preventDefault();
+            const fioInput = document.getElementById('student-fio').value.trim();
+            if (!fioInput) {
+                document.getElementById('fio-error').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('fio-error').classList.add('hidden');
+            studentName = fioInput;
+
+            // Prepare shuffled questions
+            questions = shuffleArray(rawQuestions);
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            timeRemaining = 600; // 10 mins
+            isQuizEnded = false;
+
+            // Update UI elements
+            document.getElementById('quiz-student-name').textContent = studentName;
+            document.getElementById('total-questions-num').textContent = questions.length;
+            
+            // Switch views
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('header-timer-container').classList.remove('hidden');
+
+            // Start Timer
+            startTimer();
+
+            // Render First Question
+            renderQuestion();
+        }
+
+        // Timer Implementation
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                totalTimeSpent++;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const formatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('header-timer').textContent = formatted;
+
+            // Visual warning when time is low (< 2 min)
+            if (timeRemaining <= 120) {
+                document.getElementById('header-timer-container').classList.add('bg-rose-900/50', 'border-rose-500');
+            }
+        }
+
+        // Handle Time Expiration
+        function handleTimeout() {
+            isQuizEnded = true;
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('header-timer-container').classList.add('hidden');
+            document.getElementById('screen-timeout').classList.remove('hidden');
+
+            // Save Timeout Result to Admin Storage
+            saveResultToStorage(0, 0, true);
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            
+            document.getElementById('current-question-num').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-category').textContent = q.category;
+            document.getElementById('question-text').textContent = q.question;
+
+            // Progress bar width
+            const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Options container
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const selectedAnswer = userAnswers[currentQuestionIndex];
+
+            q.options.forEach((optionText, idx) => {
+                const isSelected = selectedAnswer === idx;
+                const optionBtn = document.createElement('div');
+                optionBtn.className = `p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                    isSelected 
+                        ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-md shadow-indigo-500/10' 
+                        : 'bg-slate-900/60 border-darkborder text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'
+                }`;
+                
+                optionBtn.onclick = () => selectOption(idx);
+
+                optionBtn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold ${
+                            isSelected ? 'border-indigo-400 bg-indigo-500 text-white' : 'border-slate-600 text-slate-400'
+                        }">
+                            ${String.fromCharCode(65 + idx)}
+                        </div>
+                        <span class="text-sm md:text-base font-medium">${optionText}</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full border flex items-center justify-center ${
+                        isSelected ? 'border-indigo-400 bg-indigo-500' : 'border-slate-700'
+                    }">
+                        ${isSelected ? '<i class="fa-solid fa-check text-white text-xs"></i>' : ''}
+                    </div>
+                `;
+                container.appendChild(optionBtn);
+            });
+
+            // Update Next / Finish Button State
+            const nextBtn = document.getElementById('btn-next');
+            const nextBtnText = document.getElementById('btn-next-text');
+
+            if (selectedAnswer !== undefined) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtnText.textContent = "Завершить тест";
+            } else {
+                nextBtnText.textContent = "Следующий вопрос";
+            }
+        }
+
+        // Select Option Handler
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            renderQuestion();
+        }
+
+        // Next Question or Finish Quiz
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === undefined) return;
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // Calculate 10-Point System Grade
+        function calculate10PointGrade(correctCount, total) {
+            const percentage = (correctCount / total) * 100;
+            
+            if (percentage === 100) return { score: 10, label: "Отлично (Идеально)" };
+            if (percentage >= 90) return { score: 9, label: "Отлично" };
+            if (percentage >= 80) return { score: 8, label: "Хорошо" };
+            if (percentage >= 70) return { score: 7, label: "Хорошо" };
+            if (percentage >= 60) return { score: 6, label: "Удовлетворительно" };
+            if (percentage >= 50) return { score: 5, label: "Удовлетворительно" };
+            if (percentage >= 40) return { score: 4, label: "Неудовлетворительно" };
+            if (percentage >= 30) return { score: 3, label: "Плохо" };
+            if (percentage >= 20) return { score: 2, label: "Плохо" };
+            return { score: 1, label: "Очень плохо" };
+        }
+
+        // Finish Quiz Logic
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            isQuizEnded = true;
+
+            // Calculate correct answers
+            let correctAnswersCount = 0;
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correct) {
+                    correctAnswersCount++;
+                }
+            });
+
+            const total = questions.length;
+            const percentage = Math.round((correctAnswersCount / total) * 100);
+            const gradeObj = calculate10PointGrade(correctAnswersCount, total);
+
+            // Switch UI Screens
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('header-timer-container').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            // Render Overview Data
+            document.getElementById('result-student-info').textContent = `Студент: ${studentName}`;
+            document.getElementById('grade-score').textContent = `${gradeObj.score} / 10`;
+            document.getElementById('grade-text').textContent = gradeObj.label;
+            document.getElementById('percent-score').textContent = `${percentage}%`;
+            document.getElementById('correct-count-text').textContent = `${correctAnswersCount} из ${total} верно`;
+
+            // Time spent format
+            const minSpent = Math.floor(totalTimeSpent / 60);
+            const secSpent = totalTimeSpent % 60;
+            document.getElementById('time-spent').textContent = `${minSpent}:${secSpent.toString().padStart(2, '0')}`;
+
+            // Render Review Items
+            renderReviewSection();
+
+            // Save to Admin Panel / localStorage
+            saveResultToStorage(gradeObj.score, percentage, false, correctAnswersCount);
+        }
+
+        // Render Review Section with Detailed Explanations
+        function renderReviewSection() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userSelected = userAnswers[idx];
+                const isCorrect = userSelected === q.correct;
+
+                const card = document.createElement('div');
+                card.className = `p-5 md:p-6 rounded-2xl border ${
+                    isCorrect ? 'bg-darkcard/90 border-emerald-500/30' : 'bg-darkcard/90 border-rose-500/30'
+                } space-y-4 shadow-lg`;
+
+                let optionsHTML = '';
+                q.options.forEach((optText, optIdx) => {
+                    let optStyle = "bg-slate-900/50 border-darkborder text-slate-400";
+                    let badge = "";
+
+                    if (optIdx === q.correct) {
+                        // Correct option (Always highlight Green)
+                        optStyle = "bg-emerald-500/10 border-emerald-500/50 text-emerald-300 font-semibold";
+                        badge = `<span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Правильный ответ</span>`;
+                    }
+                    
+                    if (optIdx === userSelected && !isCorrect) {
+                        // User selected wrong option (Highlight Red)
+                        optStyle = "bg-rose-500/10 border-rose-500/50 text-rose-300 font-semibold";
+                        badge = `<span class="text-xs bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded border border-rose-500/30">Ваш выбор</span>`;
+                    } else if (optIdx === userSelected && isCorrect) {
+                        badge = `<span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Ваш выбор</span>`;
+                    }
+
+                    optionsHTML += `
+                        <div class="p-3 rounded-xl border ${optStyle} flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold opacity-75">${String.fromCharCode(65 + optIdx)}.</span>
+                                <span>${optText}</span>
+                            </div>
+                            ${badge}
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">${q.category}</span>
+                            <h4 class="text-base font-bold text-white">${idx + 1}. ${q.question}</h4>
+                        </div>
+                        <div class="shrink-0">
+                            ${isCorrect 
+                                ? '<span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30"><i class="fa-solid fa-check"></i></span>'
+                                : '<span class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/30"><i class="fa-solid fa-xmark"></i></span>'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        ${optionsHTML}
+                    </div>
+
+                    <!-- Technical Explanation -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-darkborder space-y-1 text-xs md:text-sm">
+                        <div class="font-bold text-indigo-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-info"></i> Пояснение преподавателя:
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${q.explanation}</p>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Local Storage / Admin Integration
+        function saveResultToStorage(score, percentage, timedOut = false, correctCount = 0) {
+            const minSpent = Math.floor(totalTimeSpent / 60);
+            const secSpent = totalTimeSpent % 60;
+            const timeStr = `${minSpent}:${secSpent.toString().padStart(2, '0')}`;
+
+            const newResult = {
+                id: Date.now(),
+                studentName: studentName,
+                score: timedOut ? 0 : score,
+                percentage: timedOut ? 0 : percentage,
+                correctCount: timedOut ? 0 : correctCount,
+                totalQuestions: rawQuestions.length,
+                timeSpent: timeStr,
+                timedOut: timedOut,
+                date: new Date().toLocaleString('ru-RU')
+            };
+
+            // Read existing results
+            let currentResults = [];
+            try {
+                const stored = localStorage.getItem('quiz_results');
+                if (stored) {
+                    currentResults = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error("Error reading quiz_results", e);
+            }
+
+            currentResults.push(newResult);
+            localStorage.setItem('quiz_results', JSON.stringify(currentResults));
+
+            // PostMessage notification if embedded in admin iframe
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'QUIZ_RESULT_SUBMITTED', data: newResult }, '*');
+            }
+
+            // Broadcast channel event for open admin panels
+            try {
+                const channel = new BroadcastChannel('quiz_admin_channel');
+                channel.postMessage({ type: 'NEW_RESULT', data: newResult });
+            } catch(e) {}
+        }
+
+        // Admin Modal Controls
+        function toggleAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                loadAdminData();
+            }
+        }
+
+        function checkAdminPass() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'admin123' || pass === 'admin') {
+                document.getElementById('admin-login-sec').classList.add('hidden');
+                document.getElementById('admin-content-sec').classList.remove('hidden');
+                document.getElementById('admin-err').classList.add('hidden');
+                loadAdminData();
+            } else {
+                document.getElementById('admin-err').classList.remove('hidden');
+            }
+        }
+
+        function loadAdminData() {
+            const tbody = document.getElementById('admin-results-table');
+            tbody.innerHTML = '';
+
+            let results = [];
+            try {
+                const stored = localStorage.getItem('quiz_results');
+                if (stored) results = JSON.parse(stored);
+            } catch(e) {}
+
+            if (results.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Записей результатов пока нет</td></tr>`;
+                return;
+            }
+
+            results.reverse().forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-darkborder hover:bg-slate-900/40";
+                tr.innerHTML = `
+                    <td class="p-2.5 text-slate-400">${r.date}</td>
+                    <td class="p-2.5 font-semibold text-white">${r.studentName}</td>
+                    <td class="p-2.5 ${r.timedOut ? 'text-rose-400 font-bold' : 'text-indigo-400 font-bold'}">${r.timedOut ? 'Истёк таймер' : r.score + ' / 10'}</td>
+                    <td class="p-2.5 text-emerald-400 font-semibold">${r.percentage}%</td>
+                    <td class="p-2.5 text-slate-400">${r.timeSpent}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function clearAdminLogs() {
+            if (confirm("Вы уверены, что хотите очистить историю результатов?")) {
+                localStorage.removeItem('quiz_results');
+                loadAdminData();
+            }
+        }
+    </script>
+</body>
+</html>
