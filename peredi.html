@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование: Виды механических передач</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0F172A',
+                        cardbg: '#1E293B',
+                        cardborder: '#334155',
+                        accent: '#3B82F6',
+                        accenthover: '#2563EB',
+                        correct: '#10B981',
+                        incorrect: '#EF4444'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            color: #F8FAFC;
+            user-select: none;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748B;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-8 relative">
+
+    <!-- Верхняя панель: Переключатель панели администратора -->
+    <header class="w-full max-w-3xl flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-mono text-slate-400">СИСТЕМА ТЕСТИРОВАНИЯ v2.4</span>
+        </div>
+        <button 
+            onclick="toggleAdminModal()" 
+            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 rounded-lg transition flex items-center gap-1.5"
+        >
+            <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Панель администратора
+        </button>
+    </header>
+
+    <!-- Главный контейнер -->
+    <main class="w-full max-w-3xl my-auto">
+
+        <!-- ЭКРАН 1: АВТОРИЗАЦИЯ -->
+        <section id="auth-screen" class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <span class="inline-block p-3 bg-blue-500/10 text-accent rounded-xl text-xs font-semibold uppercase tracking-wider mb-3">
+                    Детали машин / Техническая механика
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Онлайн-тестирование</h1>
+                <p class="text-slate-400 text-sm sm:text-base">Тема: «Виды механических передач»</p>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-4 mb-6 space-y-2 text-xs sm:text-sm text-slate-300">
+                <div class="flex items-center space-x-2 text-slate-200 font-semibold">
+                    <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Правила проведения теста:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 pl-1">
+                    <li>Количество вопросов: <strong>20</strong> (выводятся случайно по одному).</li>
+                    <li>Ограничение по времени: <strong>10 минут</strong>.</li>
+                    <li>Оценка рассчитывается по <strong>10-балльной системе</strong>.</li>
+                    <li>Повторное прохождение <strong>непредусмотрено</strong>.</li>
+                </ul>
+            </div>
+
+            <form id="auth-form" onsubmit="startTest(event)" class="space-y-5">
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-slate-300 mb-2">
+                        ФИО Студента / Учащегося <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="student-name" 
+                        required 
+                        placeholder="Введите ваше полное ФИО"
+                        class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent text-white placeholder-slate-500 outline-none transition"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="w-full py-3.5 px-6 bg-accent hover:bg-accenthover text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition duration-200 transform active:scale-[0.99]"
+                >
+                    Начать тест
+                </button>
+            </form>
+        </section>
+
+        <!-- ЭКРАН 2: ТЕСТИРОВАНИЕ -->
+        <section id="test-screen" class="hidden bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <!-- Верхняя панель: Инфо студента + Таймер -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-700/60 gap-4">
+                <div>
+                    <span id="display-student-name" class="text-sm font-medium text-slate-400 block">--</span>
+                    <span id="question-progress" class="text-xs font-semibold text-accent uppercase tracking-wider">Вопрос 1 из 20</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl self-start sm:self-auto">
+                    <svg class="w-5 h-5 text-amber-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="timer-display" class="font-mono text-lg font-bold text-amber-400">10:00</span>
+                </div>
+            </div>
+
+            <!-- Прогресс-бар -->
+            <div class="w-full bg-slate-800 h-2 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="bg-accent h-full transition-all duration-300" style="width: 5%;"></div>
+            </div>
+
+            <!-- Текст вопроса -->
+            <div class="mb-8">
+                <h2 id="question-text" class="text-lg sm:text-xl font-semibold text-white leading-relaxed">
+                    Загрузка вопроса...
+                </h2>
+            </div>
+
+            <!-- Варианты ответов -->
+            <div id="answers-container" class="space-y-3 mb-8">
+                <!-- Заполняется JS -->
+            </div>
+
+            <!-- Нижняя панель действий -->
+            <div class="flex justify-end pt-4 border-t border-slate-700/60">
+                <button 
+                    id="next-btn" 
+                    onclick="nextQuestion()" 
+                    disabled 
+                    class="py-3 px-8 bg-accent hover:bg-accenthover disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition duration-200"
+                >
+                    Далее
+                </button>
+            </div>
+        </section>
+
+        <!-- ПАНЕЛЬ ОШИБКИ: ТАЙМЕР ИСТЕК -->
+        <section id="timeout-screen" class="hidden bg-red-950/80 border-2 border-incorrect rounded-2xl p-8 text-center shadow-2xl">
+            <div class="inline-flex p-4 bg-red-500/20 text-incorrect rounded-full mb-4">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">Тест не пройден время истекло обратитесь к учителю</h2>
+            <p class="text-slate-300 text-sm">Время отведенное на прохождение (10 минут) исчерпано. Результат аннулирован.</p>
+        </section>
+
+        <!-- ЭКРАН 3: РЕЗУЛЬТАТЫ И РАЗБОР -->
+        <section id="results-screen" class="hidden space-y-6">
+            <!-- Сводная карточка результата -->
+            <div class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-emerald-500 to-indigo-500"></div>
+                <h2 class="text-xl font-bold text-slate-300 mb-1">Тестирование завершено</h2>
+                <p id="result-student-name" class="text-slate-400 text-sm mb-6">Студент: --</p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
+                    <div class="bg-slate-900/80 border border-slate-700/70 p-6 rounded-2xl w-full sm:w-1/2">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 block mb-1">Итоговая оценка</span>
+                        <div class="text-4xl sm:text-5xl font-black text-accent" id="final-score">0 / 10</div>
+                        <span class="text-xs text-slate-500 mt-1 block">(по 10-балльной системе)</span>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-700/70 p-6 rounded-2xl w-full sm:w-1/2">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 block mb-1">Правильных ответов</span>
+                        <div class="text-4xl sm:text-5xl font-black text-emerald-400" id="correct-count">0 / 20</div>
+                        <span class="text-xs text-slate-500 mt-1 block" id="time-spent-text">Время: --:--</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-800/40 border border-slate-700/50 rounded-xl text-xs text-slate-400 text-left flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span>Результат успешно передан в панель администратора и сохранён в журнал.</span>
+                </div>
+            </div>
+
+            <!-- Подробный разбор ответов -->
+            <div class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Подробный разбор вопросов
+                </h3>
+                <div id="review-container" class="space-y-6">
+                    <!-- Динамическая генерация ответов и поянений -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПАНЕЛИ АДМИНИСТРАТОРА -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-cardbg border border-cardborder w-full max-w-4xl rounded-2xl p-6 shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-700">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Панель администратора: Результаты студентов
+                </h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 mb-4">
+                <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px] sm:text-xs tracking-wider sticky top-0">
+                        <tr>
+                            <th class="p-3">Дата/Время</th>
+                            <th class="p-3">ФИО Студента</th>
+                            <th class="p-3 text-center">Оценка</th>
+                            <th class="p-3 text-center">Ответы</th>
+                            <th class="p-3 text-center">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body" class="divide-y divide-slate-800">
+                        <!-- Динамическое заполнение из localStorage -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center pt-3 border-t border-slate-700 text-xs">
+                <button onclick="clearAdminLogs()" class="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold rounded-lg transition">
+                    Очистить журнал
+                </button>
+                <button onclick="toggleAdminModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подвал -->
+    <footer class="mt-8 text-center text-xs text-slate-500">
+        Система контроля знаний по дисциплине «Детали машин и механизмов» &copy; 2026
+    </footer>
+
+    <script>
+        // БАЗА ДАННЫХ: 20 ВОПРОСОВ ПО ТЕМЕ "ВИДЫ ПЕРЕДАЧ"
+        const rawQuestions = [
+            {
+                question: "Что такое механическая передача?",
+                options: [
+                    "Устройство для передачи механической энергии от двигателя к исполнительному органу с возможностью изменения параметров движения.",
+                    "Устройство для преобразования электрической энергии исключительно в тепловую.",
+                    "Деталь, предназначенная только для жесткого закрепления вращающегося вала.",
+                    "Механизм, служащий только для снижения трения в опорах качения."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Механическая передача передает механическую энергию (крутящий момент и частоту вращения) от источника к потребителю, трансформируя параметры движения."
+            },
+            {
+                question: "Какая передача относится к передачам трением с непосредственным контактом?",
+                options: [
+                    "Фрикционная передача.",
+                    "Зубчатая передача.",
+                    "Червячная передача.",
+                    "Цепная передача."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Фрикционная передача передает вращение за счет сил трения, возникающих в месте контакта прижатых друг к другу катков."
+            },
+            {
+                question: "Что является главным достоинством ременной передачи?",
+                options: [
+                    "Плавность, бесшумность работы и защита деталей от перегрузок за счет возможного проскальзывания.",
+                    "Строго постоянное передаточное отношение без проскальзывания.",
+                    "Возможность работы при чрезвычайно высоких температурах и открытом огне.",
+                    "Минимальные габаритные размеры по сравнению с зубчатой передачей."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Гибкость ремня и эффект буксования при перегрузках предохраняют двигатель и механизм от поломок при неожиданном заклинивании."
+            },
+            {
+                question: "В каких передачах используется передаточное отношение i > 1?",
+                options: [
+                    "В понижающих передачах (редукторах).",
+                    "В повышающих передачах (мультипликаторах).",
+                    "Только в фрикционных вариаторах при равенстве скоростей.",
+                    "В прямых передачах с постоянной скоростью без трансформации момента."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: При i > 1 угловая скорость ведомого вала меньше угловой скорости ведущего, т.е. передача является понижающей (редуктором)."
+            },
+            {
+                question: "Какое главное преимущество червячной передачи?",
+                options: [
+                    "Высокое передаточное отношение в одной паре и свойство самоторможения.",
+                    "Самый высокий КПД среди всех видов механических передач (до 99%).",
+                    "Полное отсутствие нагрева и выделения тепла во время работы.",
+                    "Низкая стоимость и отсутствие необходимости в специальной смазке."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Червячная пара позволяет получить передаточные числа до 80 и более в одной ступени, а также обладает эффектом невозможности вращения червяка от червячного колеса (самоторможение)."
+            },
+            {
+                question: "Главный недостаток червячной передачи:",
+                options: [
+                    "Низкий КПД и высокий нагрев из-за интенсивного скольжения витков.",
+                    "Невозможность передачи больших мощностей.",
+                    "Очень высокий уровень шума при низких скоростях.",
+                    "Необходимость применения исключительно деревянных деталей."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Относительное скольжение витков червяка по зубьям колеса вызывает большие потери на трение, приводя к износу и сильному нагреву."
+            },
+            {
+                question: "Какая передача обеспечивает строго постоянное передаточное отношение без проскальзывания?",
+                options: [
+                    "Зубчатая передача.",
+                    "Клиноременная передача.",
+                    "Плоскоременная передача.",
+                    "Фрикционная передача с гладкими дисками."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Зацепление жестких зубьев гарантирует точную кинематическую связь без эластичного проскальзывания."
+            },
+            {
+                question: "Что такое передаточное отношение (i)?",
+                options: [
+                    "Отношение угловой скорости ведущего вала к угловой скорости ведомого вала.",
+                    "Отношение массы ведомого колеса к массе ведущей шестерни.",
+                    "Сумма диаметров всех колес передачи.",
+                    "Разность между частотами вращения валов."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Передаточное отношение определяется как i = ω1 / ω2 = n1 / n2 (отношение скоростей вращения)."
+            },
+            {
+                question: "Какой элемент цепной передачи подвержен наибольшему износу?",
+                options: [
+                    "Шарниры цепи (валики и втулки) и зубья звездочек.",
+                    "Корпус редуктора.",
+                    "Подшипниковые щиты.",
+                    "Входной вал в месте установки шпонки."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: В процессе работы шарниры цепи совершают поворот под нагрузкой, что приводит к износу сопрягаемых элементов и удлинению цепи."
+            },
+            {
+                question: "Для чего применяются конические зубчатые колеса?",
+                options: [
+                    "Для передачи вращения между валами, оси которых пересекаются под углом (обычно 90°).",
+                    "Для передачи движения между строго параллельными валами.",
+                    "Для непрерывного преобразования поступательного движения в колебательное.",
+                    "Для полного исключения осевых нагрузок на подшипники."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Конические передачи служат для изменения направления оси вращения в пространстве."
+            },
+            {
+                question: "В чем главное преимущество косозубых колес по сравнению с прямозубыми?",
+                options: [
+                    "Больше плавность зацепления, меньше шум и выше нагрузочная способность.",
+                    "Полное отсутствие осевой силы на валу.",
+                    "Более простая и дешевая технология изготовления.",
+                    "Возможность работы без смазочных материалов."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Зубья косозубых колес входят в зацепление постепенно, а не по всей длине сразу, что снижает шум и динамические нагрузки."
+            },
+            {
+                question: "Какая передача преобразует вращательное движение в поступательное?",
+                options: [
+                    "Передача винт-гайка.",
+                    "Ременная передача.",
+                    "Червячная передача.",
+                    "Фрикционная передача."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Передача винт-гайка позволяет при вращении винта получать точное поступательное перемещение гайки (или наоборот)."
+            },
+            {
+                question: "Что происходит с крутящим моментом на ведомом валу в понижающей передаче (i > 1)?",
+                options: [
+                    "Крутящий момент увеличивается пропорционально передаточному отношению.",
+                    "Крутящий момент уменьшается до нуля.",
+                    "Крутящий момент остается неизменным.",
+                    "Крутящий момент становится пульсирующим."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Согласно закону сохранения энергии (с учетом КПД), снижая частоту вращения, понижающая передача увеличивает крутящий момент T2 ≈ T1 * i."
+            },
+            {
+                question: "Какая передача относится к передачам зацеплением с гибкой связью?",
+                options: [
+                    "Цепная передача.",
+                    "Зубчатая цилиндрическая передача.",
+                    "Фрикционная вариаторная передача.",
+                    "Винтовая передача."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Цепь является гибким элементом, передающим момент за счет зацепления со звездочками."
+            },
+            {
+                question: "Как определяется передаточное число u для зубчатой пары?",
+                options: [
+                    "Отношение числа зубьев колеса к числу зубьев шестерни (z2 / z1, где z2 >= z1).",
+                    "Отношение ширины венца к модулю.",
+                    "Произведение диаметров делительных окружностей.",
+                    "Разность между числом зубьев шестерни и колеса."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Передаточное число u всегда больше или равно 1 и рассчитывается как u = z2 / z1."
+            },
+            {
+                question: "Как называется меньшее из двух зубчатых колес в передаче?",
+                options: [
+                    "Шестерня.",
+                    "Колесо.",
+                    "Венец.",
+                    "Обойма."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: В зубчатой паре меньшее колесо принято называть шестерней, а большее — колесом."
+            },
+            {
+                question: "Как называется большее из двух зубчатых колес в передаче?",
+                options: [
+                    "Колесо.",
+                    "Шестерня.",
+                    "Шкив.",
+                    "Звездочка."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Большее зубчатое колесо пары называется колесом."
+            },
+            {
+                question: "Какой ремень обеспечивает наибольшую передаваемую мощность при одинаковых габаритах?",
+                options: [
+                    "Клиновой или поликлиновой ремень.",
+                    "Плоский кожаный ремень.",
+                    "Круглый ремень.",
+                    "Текстильный ленточный ремень."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Благодаря клиновому эффекту боковые поверхности ремня врезаются в канавки шкива, обеспечивая большее сцепление."
+            },
+            {
+                question: "Что является причиной «выкрашивания» (питтинга) рабочей поверхности зубьев?",
+                options: [
+                    "Высокие контактные напряжения при циклических нагрузках.",
+                    "Недостаток электрического тока в цепи.",
+                    "Превышение допустимой длины вала.",
+                    "Применение масел низкой вязкости при выключенном двигателе."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Усталостное выкрашивание (питтинг) возникает из-за повторно-переменных контактных напряжений на рабочих поверхностях зубьев."
+            },
+            {
+                question: "Какой модуль является основным геометрическим параметром зубчатого колеса?",
+                options: [
+                    "Модуль зацепления m.",
+                    "Модуль упругости Юнга.",
+                    "Модуль сдвига материала.",
+                    "Модуль пластичности."
+                ],
+                correctIndex: 0,
+                explanation: "Правильный ответ: Модуль зацепления m = p / π является основным линейным параметром, определяющим размеры зуба и колеса."
+            }
+        ];
+
+        // ГЛОБАЛЬНОЕ СОСТОЯНИЕ
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let studentName = "";
+        let timerInterval = null;
+        let totalTimeSeconds = 600; // 10 минут
+        let timeRemaining = 600;
+
+        // Функция перемешивания (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Подготовка данных вопросов (перемешивание вопросов и вариантов ответов)
+        function prepareQuestions() {
+            const shuffledRaw = shuffleArray(rawQuestions);
+            
+            return shuffledRaw.map(q => {
+                const optionsObj = q.options.map((opt, idx) => ({
+                    text: opt,
+                    isCorrect: idx === q.correctIndex
+                }));
+
+                const shuffledOptions = shuffleArray(optionsObj);
+                const newCorrectIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+                return {
+                    question: q.question,
+                    options: shuffledOptions.map(o => o.text),
+                    correctIndex: newCorrectIndex,
+                    explanation: q.explanation
+                };
+            });
+        }
+
+        // Старт теста
+        function startTest(event) {
+            event.preventDefault();
+            const input = document.getElementById('student-name');
+            studentName = input.value.trim();
+
+            if (!studentName) return;
+
+            currentQuestions = prepareQuestions();
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            timeRemaining = totalTimeSeconds;
+
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('test-screen').classList.remove('hidden');
+            document.getElementById('display-student-name').textContent = `Студент: ${studentName}`;
+
+            startTimer();
+            renderQuestion();
+        }
+
+        // Обратный отсчет таймера
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timer-display').textContent = formatted;
+        }
+
+        // Обработка исчерпания времени
+        function handleTimeout() {
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('timeout-screen').classList.remove('hidden');
+
+            sendResultsToAdmin({
+                studentName: studentName,
+                score: 0,
+                correctCount: 0,
+                totalQuestions: currentQuestions.length,
+                timeSpentSeconds: totalTimeSeconds,
+                status: 'ИСТЕКЛО ВРЕМЯ'
+            });
+        }
+
+        // Отрисовка текущего вопроса
+        function renderQuestion() {
+            const q = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('question-progress').textContent = `Вопрос ${currentQuestionIndex + 1} из ${currentQuestions.length}`;
+            const progressPercent = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').textContent = q.question;
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.textContent = (currentQuestionIndex === currentQuestions.length - 1) ? "Завершить тест" : "Далее";
+            nextBtn.disabled = (userAnswers[currentQuestionIndex] === null);
+
+            const container = document.getElementById('answers-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optionText, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const optionEl = document.createElement('div');
+                optionEl.className = `p-4 rounded-xl border transition cursor-pointer flex items-start space-x-3 ${
+                    isSelected 
+                        ? 'bg-blue-600/20 border-accent text-white font-medium' 
+                        : 'bg-slate-900/60 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
+                }`;
+                
+                optionEl.onclick = () => selectOption(idx);
+
+                optionEl.innerHTML = `
+                    <div class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border ${isSelected ? 'border-accent bg-accent' : 'border-slate-500'} flex items-center justify-center">
+                        ${isSelected ? '<div class="w-2 h-2 bg-white rounded-full"></div>' : ''}
+                    </div>
+                    <span class="text-sm sm:text-base leading-snug">${optionText}</span>
+                `;
+                container.appendChild(optionEl);
+            });
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            document.getElementById('next-btn').disabled = false;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) return;
+
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        // Завершение и расчёт оценки по 10-балльной системе
+        function finishTest() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correctIndex) {
+                    correctCount++;
+                }
+            });
+
+            const totalQuestions = currentQuestions.length;
+            // Расчет по 10-балльной шкале (пропорционально)
+            const score10 = Math.round((correctCount / totalQuestions) * 10);
+            const timeSpent = totalTimeSeconds - timeRemaining;
+
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            document.getElementById('result-student-name').textContent = `Студент: ${studentName}`;
+            document.getElementById('final-score').textContent = `${score10} / 10`;
+            document.getElementById('correct-count').textContent = `${correctCount} / ${totalQuestions}`;
+
+            const minsSpent = Math.floor(timeSpent / 60);
+            const secsSpent = timeSpent % 60;
+            document.getElementById('time-spent-text').textContent = `Время: ${minsSpent} мин ${secsSpent} сек`;
+
+            renderReviewList();
+
+            sendResultsToAdmin({
+                studentName: studentName,
+                score: score10,
+                correctCount: correctCount,
+                totalQuestions: totalQuestions,
+                timeSpentSeconds: timeSpent,
+                status: 'УСПЕШНО'
+            });
+        }
+
+        // Разбор вопросов с выделением ответов и пояснениями
+        function renderReviewList() {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            currentQuestions.forEach((q, qIdx) => {
+                const userChoiceIdx = userAnswers[qIdx];
+                const isCorrect = userChoiceIdx === q.correctIndex;
+
+                const item = document.createElement('div');
+                item.className = `p-5 rounded-xl border ${
+                    isCorrect 
+                        ? 'bg-emerald-950/20 border-emerald-500/40' 
+                        : 'bg-red-950/20 border-red-500/40'
+                } space-y-4`;
+
+                let optionsHtml = '';
+                q.options.forEach((optText, optIdx) => {
+                    let optStyle = "bg-slate-900/40 border-slate-700/50 text-slate-400";
+                    let badge = "";
+
+                    if (optIdx === q.correctIndex) {
+                        optStyle = "bg-emerald-500/10 border-emerald-500/50 text-emerald-300 font-medium";
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md font-semibold">Правильный ответ</span>`;
+                    }
+                    
+                    if (optIdx === userChoiceIdx && !isCorrect) {
+                        optStyle = "bg-red-500/10 border-red-500/50 text-red-300 font-medium";
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded-md font-semibold">Ваш ответ</span>`;
+                    } else if (optIdx === userChoiceIdx && isCorrect) {
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md font-semibold">Ваш выбор (Верно)</span>`;
+                    }
+
+                    optionsHtml += `
+                        <div class="p-3 rounded-lg border text-sm flex items-center justify-between gap-2 ${optStyle}">
+                            <span>${optText}</span>
+                            ${badge}
+                        </div>
+                    `;
+                });
+
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <h4 class="font-semibold text-white text-base leading-snug">
+                            <span class="text-slate-400 font-normal mr-1">${qIdx + 1}.</span> ${q.question}
+                        </h4>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'} flex-shrink-0">
+                            ${isCorrect ? '+1 бал' : '0 баллов'}
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        ${optionsHtml}
+                    </div>
+
+                    <div class="mt-3 p-3.5 bg-slate-900/80 border border-slate-700/60 rounded-lg text-xs sm:text-sm text-slate-300">
+                        <strong class="text-accent block mb-1">Пояснение:</strong>
+                        ${q.explanation}
+                    </div>
+                `;
+
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        // Передача и сохранение результатов в Панель Администратора
+        function sendResultsToAdmin(data) {
+            const resultPayload = {
+                type: 'TEST_RESULT',
+                topic: 'Виды передач',
+                timestamp: new Date().toLocaleString('ru-RU'),
+                ...data
+            };
+
+            // 1. Отправка postMessage во внешнее окно/iframe админ-панели
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage(resultPayload, '*');
+            }
+
+            // 2. Вызов событие CustomEvent
+            window.dispatchEvent(new CustomEvent('onTestCompleted', { detail: resultPayload }));
+
+            // 3. Сохранение в localStorage для панели администратора
+            try {
+                const existingResults = JSON.parse(localStorage.getItem('engineering_test_results') || '[]');
+                existingResults.unshift(resultPayload);
+                localStorage.setItem('engineering_test_results', JSON.stringify(existingResults));
+            } catch (e) {
+                console.warn('Ошибка локального сохранения:', e);
+            }
+        }
+
+        // Функции скрытой Административной Панели
+        function toggleAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            const isHidden = modal.classList.contains('hidden');
+            
+            if (isHidden) {
+                renderAdminLogs();
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function renderAdminLogs() {
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+
+            try {
+                const logs = JSON.parse(localStorage.getItem('engineering_test_results') || '[]');
+                
+                if (logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Записей пока нет</td></tr>`;
+                    return;
+                }
+
+                logs.forEach(log => {
+                    const row = document.createElement('tr');
+                    const isPassed = log.score >= 5 && log.status !== 'ИСТЕКЛО ВРЕМЯ';
+
+                    row.innerHTML = `
+                        <td class="p-3 text-slate-400">${log.timestamp}</td>
+                        <td class="p-3 font-semibold text-white">${log.studentName}</td>
+                        <td class="p-3 text-center font-bold ${isPassed ? 'text-emerald-400' : 'text-red-400'}">${log.score} / 10</td>
+                        <td class="p-3 text-center">${log.correctCount} / ${log.totalQuestions || 20}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-0.5 rounded text-xs ${log.status === 'ИСТЕКЛО ВРЕМЯ' ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                                ${log.status}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">Ошибка чтения журнала</td></tr>`;
+            }
+        }
+
+        function clearAdminLogs() {
+            if (confirm('Вы действительно хотите очистить журнал результатов?')) {
+                localStorage.removeItem('engineering_test_results');
+                renderAdminLogs();
+            }
+        }
+    </script>
+</body>
+</html>
