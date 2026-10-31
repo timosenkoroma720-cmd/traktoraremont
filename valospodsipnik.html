@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование: Валы, оси и подшипники</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0F172A',
+                        cardbg: '#1E293B',
+                        cardborder: '#334155',
+                        accent: '#3B82F6',
+                        accenthover: '#2563EB',
+                        correct: '#10B981',
+                        incorrect: '#EF4444'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            color: #F8FAFC;
+            user-select: none; /* Защита от простого копирования текста во время теста */
+        }
+        /* Кастомный скроллбар для разбора вопросов */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748B;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-8">
+
+    <!-- Главный контейнер -->
+    <main class="w-full max-w-3xl my-auto">
+
+        <!-- ЭКРАН 1: АВТОРИЗАЦИЯ -->
+        <section id="auth-screen" class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <span class="inline-block p-3 bg-blue-500/10 text-accent rounded-xl text-xs font-semibold uppercase tracking-wider mb-3">
+                    Техническая механика / Детали машин
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Онлайн-тестирование</h1>
+                <p class="text-slate-400 text-sm sm:text-base">Тема: «Вал, ось, подшипник качения и подшипник скольжения»</p>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-4 mb-6 space-y-2 text-xs sm:text-sm text-slate-300">
+                <div class="flex items-center space-x-2 text-slate-200 font-semibold">
+                    <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Правила проведения теста:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 pl-1">
+                    <li>Количество вопросов: <strong>20</strong> (каждый показывается отдельно).</li>
+                    <li>Время на прохождение: <strong>10 минут</strong>.</li>
+                    <li>Оценка выставляется по <strong>10-балльной системе</strong>.</li>
+                    <li>Повторное прохождение теста <strong>непредусмотрено</strong>.</li>
+                </ul>
+            </div>
+
+            <form id="auth-form" onsubmit="startTest(event)" class="space-y-5">
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-slate-300 mb-2">
+                        ФИО Студента / Учащегося <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="student-name" 
+                        required 
+                        placeholder="Например: Иванов Иван Иванович"
+                        class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent text-white placeholder-slate-500 outline-none transition"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="w-full py-3.5 px-6 bg-accent hover:bg-accenthover text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition duration-200 transform active:scale-[0.99]"
+                >
+                    Начать тест
+                </button>
+            </form>
+        </section>
+
+        <!-- ЭКРАН 2: ТЕСТИРОВАНИЕ -->
+        <section id="test-screen" class="hidden bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <!-- Верхняя панель: Инфо студента + Таймер -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-700/60 gap-4">
+                <div>
+                    <span id="display-student-name" class="text-sm font-medium text-slate-400 block">--</span>
+                    <span id="question-progress" class="text-xs font-semibold text-accent uppercase tracking-wider">Вопрос 1 из 20</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl self-start sm:self-auto">
+                    <svg class="w-5 h-5 text-amber-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="timer-display" class="font-mono text-lg font-bold text-amber-400">10:00</span>
+                </div>
+            </div>
+
+            <!-- Прогресс-бар -->
+            <div class="w-full bg-slate-800 h-2 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="bg-accent h-full transition-all duration-300" style="width: 5%;"></div>
+            </div>
+
+            <!-- Текст вопроса -->
+            <div class="mb-8">
+                <h2 id="question-text" class="text-lg sm:text-xl font-semibold text-white leading-relaxed">
+                    Загрузка вопроса...
+                </h2>
+            </div>
+
+            <!-- Варианты ответов -->
+            <div id="answers-container" class="space-y-3 mb-8">
+                <!-- Генерируется через JS -->
+            </div>
+
+            <!-- Нижняя панель действий -->
+            <div class="flex justify-end pt-4 border-t border-slate-700/60">
+                <button 
+                    id="next-btn" 
+                    onclick="nextQuestion()" 
+                    disabled 
+                    class="py-3 px-8 bg-accent hover:bg-accenthover disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition duration-200"
+                >
+                    Далее
+                </button>
+            </div>
+        </section>
+
+        <!-- ПАНЕЛЬ ОШИБКИ: ТАЙМЕР ИСТЕК -->
+        <section id="timeout-screen" class="hidden bg-red-950/80 border-2 border-incorrect rounded-2xl p-8 text-center shadow-2xl">
+            <div class="inline-flex p-4 bg-red-500/20 text-incorrect rounded-full mb-4">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">Тест не пройден!</h2>
+            <p class="text-lg text-red-200 font-medium">Время истекло. Обратитесь к учителю.</p>
+        </section>
+
+        <!-- ЭКРАН 3: РЕЗУЛЬТАТЫ И РАЗБОР -->
+        <section id="results-screen" class="hidden space-y-6">
+            <!-- Сводная карточка результата -->
+            <div class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-emerald-500 to-indigo-500"></div>
+                <h2 class="text-xl font-bold text-slate-300 mb-1">Тестирование завершено</h2>
+                <p id="result-student-name" class="text-slate-400 text-sm mb-6">Студент: --</p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
+                    <div class="bg-slate-900/80 border border-slate-700/70 p-6 rounded-2xl w-full sm:w-1/2">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 block mb-1">Итоговая оценка</span>
+                        <div class="text-4xl sm:text-5xl font-black text-accent" id="final-score">0 / 10</div>
+                        <span class="text-xs text-slate-500 mt-1 block">(по 10-балльной системе)</span>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-700/70 p-6 rounded-2xl w-full sm:w-1/2">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 block mb-1">Правильных ответов</span>
+                        <div class="text-4xl sm:text-5xl font-black text-emerald-400" id="correct-count">0 / 20</div>
+                        <span class="text-xs text-slate-500 mt-1 block" id="time-spent-text">Время: --:--</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-800/40 border border-slate-700/50 rounded-xl text-xs text-slate-400 text-left">
+                    * Результат автоматически сохранен и передан в панель администратора.
+                </div>
+            </div>
+
+            <!-- Подробный разбор ответов -->
+            <div class="bg-cardbg border border-cardborder rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Подробный разбор вопросов
+                </h3>
+                <div id="review-container" class="space-y-6">
+                    <!-- Заполняется динамически -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Подвал -->
+    <footer class="mt-8 text-center text-xs text-slate-500">
+        Система контроля знаний по технической механике &copy; 2026
+    </footer>
+
+    <script>
+        // БАЗА ДАННЫХ ВОПРОСОВ (20 вопросов с дистракторами и пояснениями)
+        const rawQuestions = [
+            {
+                question: "Вал предназначен для:",
+                options: [
+                    "Передачи крутящего момента и поддержания вращающихся деталей.",
+                    "Только для поддержания деталей без передачи крутящего момента.",
+                    "Восприятия исключительно растягивающих нагрузок.",
+                    "Жесткого соединения двух неподвижных станин."
+                ],
+                correctIndex: 0,
+                explanation: "Вал является вращающимся звеном механизмов, предназначенным для передачи крутящего момента вдоль своей оси и поддержания сидящих на нем деталей."
+            },
+            {
+                question: "Чем ось отличается от вала?",
+                options: [
+                    "Ось передает только изгибающий момент и не передает крутящий момент.",
+                    "Ось всегда вращается быстрее вала.",
+                    "Ось передает крутящий момент, а вал нет.",
+                    "Ось изготавливается исключительно из чугуна."
+                ],
+                correctIndex: 0,
+                explanation: "Главное конструктивное отличие: ось поддерживает детали и испытывает только изгиб, в то время как вал всегда передает крутящий момент (и работает на изгиб с кручением)."
+            },
+            {
+                question: "Какая деталь работает только на изгиб?",
+                options: [
+                    "Ось.",
+                    "Вал.",
+                    "Шпонка.",
+                    "Шлицевое соединение."
+                ],
+                correctIndex: 0,
+                explanation: "Оси (как вращающиеся, так и неподвижные) под действием приложенных сил испытывают только изгибающие деформации."
+            },
+            {
+                question: "Какое трение преобладает в подшипниках качения?",
+                options: [
+                    "Трение качения.",
+                    "Трение скольжения.",
+                    "Сухое граничное трение.",
+                    "Вязкостное гидродинамическое трение."
+                ],
+                correctIndex: 0,
+                explanation: "В подшипниках качения между кольцами и телами качения возникает трение качения, которое имеет значительно меньший коэффициент сопротивления по сравнению со скольжением."
+            },
+            {
+                question: "Из каких основных элементов состоит классический подшипник качения?",
+                options: [
+                    "Внутреннее ring (кольцо), наружное ring (кольцо), тела качения, сепаратор.",
+                    "Вкладыш, корпус, масленка и штифт.",
+                    "Вал, эксцентрик, цапфа и втулка.",
+                    "Внутренний баббит, внешняя стальная обойма."
+                ],
+                correctIndex: 0,
+                explanation: "Стандартный подшипник качения содержит внутреннее и наружное кольца с дорожками качения, тела качения (шарики/ролики) и сепаратор."
+            },
+            {
+                question: "Назначение сепаратора в подшипнике качения:",
+                options: [
+                    "Разделение и направление тел качения.",
+                    "Передача крутящего момента на вал.",
+                    "Повышение герметичности внутреннего объема.",
+                    "Фиксация подшипника в корпусе редуктора."
+                ],
+                correctIndex: 0,
+                explanation: "Сепаратор удерживает тела качения на одинаковом расстоянии друг от друга, предотвращая их соприкосновение и трение между собой."
+            },
+            {
+                question: "Какой подшипник воспринимает только радиальную нагрузку?",
+                options: [
+                    "Радиальный подшипник.",
+                    "Упорный подшипник.",
+                    "Радиально-упорный подшипник.",
+                    "Сферический упорный подшипник."
+                ],
+                correctIndex: 0,
+                explanation: "Радиальные подшипники рассчитаны на восприятие нагрузок, направленных перпендикулярно оси вращения вала."
+            },
+            {
+                question: "Упорный подшипник качения предназначен для восприятия:",
+                options: [
+                    "Только осевой нагрузки.",
+                    "Только радиальной нагрузки.",
+                    "Совместной радиальной и крутящей нагрузки.",
+                    "Исключительно консольной нагрузки."
+                ],
+                correctIndex: 0,
+                explanation: "Упорные подшипники воспринимают силы, действующие вдоль оси вращения вала (осевые нагрузки)."
+            },
+            {
+                question: "Преимущество подшипников скольжения перед подшипниками качения:",
+                options: [
+                    "Высокая виброустойчивость и работа при очень высоких скоростях вращения.",
+                    "Меньший расход смазочных материалов.",
+                    "Полное отсутствие необходимости в смазке.",
+                    "Простота стандартизации и дешевизна при малых скоростях."
+                ],
+                correctIndex: 0,
+                explanation: "Подшипники скольжения способны работать при крайне высоких частотах вращения и отлично демпфируют ударные и вибрационные нагрузки благодаря масляному слою."
+            },
+            {
+                question: "Основной материал вкладышей подшипников скольжения с низким коэффициентом трения:",
+                options: [
+                    "Баббит, бронза.",
+                    "Высокоуглеродистая инструментальная сталь.",
+                    "Белый чугун.",
+                    "Титановый сплав."
+                ],
+                correctIndex: 0,
+                explanation: "Баббиты и антифрикционные бронзы обладают отличными антифрикционными свойствами, низкой прирабатываемостью и стойкостью к задирам."
+            },
+            {
+                question: "Что такое масляный клин в подшипнике скольжения?",
+                options: [
+                    "Сужение зазора, где гидродинамически создается давление масла для всплытия вала.",
+                    "Специальный твердый клинообразный фиксатор вкладыша.",
+                    "Дефект поверхности цапфы при недостатке смазки.",
+                    "Инструмент для демонтажа подшипника с цапфы."
+                ],
+                correctIndex: 0,
+                explanation: "В сужающемся клиновом зазоре между цапфой и вкладышем при вращении затягивается масло, создавая гидродинамическую подъемную силу (масляный клин)."
+            },
+            {
+                question: "Какое явление называется питтингом в подшипниках качения?",
+                options: [
+                    "Усталостное выкрашивание рабочей поверхности.",
+                    "Плавление сепаратора из-за перегрева.",
+                    "Абразивный износ дорожек качения пылью.",
+                    "Пластическая деформация колец при запрессовке."
+                ],
+                correctIndex: 0,
+                explanation: "Питтинг — это усталостное выкрашивание частичек металла с рабочих поверхностей тел качения и дорожек колец под действием циклических контактных напряжений."
+            },
+            {
+                question: "Для чего служат галтели на валах?",
+                options: [
+                    "Для снижения концентрации напряжений в местах перехода диаметров.",
+                    "Для уменьшения массы вала.",
+                    "Для фиксации подшипников от проворачивания.",
+                    "Для улучшения нарезания резьбы."
+                ],
+                correctIndex: 0,
+                explanation: "Галтели (радиусные переходы) сглаживают резкие ступенчатые переходы диаметров вала, снижая концентрацию напряжений и риск усталостного разрушения."
+            },
+            {
+                question: "Какая цапфа вала воспринимает осевую нагрузку?",
+                options: [
+                    "Пята (или упорная цапфа).",
+                    "Шип.",
+                    "Шейка.",
+                    "Шлиц."
+                ],
+                correctIndex: 0,
+                explanation: "Пята — это опорный участок вала (цапфа), воспринимающий нагрузку, направленную вдоль оси вала."
+            },
+            {
+                question: "Концевая цапфа вала, передающая радиальную нагрузку, называется:",
+                options: [
+                    "Шип.",
+                    "Шейка.",
+                    "Пята.",
+                    "Шпоночный паз."
+                ],
+                correctIndex: 0,
+                explanation: "Цапфа, расположенная на конце вала и передающая радиальную нагрузку на опору, называется шипом."
+            },
+            {
+                question: "Промежуточная цапфа вала называется:",
+                options: [
+                    "Шейка.",
+                    "Шип.",
+                    "Пята.",
+                    "Бурт."
+                ],
+                correctIndex: 0,
+                explanation: "Цапфа, расположенная в средней (промежуточной) части вала между его концами, называется шейкой."
+            },
+            {
+                question: "Какой тип смазки чаще всего используется в высокоскоростных подшипниках скольжения?",
+                options: [
+                    "Жидкая смазка (гидродинамическая).",
+                    "Пластичная (консистентная) смазка.",
+                    "Твердая графитовая смазка.",
+                    "Сухой тальк."
+                ],
+                correctIndex: 0,
+                explanation: "Жидкое минеральное или синтетическое масло обеспечивают непрерывный гидродинамический режим трения и эффективный отвод тепла."
+            },
+            {
+                question: "Главная причина выхода из строя большинства подшипников качения при нормальных условиях:",
+                options: [
+                    "Усталостное выкрашивание (питтинг).",
+                    "Мгновенный разрыв наружного кольца.",
+                    "Срезание тел качения.",
+                    "Коррозия от атмосферного воздуха."
+                ],
+                correctIndex: 0,
+                explanation: "При правильном монтаже и смазке основным процессом разрушения является циклическое усталостное выкрашивание контактных поверхностей."
+            },
+            {
+                question: "Радиально-упорный подшипник предназначен для:",
+                options: [
+                    "Совместного восприятия радиальной и осевой нагрузок.",
+                    "Восприятия исключительно крутящего момента.",
+                    "Работы только в условиях полного отсутствия смазки.",
+                    "Компенсации сильной несоосности валов (более 45 градусов)."
+                ],
+                correctIndex: 0,
+                explanation: "Конструкция радиально-упорных подшипников позволяет одновременно воспринимать радиальные и осевые усилия."
+            },
+            {
+                question: "Для чего выполняется термообработка (закалка) колец и тел качения подшипников?",
+                options: [
+                    "Для повышения твердости и контактной прочности.",
+                    "Для уменьшения массы деталей.",
+                    "Для изменения цвета подшипника.",
+                    "Для повышения пластичности и вязкости материала."
+                ],
+                correctIndex: 0,
+                explanation: "Закалка с последующим отпуском дает высокую твердость (60-65 HRC), что необходимо для resistance к контактным напряжениям и износу."
+            }
+        ];
+
+        // СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Хранит индексы выбранных ответов
+        let studentName = "";
+        let timerInterval = null;
+        let totalTimeSeconds = 600; // 10 минут
+        let timeRemaining = 600;
+
+        // Вспомогательная функция перемешивания (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Подготовка данных вопросов (перемешивание вопросов и вариантов внутри каждого)
+        function prepareQuestions() {
+            const shuffledRaw = shuffleArray(rawQuestions);
+            
+            return shuffledRaw.map(q => {
+                // Создаем массив объектов для вариантов ответов, чтобы отследить правильный
+                const optionsObj = q.options.map((opt, idx) => ({
+                    text: opt,
+                    isCorrect: idx === q.correctIndex
+                }));
+
+                const shuffledOptions = shuffleArray(optionsObj);
+                const newCorrectIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+                return {
+                    question: q.question,
+                    options: shuffledOptions.map(o => o.text),
+                    correctIndex: newCorrectIndex,
+                    explanation: q.explanation
+                };
+            });
+        }
+
+        // Запуск теста при отправке формы
+        function startTest(event) {
+            event.preventDefault();
+            const input = document.getElementById('student-name');
+            studentName = input.value.trim();
+
+            if (!studentName) return;
+
+            // Инициализация данных
+            currentQuestions = prepareQuestions();
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            timeRemaining = totalTimeSeconds;
+
+            // Переключение экранов
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('test-screen').classList.remove('hidden');
+            document.getElementById('display-student-name').textContent = studentName;
+
+            // Старт таймера
+            startTimer();
+
+            // Отображение первого вопроса
+            renderQuestion();
+        }
+
+        // Таймер обратного отсчета
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timer-display').textContent = formatted;
+        }
+
+        // Обработка истечения времени
+        function handleTimeout() {
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('timeout-screen').classList.remove('hidden');
+
+            // Отправка события об истечении времени в админку
+            sendResultsToAdmin({
+                studentName: studentName,
+                score: 0,
+                correctCount: 0,
+                totalQuestions: currentQuestions.length,
+                timeSpentSeconds: totalTimeSeconds,
+                status: 'TIMEOUT_FAILED'
+            });
+        }
+
+        // Отображение текущего вопроса
+        function renderQuestion() {
+            const q = currentQuestions[currentQuestionIndex];
+            
+            // Прогресс
+            document.getElementById('question-progress').textContent = `Вопрос ${currentQuestionIndex + 1} из ${currentQuestions.length}`;
+            const progressPercent = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Текст
+            document.getElementById('question-text').textContent = q.question;
+
+            // Кнопка "Далее" / "Завершить"
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.textContent = (currentQuestionIndex === currentQuestions.length - 1) ? "Завершить тест" : "Далее";
+            nextBtn.disabled = (userAnswers[currentQuestionIndex] === null);
+
+            // Варианты ответов
+            const container = document.getElementById('answers-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optionText, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const optionEl = document.createElement('div');
+                optionEl.className = `p-4 rounded-xl border transition cursor-pointer flex items-start space-x-3 ${
+                    isSelected 
+                        ? 'bg-blue-600/20 border-accent text-white' 
+                        : 'bg-slate-900/60 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
+                }`;
+                
+                optionEl.onclick = () => selectOption(idx);
+
+                optionEl.innerHTML = `
+                    <div class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border ${isSelected ? 'border-accent bg-accent' : 'border-slate-500'} flex items-center justify-center">
+                        ${isSelected ? '<div class="w-2 h-2 bg-white rounded-full"></div>' : ''}
+                    </div>
+                    <span class="text-sm sm:text-base leading-snug">${optionText}</span>
+                `;
+                container.appendChild(optionEl);
+            });
+        }
+
+        // Выбор варианта ответа
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            document.getElementById('next-btn').disabled = false;
+            renderQuestion();
+        }
+
+        // Нажатие на "Далее"
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) return;
+
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        // Завершение теста и расчёт результатов
+        function finishTest() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correctIndex) {
+                    correctCount++;
+                }
+            });
+
+            // Расчет по 10-балльной системе
+            const totalQuestions = currentQuestions.length;
+            const score10 = Math.round((correctCount / totalQuestions) * 10);
+            const timeSpent = totalTimeSeconds - timeRemaining;
+
+            // Отображение результатов
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            document.getElementById('result-student-name').textContent = `Студент: ${studentName}`;
+            document.getElementById('final-score').textContent = `${score10} / 10`;
+            document.getElementById('correct-count').textContent = `${correctCount} / ${totalQuestions}`;
+
+            const minsSpent = Math.floor(timeSpent / 60);
+            const secsSpent = timeSpent % 60;
+            document.getElementById('time-spent-text').textContent = `Время: ${minsSpent} мин ${secsSpent} сек`;
+
+            // Построение подробного разбора
+            renderReviewList();
+
+            // Передача результата админ-панели
+            sendResultsToAdmin({
+                studentName: studentName,
+                score: score10,
+                correctCount: correctCount,
+                totalQuestions: totalQuestions,
+                timeSpentSeconds: timeSpent,
+                status: 'COMPLETED'
+            });
+        }
+
+        // Отрисовка разбора всех вопросов
+        function renderReviewList() {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            currentQuestions.forEach((q, qIdx) => {
+                const userChoiceIdx = userAnswers[qIdx];
+                const isCorrect = userChoiceIdx === q.correctIndex;
+
+                const item = document.createElement('div');
+                item.className = `p-5 rounded-xl border ${
+                    isCorrect 
+                        ? 'bg-emerald-950/20 border-emerald-500/40' 
+                        : 'bg-red-950/20 border-red-500/40'
+                } space-y-4`;
+
+                let optionsHtml = '';
+                q.options.forEach((optText, optIdx) => {
+                    let optStyle = "bg-slate-900/40 border-slate-700/50 text-slate-400";
+                    let badge = "";
+
+                    if (optIdx === q.correctIndex) {
+                        optStyle = "bg-emerald-500/10 border-emerald-500/50 text-emerald-300 font-medium";
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md font-semibold">Правильный ответ</span>`;
+                    }
+                    
+                    if (optIdx === userChoiceIdx && !isCorrect) {
+                        optStyle = "bg-red-500/10 border-red-500/50 text-red-300 font-medium";
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded-md font-semibold">Ваш ответ</span>`;
+                    } else if (optIdx === userChoiceIdx && isCorrect) {
+                        badge = `<span class="ml-auto text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md font-semibold">Ваш выбор (Верно)</span>`;
+                    }
+
+                    optionsHtml += `
+                        <div class="p-3 rounded-lg border text-sm flex items-center ${optStyle}">
+                            <span>${optText}</span>
+                            ${badge}
+                        </div>
+                    `;
+                });
+
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <h4 class="font-semibold text-white text-base">
+                            <span class="text-slate-400 font-normal mr-1">${qIdx + 1}.</span> ${q.question}
+                        </h4>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'} flex-shrink-0">
+                            ${isCorrect ? '+1 бал' : '0 баллов'}
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        ${optionsHtml}
+                    </div>
+
+                    <div class="mt-3 p-3.5 bg-slate-900/80 border border-slate-700/60 rounded-lg text-xs sm:text-sm text-slate-300">
+                        <strong class="text-accent block mb-1">Пояснение:</strong>
+                        ${q.explanation}
+                    </div>
+                `;
+
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        // Функция отправки результатов в внешнюю Панель Администратора
+        function sendResultsToAdmin(data) {
+            const resultPayload = {
+                type: 'TEST_RESULT',
+                timestamp: new Date().toISOString(),
+                ...data
+            };
+
+            // 1. Отправка через postMessage в родительское окно (если тест встроен в iframe административной панели)
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage(resultPayload, '*');
+            }
+
+            // 2. Генерация CustomEvent для интеграций в рамках одной страницы
+            const customEvent = new CustomEvent('onTestCompleted', { detail: resultPayload });
+            window.dispatchEvent(customEvent);
+
+            // 3. Дублирование результата в LocalStorage для надежного чтения администратором
+            try {
+                const existingResults = JSON.parse(localStorage.getItem('engineering_test_results') || '[]');
+                existingResults.push(resultPayload);
+                localStorage.setItem('engineering_test_results', JSON.stringify(existingResults));
+            } catch (e) {
+                console.warn('Не удалось сохранить результат в localStorage:', e);
+            }
+        }
+    </script>
+</body>
+</html>
